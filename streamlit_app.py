@@ -314,11 +314,6 @@ class StreamlitChatInterface:
             """, unsafe_allow_html=True)
         else:
             # Assistant message
-            # Check if simple rendering is enabled
-            if getattr(st.session_state, 'simple_rendering', False):
-                self._render_assistant_message_simple(message)
-                return
-                
             agent = message.get('agent', 'assistant')
             agent_emoji = {'pandas': '🐼', 'python': '🐍', 'chart': '📊', 'search': '🔍', 'router': '🎯'}.get(agent, '🤖')
             
@@ -330,13 +325,6 @@ class StreamlitChatInterface:
             time_badge = f'<span class="status-indicator status-success">⏱️ {processing_time:.1f}s</span>'
             
             content = message['content']
-            
-            # Sanitize content to prevent HTML conflicts
-            import html
-            # Escape HTML characters and quotes that might break the HTML structure
-            content = html.escape(content)
-            # Also handle newlines properly for HTML display
-            content = content.replace('\n', '<br>')
             
             # Check if the message contains a base64 chart
             has_chart = "data:image/png;base64," in content
@@ -363,8 +351,8 @@ class StreamlitChatInterface:
                     # Replace the tabular text with a placeholder
                     content = self._replace_dataframe_text_with_placeholder(content)
             
-            # Display the main message text with safer HTML rendering
-            message_html = f"""
+            # Display the main message text
+            st.markdown(f"""
             <div class="assistant-message">
                 <div style="display: flex; align-items: flex-start;">
                     <div class="avatar assistant-avatar">{agent_emoji}</div>
@@ -380,28 +368,7 @@ class StreamlitChatInterface:
                     </div>
                 </div>
             </div>
-            """
-            
-            try:
-                # Debug output if enabled
-                if getattr(st.session_state, 'debug_mode', False):
-                    st.sidebar.write("**Debug Info:**")
-                    st.sidebar.write(f"Agent: {agent}")
-                    st.sidebar.write(f"Processing time: {processing_time}")
-                    st.sidebar.write(f"Context aware: {message.get('context_aware', False)}")
-                    st.sidebar.write(f"Content length: {len(content)}")
-                    
-                st.markdown(message_html, unsafe_allow_html=True)
-            except Exception as e:
-                # Log the specific error
-                error_msg = f"HTML rendering failed: {str(e)}"
-                if getattr(st.session_state, 'debug_mode', False):
-                    st.sidebar.error(error_msg)
-                print(error_msg)
-                
-                # Fallback to simple rendering if HTML has issues
-                self._render_assistant_message_simple(message)
-                return
+            """, unsafe_allow_html=True)
             
             # Display dataframe if found
             if parsed_df is not None:
@@ -730,16 +697,6 @@ class StreamlitChatInterface:
                     use_container_width=True
                 )
         
-        # Debug mode toggle
-        st.sidebar.markdown("### 🔧 Debug Options")
-        debug_mode = st.sidebar.checkbox("Enable Debug Mode", value=False)
-        simple_rendering = st.sidebar.checkbox("Use Simple Rendering", value=False, 
-                                              help="Use native Streamlit components instead of custom HTML")
-        
-        # Store in session state
-        st.session_state.debug_mode = debug_mode
-        st.session_state.simple_rendering = simple_rendering
-        
         # Display conversation stats
         self.display_conversation_stats()
         
@@ -762,10 +719,6 @@ class StreamlitChatInterface:
                             <li>📊 Request charts and visualizations</li>
                             <li>🐍 Get help with Python code for analysis</li>
                         </ul>
-                        
-                        <div class="message-meta">
-                            <div><span class="status-indicator status-info">🤖 Assistant</span></div>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -819,32 +772,12 @@ class StreamlitChatInterface:
             
             # Rerun to update the interface
             st.rerun()
-    
-    def _render_assistant_message_simple(self, message: Dict[str, Any]):
-        """
-        Alternative simple rendering method using native Streamlit components
-        Use this if HTML rendering has issues
-        """
-        agent = message.get('agent', 'assistant')
-        agent_emoji = {'pandas': '🐼', 'python': '🐍', 'chart': '📊', 'search': '🔍', 'router': '🎯'}.get(agent, '🤖')
-        content = message['content']
-        processing_time = message.get('processing_time', 0)
-        
-        # Create a container for the message
-        with st.container():
-            st.markdown(f"**{agent_emoji} {agent.title()} Agent**")
-            
-            # Message content
-            st.write(content)
-            
-            # Metadata in columns
-            col1, col2, col3 = st.columns([2, 1, 1])
-            with col1:
-                if message.get('context_aware', False):
-                    st.caption("💭 Context Aware")
-            with col2:
-                st.caption(f"⏱️ {processing_time:.1f}s")
-            with col3:
-                st.caption(f"🤖 {agent}")
-            
-            st.divider()
+
+# Create and run the interface
+if __name__ == "__main__":
+    app = StreamlitChatInterface()
+    app.run()
+else:
+    # When imported by Streamlit
+    app = StreamlitChatInterface()
+    app.run()
