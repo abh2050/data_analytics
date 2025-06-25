@@ -302,12 +302,16 @@ class StreamlitChatInterface:
     def display_message(self, message: Dict[str, Any], is_user: bool = False):
         """Display a single message in ChatGPT style with support for charts and dataframes"""
         if is_user:
+            # Escape HTML content for user messages too
+            import html
+            escaped_content = html.escape(message['content'])
+            
             st.markdown(f"""
             <div class="user-message">
                 <div style="display: flex; align-items: flex-start;">
                     <div class="avatar user-avatar">👤</div>
                     <div style="flex: 1;">
-                        {message['content']}
+                        {escaped_content}
                     </div>
                 </div>
             </div>
@@ -325,6 +329,10 @@ class StreamlitChatInterface:
             time_badge = f'<span class="status-indicator status-success">⏱️ {processing_time:.1f}s</span>'
             
             content = message['content']
+            
+            # Escape HTML characters to prevent breaking the HTML structure
+            import html
+            content = html.escape(content)
             
             # Check if the message contains a base64 chart
             has_chart = "data:image/png;base64," in content
