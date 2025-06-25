@@ -13,7 +13,7 @@ import io
 # Add src to path for imports
 sys.path.append(str(Path(__file__).parent / "src"))
 
-from langgraph_engine.graph_builder import build_agent_graph
+from langgraph_engine.graph_builder import build_agent_graph, clear_memory_agent
 from agents.pandas_agent import df_manager
 from langchain_core.messages import HumanMessage, AIMessage
 
@@ -302,7 +302,7 @@ class StreamlitChatInterface:
     def display_message(self, message: Dict[str, Any], is_user: bool = False):
         """Display a single message in ChatGPT style with support for charts and dataframes"""
         if is_user:
-            # Escape HTML content for user messages too
+            # User message with simple HTML escaping
             import html
             escaped_content = html.escape(message['content'])
             
@@ -317,108 +317,137 @@ class StreamlitChatInterface:
             </div>
             """, unsafe_allow_html=True)
         else:
-            # Assistant message
+            # Assistant message with rich content rendering
             agent = message.get('agent', 'assistant')
             agent_emoji = {'pandas': '🐼', 'python': '🐍', 'chart': '📊', 'search': '🔍', 'router': '🎯'}.get(agent, '🤖')
             
-            # Build context and timing info as plain text
-            context_text = "💭 Context Aware" if message.get('context_aware', False) else ""
-            processing_time = message.get('processing_time', 0)
-            time_text = f"⏱️ {processing_time:.1f}s"
-            
             content = message['content']
             
-            # Escape HTML characters to prevent breaking the HTML structure, but preserve our status indicators
+            # Clean up HTML and timing indicators
             import html
-            
-            # Remove all types of HTML timing and status indicators
             import re
             
-            # Remove status indicator divs with spans
-            status_pattern = r'<div><span class="status-indicator[^>]*">.*?</span></div>'
-            content = re.sub(status_pattern, '', content, flags=re.DOTALL)
-            
-            # Remove standalone status indicator spans
-            status_span_pattern = r'<span class="status-indicator[^>]*">.*?</span>'
-            content = re.sub(status_span_pattern, '', content, flags=re.DOTALL)
-            
-            # Remove all timing divs - comprehensive patterns
-            # Pattern 1: Basic timing divs like <div>⏱️ 2.2s</div>
-            timing_pattern1 = r'<div>\s*⏱️[^<]*</div>'
-            content = re.sub(timing_pattern1, '', content, flags=re.DOTALL)
-            
-            # Pattern 2: Timing divs with attributes
-            timing_pattern2 = r'<div[^>]*>\s*⏱️[^<]*</div>'
-            content = re.sub(timing_pattern2, '', content, flags=re.DOTALL)
-            
-            # Pattern 3: Any div containing clock emoji
-            timing_pattern3 = r'<div[^>]*>[^<]*⏱️[^<]*</div>'
-            content = re.sub(timing_pattern3, '', content, flags=re.DOTALL)
-            
-            # Pattern 4: Remove any remaining HTML tags that could be problematic
-            # This is more aggressive - removes any HTML tags
-            html_tag_pattern = r'<[^>]+>'
+            # Remove HTML tags and timing patterns
+            html_tag_pattern = r'<[^>]*>'
             content = re.sub(html_tag_pattern, '', content)
+            content = content.replace('&lt;', '').replace('&gt;', '').replace('&amp;', '&')
             
-            # Now escape the remaining content
-            content = html.escape(content)
+            timing_text_patterns = [
+                r'⏱️\s*\d+\.?\d*s',
+                r'⏱️[^0-9]*\d+\.?\d*s',
+            ]
+            for pattern in timing_text_patterns:
+                content = re.sub(pattern, '', content, flags=re.DOTALL)
             
-            # Check if the message contains a base64 chart
-            has_chart = "data:image/png;base64," in content
+            content = re.sub(r'\s+', ' ', content).strip()
+            
+            # Check for base64 charts
             chart_data = None
-            
-            if has_chart:
-                # Extract the base64 image data
-                import re
+            if "data:image/png;base64," in content:
                 pattern = r'data:image/png;base64,([A-Za-z0-9+/=]+)'
                 match = re.search(pattern, content)
-                
                 if match:
                     chart_data = match.group(1)
-                    # Remove the base64 string from the text content
-                    content = re.sub(pattern, '[Chart displayed below]', content)
+                    content = re.sub(pattern, '', content)
             
-            # Check if the message contains tabular data (dataframe output)
-            has_dataframe = self._detect_dataframe_output(content)
+            # Check for dataframes
             parsed_df = None
-            
-            if has_dataframe:
+            if self._detect_dataframe_output(content):
                 parsed_df = self._parse_dataframe_from_text(content)
                 if parsed_df is not None:
-                    # Replace the tabular text with a placeholder
                     content = self._replace_dataframe_text_with_placeholder(content)
             
-            # Display the main message text
-            st.markdown(f"""
-            <div class="assistant-message">
-                <div style="display: flex; align-items: flex-start;">
-                    <div class="avatar assistant-avatar">{agent_emoji}</div>
-                    <div style="flex: 1;">
-                        {content}
-                        <div class="message-meta">
-                            <div>
-                                🤖 {agent.title()}
-                                {' • ' + context_text if context_text else ''}
-                            </div>
-                            <div>{time_text}</div>
-                        </div>
-                    </div>
+            # Display avatar and agent info
+            col1, col2 = st.columns([1, 10])
+            with col1:
+                st.markdown(f"""
+                <div class="avatar assistant-avatar" style="margin: 10px 0;">
+                    {agent_emoji}
                 </div>
-            </div>
-            """, unsafe_allow_html=True)
+                """, unsafe_allow_html=True)
             
-            # Display dataframe if found
-            if parsed_df is not None:
-                st.subheader("📊 Data Table")
-                st.dataframe(parsed_df, use_container_width=True)
+            with col2:
+                # Render content as rich markdown
+                if content.strip():
+                    # Process content to improve markdown rendering
+                    processed_content = self._process_content_for_display(content)
+                    st.markdown(processed_content)
+                
+                # Display dataframe if found
+                if parsed_df is not None:
+                    st.subheader("📊 Data Table")
+                    st.dataframe(parsed_df, use_container_width=True)
+                
+                # Display chart if found
+                if chart_data:
+                    try:
+                        img_data = base64.b64decode(chart_data)
+                        st.image(img_data, use_container_width=True)
+                    except Exception as e:
+                        st.error(f"Error displaying chart: {e}")
+    
+    def _process_content_for_display(self, content: str) -> str:
+        """Process content to improve markdown display"""
+        # Handle bullet points and formatting
+        lines = content.split('\n')
+        processed_lines = []
+        in_numbered_list = False
+        
+        for line in lines:
+            line = line.strip()
+            if not line:
+                processed_lines.append('')
+                continue
             
-            # Display chart if found
-            if chart_data:
-                try:
-                    img_data = base64.b64decode(chart_data)
-                    st.image(img_data, use_container_width=True)
-                except Exception as e:
-                    st.error(f"Error displaying chart: {e}")
+            # Handle numbered organization entries (1. **OrgName**: ...)
+            if re.match(r'^\d+\.\s*\*\*[^*]+\*\*:', line):
+                # Extract organization number and name
+                match = re.match(r'^(\d+)\.\s*\*\*([^*]+)\*\*:', line)
+                if match:
+                    num, org_name = match.groups()
+                    processed_lines.append(f"## {num}. {org_name}")
+                    in_numbered_list = True
+                    continue
+            
+            # Convert **text**: pattern to proper markdown headers for organization info
+            if line.startswith('**') and '**:' in line and not in_numbered_list:
+                # Extract organization name and make it a header
+                if line.count('**') >= 2:
+                    org_name = line.split('**')[1]
+                    processed_lines.append(f"### {org_name}")
+                    continue
+            
+            # Convert - **field**: value to nicer format with better styling
+            if line.startswith('- **') and '**:' in line:
+                # Extract field and value
+                parts = line.split('**:', 1)
+                if len(parts) >= 2:
+                    field = parts[0].replace('- **', '').strip()
+                    value = parts[1].strip()
+                    # Format specific fields differently
+                    if field.lower() in ['description']:
+                        processed_lines.append(f"📝 **{field}:** {value}")
+                    elif field.lower() in ['founded date', 'last funding date']:
+                        processed_lines.append(f"📅 **{field}:** {value}")
+                    elif field.lower() in ['last funding amount', 'total funding amount']:
+                        processed_lines.append(f"💰 **{field}:** {value}")
+                    elif field.lower() in ['number of employees']:
+                        processed_lines.append(f"👥 **{field}:** {value}")
+                    elif field.lower() in ['headquarters location']:
+                        processed_lines.append(f"📍 **{field}:** {value}")
+                    elif field.lower() in ['industries']:
+                        processed_lines.append(f"🏢 **{field}:** {value}")
+                    elif field.lower() in ['operating status']:
+                        status_emoji = "✅" if "active" in value.lower() else "❌" if "closed" in value.lower() else "⚠️"
+                        processed_lines.append(f"{status_emoji} **{field}:** {value}")
+                    else:
+                        processed_lines.append(f"**{field}:** {value}")
+                    continue
+            
+            # Regular lines
+            processed_lines.append(line)
+        
+        return '\n'.join(processed_lines)
     
     def _detect_dataframe_output(self, text: str) -> bool:
         """Detect if the text contains tabular dataframe output"""
@@ -661,10 +690,28 @@ class StreamlitChatInterface:
             return error_response
     
     def clear_conversation(self):
-        """Clear the conversation history"""
+        """Clear the conversation history and memory"""
+        old_session_id = st.session_state.session_id
         st.session_state.messages = []
         st.session_state.conversation_history = []
         st.session_state.session_id = str(uuid.uuid4())
+        
+        # Clear memory from the memory agent
+        try:
+            clear_memory_agent(old_session_id)
+            print(f"Cleared conversation and memory for session: {old_session_id}")
+        except Exception as e:
+            print(f"Error clearing memory: {e}")
+        
+        st.rerun()
+    
+    def clear_all_memory(self):
+        """Clear all memory across all sessions"""
+        try:
+            clear_memory_agent()  # Clear all sessions
+            st.success("✅ All memory cleared successfully!")
+        except Exception as e:
+            st.error(f"❌ Error clearing memory: {e}")
         st.rerun()
     
     def export_conversation(self):
@@ -733,6 +780,21 @@ class StreamlitChatInterface:
                     mime="text/markdown",
                     use_container_width=True
                 )
+        
+        # Memory management
+        st.sidebar.markdown("### 🧠 Memory Management")
+        col3, col4 = st.sidebar.columns(2)
+        
+        with col3:
+            if st.button("🧹 Clear Memory", use_container_width=True, help="Clear conversation memory but keep chat history"):
+                self.clear_all_memory()
+        
+        with col4:
+            if st.button("🔄 Fresh Start", use_container_width=True, help="Clear everything and start completely fresh"):
+                self.clear_conversation()
+                st.session_state.uploaded_data = None
+                st.session_state.data_info = {}
+                st.rerun()
         
         # Display conversation stats
         self.display_conversation_stats()

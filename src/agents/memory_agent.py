@@ -3,6 +3,8 @@ from langchain_openai import ChatOpenAI
 from langchain_core.messages import HumanMessage, AIMessage, SystemMessage
 from typing import Dict, Any, List
 import json
+import time
+import time
 
 class ConversationMemoryAgent:
     """
@@ -14,6 +16,8 @@ class ConversationMemoryAgent:
         if llm is None:
             raise ValueError("ConversationMemoryAgent requires a valid LLM instance")
         self.llm = llm
+        self.session_memory = {}  # Store session-specific memory
+        self.global_cache = {}    # Store global conversation cache
         self.prompt = PromptTemplate.from_template(
             """You are a conversation memory manager for a data analytics assistant. Your role is to:
 
@@ -69,6 +73,10 @@ Respond only with valid JSON."""
         messages = state.get("messages", [])
         latest_query = state.get("query", "")
         agent_outputs = state.get("agent_outputs", {})
+        session_id = state.get("session_id", "default")
+        
+        # Get session-specific memory
+        session_memory = self._get_session_memory(session_id)
         
         try:
             # Build conversation history
@@ -116,6 +124,13 @@ Respond only with valid JSON."""
                 "reasoning": "Analyzed conversation context for better response continuity"
             }
             
+            # Store in session memory for persistence
+            self._store_session_memory(session_id, {
+                "last_context": memory_context,
+                "conversation_length": len(messages),
+                "last_query": latest_query
+            })
+            
             # Add conversation context to metadata for other agents to use
             if "metadata" not in updated_state:
                 updated_state["metadata"] = {}
@@ -123,8 +138,9 @@ Respond only with valid JSON."""
             updated_state["metadata"]["conversation_context"] = memory_context
             updated_state["metadata"]["conversation_length"] = len(messages)
             updated_state["metadata"]["has_previous_context"] = len(messages) > 2
+            updated_state["metadata"]["session_id"] = session_id
             
-            print(f"[ConversationMemoryAgent] Processed {len(messages)} messages")
+            print(f"[ConversationMemoryAgent] Processed {len(messages)} messages for session {session_id}")
             print(f"[ConversationMemoryAgent] Context: {memory_context['conversation_summary']}")
             
             return updated_state
@@ -185,7 +201,55 @@ Respond only with valid JSON."""
                     summary.append(f"{agent}: {str(result)[:100]}...")
         
         return "\n".join(summary) if summary else "No previous responses"
-
+    
+    def clear_session_memory(self, session_id: str = None):
+        """Clear memory for a specific session or all sessions"""
+        if session_id:
+            if session_id in self.session_memory:
+                del self.session_memory[session_id]
+                print(f"[ConversationMemoryAgent] Cleared memory for session: {session_id}")
+        else:
+            self.session_memory.clear()
+            print("[ConversationMemoryAgent] Cleared all session memory")
+    
+    def clear_global_cache(self):
+        """Clear global conversation cache"""
+        self.global_cache.clear()
+        print("[ConversationMemoryAgent] Cleared global cache")
+    
+    def clear_all_memory(self):
+        """Clear all memory and cache"""
+        self.session_memory.clear()
+        self.global_cache.clear()
+        print("[ConversationMemoryAgent] Cleared all memory and cache")
+    
+    def get_session_info(self, session_id: str = None):
+        """Get information about stored sessions"""
+        if session_id:
+            return self.session_memory.get(session_id, {})
+        else:
+            return {
+                "total_sessions": len(self.session_memory),
+                "sessions": list(self.session_memory.keys()),
+                "global_cache_size": len(self.global_cache)
+            }
+    
+    def _get_session_memory(self, session_id: str):
+        """Get or create session-specific memory"""
+        if session_id not in self.session_memory:
+            self.session_memory[session_id] = {
+                "conversation_history": [],
+                "context_summary": "",
+                "user_preferences": {},
+                "created_at": time.time()
+            }
+        return self.session_memory[session_id]
+    
+    def _store_session_memory(self, session_id: str, memory_data: dict):
+        """Store memory data for a specific session"""
+        session_mem = self._get_session_memory(session_id)
+        session_mem.update(memory_data)
+        session_mem["updated_at"] = time.time()
 
 class ChatResponseFormatter:
     """

@@ -350,9 +350,9 @@ def find_extreme_values(column: str, operation: str, top_n: int = 5) -> str:
 
 @tool
 def search_data(search_term: str, column: str = None) -> str:
-    """Search for specific terms in the dataset.
+    """Search for specific terms in the dataset with enhanced matching capabilities.
     
-    search_term: the term to search for
+    search_term: the term to search for (case insensitive, supports partial matches)
     column: specific column to search in (optional, searches all text columns if not specified)
     """
     try:
@@ -360,38 +360,93 @@ def search_data(search_term: str, column: str = None) -> str:
         if df is None:
             return "No dataframe loaded. Please upload a file first."
         
-        search_term = str(search_term).lower()
+        search_term = str(search_term).lower().strip()
         results = []
         
         if column:
             if column not in df.columns:
-                return f"Column '{column}' not found. Available columns: {list(df.columns)}"
+                available_cols = list(df.columns)
+                # Try to find similar column names
+                similar_cols = [col for col in available_cols if search_term.lower() in col.lower()]
+                error_msg = f"Column '{column}' not found. Available columns: {available_cols}"
+                if similar_cols:
+                    error_msg += f"\nDid you mean one of these similar columns? {similar_cols}"
+                return error_msg
             
-            # Search in specific column
-            mask = df[column].astype(str).str.lower().str.contains(search_term, na=False)
-            matching_rows = df[mask]
+            # Search in specific column with multiple matching strategies
+            col_data = df[column].astype(str)
             
-            if len(matching_rows) > 0:
-                results.append(f"Found {len(matching_rows)} matches in column '{column}':")
-                results.append(matching_rows.head(10).to_string())
+            # Strategy 1: Exact case-insensitive match
+            exact_mask = col_data.str.lower() == search_term
+            exact_matches = df[exact_mask]
+            
+            # Strategy 2: Contains match (case insensitive)
+            contains_mask = col_data.str.lower().str.contains(search_term, na=False, regex=False)
+            contains_matches = df[contains_mask]
+            
+            # Strategy 3: Fuzzy match (split search term and look for all parts)
+            search_parts = search_term.split()
+            if len(search_parts) > 1:
+                fuzzy_mask = col_data.str.lower().str.contains('|'.join(search_parts), na=False, regex=True)
+                fuzzy_matches = df[fuzzy_mask]
             else:
+                fuzzy_matches = pd.DataFrame()
+            
+            # Report results
+            if len(exact_matches) > 0:
+                results.append(f"Exact matches for '{search_term}' in column '{column}' ({len(exact_matches)} found):")
+                results.append("DATAFRAME_START")
+                results.append(exact_matches.head(10).to_string())
+                results.append("DATAFRAME_END")
+            
+            if len(contains_matches) > len(exact_matches):
+                additional_contains = contains_matches[~contains_matches.index.isin(exact_matches.index)]
+                if len(additional_contains) > 0:
+                    results.append(f"\nPartial matches containing '{search_term}' in column '{column}' ({len(additional_contains)} additional found):")
+                    results.append("DATAFRAME_START")
+                    results.append(additional_contains.head(10).to_string())
+                    results.append("DATAFRAME_END")
+            
+            if len(fuzzy_matches) > len(contains_matches) and len(search_parts) > 1:
+                additional_fuzzy = fuzzy_matches[~fuzzy_matches.index.isin(contains_matches.index)]
+                if len(additional_fuzzy) > 0:
+                    results.append(f"\nFuzzy matches for parts of '{search_term}' in column '{column}' ({len(additional_fuzzy)} additional found):")
+                    results.append("DATAFRAME_START")
+                    results.append(additional_fuzzy.head(5).to_string())
+                    results.append("DATAFRAME_END")
+            
+            if len(contains_matches) == 0:
                 results.append(f"No matches found for '{search_term}' in column '{column}'")
+                # Show sample data from the column
+                results.append(f"\nSample values in '{column}' column:")
+                sample_values = df[column].dropna().head(10).tolist()
+                results.append(str(sample_values))
+        
         else:
             # Search in all text columns
             text_columns = df.select_dtypes(include=['object', 'string']).columns
             total_matches = 0
             
             for col in text_columns:
-                mask = df[col].astype(str).str.lower().str.contains(search_term, na=False)
+                col_data = df[col].astype(str)
+                mask = col_data.str.lower().str.contains(search_term, na=False, regex=False)
                 matching_rows = df[mask]
                 
                 if len(matching_rows) > 0:
                     total_matches += len(matching_rows)
                     results.append(f"\nFound {len(matching_rows)} matches in column '{col}':")
-                    results.append(matching_rows.head(5)[col].to_string())
+                    results.append("DATAFRAME_START")
+                    results.append(matching_rows.head(5).to_string())
+                    results.append("DATAFRAME_END")
             
             if total_matches == 0:
                 results.append(f"No matches found for '{search_term}' in any text columns")
+                results.append(f"\nSearched in columns: {list(text_columns)}")
+                # Show sample data from each text column
+                results.append("\nSample data from text columns:")
+                for col in text_columns[:3]:  # Show sample from first 3 text columns
+                    sample_values = df[col].dropna().head(3).tolist()
+                    results.append(f"  {col}: {sample_values}")
         
         return "\n".join(results)
     

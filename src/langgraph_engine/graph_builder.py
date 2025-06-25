@@ -59,8 +59,25 @@ except Exception as e:
         print(f"Error initializing LLM: {e}")
         raise e
 
+# Global memory manager instance
+_global_memory_agent = None
+
+def get_memory_agent():
+    """Get the global memory agent instance"""
+    return _global_memory_agent
+
+def clear_memory_agent(session_id: str = None):
+    """Clear memory for a specific session or all sessions"""
+    global _global_memory_agent
+    if _global_memory_agent:
+        if session_id:
+            _global_memory_agent.clear_session_memory(session_id)
+        else:
+            _global_memory_agent.clear_all_memory()
+
 def build_agent_graph():
     """Create a more sophisticated agent graph with coordinator-based routing and conversation memory"""
+    global _global_memory_agent
     workflow = StateGraph(DataAnalyticsState)
 
     # Validate LLM before proceeding
@@ -74,6 +91,7 @@ def build_agent_graph():
     data_search_agent = DataSearchAgent(llm)
     pandas_agent = PandasAgent(llm)
     memory_agent = ConversationMemoryAgent(llm)
+    _global_memory_agent = memory_agent  # Store globally for memory management
     query_context_agent = QueryContextAgent(llm)
 
     # Add nodes for each agent and tools
