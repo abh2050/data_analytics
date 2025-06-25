@@ -208,15 +208,22 @@ class ChatResponseFormatter:
         agent_outputs = state.get("agent_outputs", {})
         conversation_context = state.get("metadata", {}).get("conversation_context", {})
         
-        # Determine the primary responding agent (not router or memory)
+        # Determine the primary responding agent (not router, memory, or query_context)
         primary_agent = None
         primary_response = ""
         
         for agent, output in agent_outputs.items():
-            if agent not in ["router", "memory"] and output.get("status") == "completed":
+            if agent not in ["router", "memory", "query_context"] and output.get("status") == "completed":
                 primary_agent = agent
                 primary_response = output.get("result", "")
                 break
+        
+        # Ensure primary_response is a string (safety check)
+        if isinstance(primary_response, dict):
+            # If it's a dict, convert to a meaningful string representation
+            primary_response = str(primary_response)
+        elif primary_response is None:
+            primary_response = ""
         
         # Format response based on agent type and context
         if primary_agent == "pandas":
