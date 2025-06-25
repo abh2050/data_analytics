@@ -68,12 +68,10 @@ python chat_interface.py
 python demo_chat.py
 ```
 
-## Sample Dataset
-
-The system includes a sample business dataset (`src/data/sample.csv`) with:
-- **Columns**: date, revenue, expenses, product, region, customer_count
-- **15 rows** of realistic business data
-- **Multiple dimensions** for complex analysis and demonstration
+## App
+https://langgraphdataanalyticsagents.streamlit.app/
+![](https://github.com/abh2050/langgraph_data_analytics_agents/blob/main/assets/1.png)
+![](https://github.com/abh2050/langgraph_data_analytics_agents/blob/main/assets/2.png)
 
 ## Agent Architecture & Capabilities
 
