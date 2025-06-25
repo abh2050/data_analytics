@@ -1,0 +1,17 @@
+date,revenue,expenses,product,region,customer_count
+2023-01-01,1000,500,Product_A,North,45
+2023-01-02,1200,600,Product_B,South,52
+2023-01-03,1100,550,Product_A,East,48
+2023-01-04,1300,700,Product_C,West,61
+2023-01-05,1250,620,Product_B,North,55
+2023-01-06,1400,650,Product_A,South,67
+2023-01-07,1350,680,Product_C,East,59
+2023-01-08,1500,750,Product_B,West,72
+2023-01-09,1450,720,Product_A,North,68
+2023-01-10,1600,800,Product_C,South,75
+2023-01-11,1550,770,Product_B,East,71
+2023-01-12,1700,850,Product_A,West,80
+2023-01-13,1650,820,Product_C,North,76
+2023-01-14,1800,900,Product_B,South,85
+2023-01-15,1750,875,Product_A,East,82
+
