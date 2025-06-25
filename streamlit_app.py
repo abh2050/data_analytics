@@ -321,17 +321,46 @@ class StreamlitChatInterface:
             agent = message.get('agent', 'assistant')
             agent_emoji = {'pandas': '🐼', 'python': '🐍', 'chart': '📊', 'search': '🔍', 'router': '🎯'}.get(agent, '🤖')
             
-            context_badge = ""
-            if message.get('context_aware', False):
-                context_badge = '<span class="status-indicator status-info">💭 Context Aware</span>'
-            
+            # Build context and timing info as plain text
+            context_text = "💭 Context Aware" if message.get('context_aware', False) else ""
             processing_time = message.get('processing_time', 0)
-            time_badge = f'<span class="status-indicator status-success">⏱️ {processing_time:.1f}s</span>'
+            time_text = f"⏱️ {processing_time:.1f}s"
             
             content = message['content']
             
-            # Escape HTML characters to prevent breaking the HTML structure
+            # Escape HTML characters to prevent breaking the HTML structure, but preserve our status indicators
             import html
+            
+            # Remove all types of HTML timing and status indicators
+            import re
+            
+            # Remove status indicator divs with spans
+            status_pattern = r'<div><span class="status-indicator[^>]*">.*?</span></div>'
+            content = re.sub(status_pattern, '', content, flags=re.DOTALL)
+            
+            # Remove standalone status indicator spans
+            status_span_pattern = r'<span class="status-indicator[^>]*">.*?</span>'
+            content = re.sub(status_span_pattern, '', content, flags=re.DOTALL)
+            
+            # Remove all timing divs - comprehensive patterns
+            # Pattern 1: Basic timing divs like <div>⏱️ 2.2s</div>
+            timing_pattern1 = r'<div>\s*⏱️[^<]*</div>'
+            content = re.sub(timing_pattern1, '', content, flags=re.DOTALL)
+            
+            # Pattern 2: Timing divs with attributes
+            timing_pattern2 = r'<div[^>]*>\s*⏱️[^<]*</div>'
+            content = re.sub(timing_pattern2, '', content, flags=re.DOTALL)
+            
+            # Pattern 3: Any div containing clock emoji
+            timing_pattern3 = r'<div[^>]*>[^<]*⏱️[^<]*</div>'
+            content = re.sub(timing_pattern3, '', content, flags=re.DOTALL)
+            
+            # Pattern 4: Remove any remaining HTML tags that could be problematic
+            # This is more aggressive - removes any HTML tags
+            html_tag_pattern = r'<[^>]+>'
+            content = re.sub(html_tag_pattern, '', content)
+            
+            # Now escape the remaining content
             content = html.escape(content)
             
             # Check if the message contains a base64 chart
@@ -368,10 +397,10 @@ class StreamlitChatInterface:
                         {content}
                         <div class="message-meta">
                             <div>
-                                <span class="status-indicator status-info">🤖 {agent.title()}</span>
-                                {context_badge}
+                                🤖 {agent.title()}
+                                {' • ' + context_text if context_text else ''}
                             </div>
-                            <div>{time_badge}</div>
+                            <div>{time_text}</div>
                         </div>
                     </div>
                 </div>
