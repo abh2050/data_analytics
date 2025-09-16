@@ -294,11 +294,13 @@ class StreamlitChatInterface:
             
             # Show agents used
             st.sidebar.write("**Agents:**")
-            for agent in sorted(agents_used):
-                if agent != 'unknown':
-                    agent_emoji = {'pandas': '🐼', 'python': '🐍', 'chart': '📊', 'search': '🔍'}.get(agent, '🤖')
-                    st.sidebar.write(f"  {agent_emoji} {agent.title()}")
-    
+            for agent in sorted(str(a) if a else "Unknown" for a in agents_used):
+                # Make sure agent isn't None and cast to string
+                agent_name = str(agent) if agent is not None else "unknown"
+                if agent_name.lower() != 'unknown':
+                    agent_emoji = {'pandas': '🐼', 'python': '🐍', 'chart': '📊', 'search': '🔍'}.get(agent_name, '🤖')
+                    st.sidebar.write(f"  {agent_emoji} {agent_name.title()}")
+
     def display_message(self, message: Dict[str, Any], is_user: bool = False):
         """Display a single message in ChatGPT style with support for charts and dataframes"""
         if is_user:

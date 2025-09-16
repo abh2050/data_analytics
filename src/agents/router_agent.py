@@ -92,7 +92,7 @@ Respond with ONLY the agent name: pandas, python, chart, or search"""
             if next_agent not in valid_agents:
                 # Fallback logic for invalid responses
                 query_lower = query.lower()
-                if any(kw in query_lower for kw in ['plot', 'chart', 'visualize', 'graph']):
+                if any(kw in query_lower for kw in ['plot', 'chart', 'charts','visualize', 'graph', 'graphs']):
                     next_agent = 'chart'
                 elif any(kw in query_lower for kw in ['python code', 'write code', 'script']):
                     next_agent = 'python'
@@ -107,7 +107,7 @@ Respond with ONLY the agent name: pandas, python, chart, or search"""
             print(f"[RouterAgent] LLM routing error: {e}")
             # Fallback to simple rule-based routing
             query_lower = query.lower()
-            if any(kw in query_lower for kw in ['plot', 'chart', 'visualize', 'graph']):
+            if any(kw in query_lower for kw in ['plot', 'chart', 'charts','visualize', 'graph', 'graphs']):
                 next_agent = 'chart'
             elif any(kw in query_lower for kw in ['python code', 'write code', 'script', 'programming']):
                 next_agent = 'python'

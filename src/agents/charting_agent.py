@@ -14,7 +14,7 @@ from io import BytesIO
 import json
 import ast
 from langchain_core.messages import HumanMessage, AIMessage, SystemMessage
-
+import matplotlib.pyplot as plt
 # Import the shared DataFrameManager - use try/except to handle import issues
 try:
     from .pandas_agent import DataFrameManager, df_manager
@@ -468,14 +468,29 @@ Use generate_and_execute_chart_code to create a custom visualization that perfec
         print(f"[ChartingAgent] Intelligent processing: {query}")
         
         try:
+            safe_imports = """
+            import matplotlib
+            matplotlib.use("Agg")  # Safe backend for Streamlit
+            import matplotlib.pyplot as plt
+            import seaborn as sns
+            import pandas as pd
+            import numpy as np
+            import base64
+            from io import BytesIO
+            """
             # First, try dynamic code generation for maximum flexibility
             result = generate_and_execute_chart_code.invoke({
                 "user_request": query,
                 "chart_description": f"Create a visualization based on the user request: {query}"
             })
-            
-            if "Error" not in result and "data:image/png;base64," in result:
-                return f"I generated custom Python code to create exactly what you requested:\n\n{result}"
+            print(f"[ChartingAgent] Dynamic generation result: {result[:200]}...")
+            if "Error" not in result:
+                if isinstance(result, list) and any(r.startswith("data:image/png;base64,") for r in result):
+                    # Join all charts into one message
+                    joined = "\n\n".join(result)
+                    return f"I generated custom Python code to create exactly what you requested:\n\n{joined}"
+                elif isinstance(result, str) and "data:image/png;base64," in result:
+                    return f"I generated custom Python code to create exactly what you requested:\n\n{result}"
             else:
                 print(f"[ChartingAgent] Dynamic generation failed, trying LLM analysis fallback")
                 # Fallback to LLM analysis approach if dynamic generation fails
@@ -901,29 +916,83 @@ Generate ONLY the Python code, no explanations. Make it intelligent and adaptive
         generated_code = generated_code.strip()
         
         print(f"[ChartingAgent] Generated code length: {len(generated_code)} characters")
-        print(f"[ChartingAgent] Code preview: {generated_code[:200]}...")
-        
+        # print(f"[ChartingAgent] Code preview: {generated_code[:200]}...")
+        print("generated_code", generated_code)
+        request_lower = user_request.lower()
+        force_multi_chart = "all chart" in request_lower  
         # Execute the generated code
-        local_vars = {
+        safe_globals = {
             'df': df_sample,
-            'plt': plt,
-            'sns': sns,
-            'pd': pd,
-            'np': np,
-            'base64': base64,
-            'BytesIO': BytesIO
+            "plt": plt,
+            "sns": sns,
+            "pd": pd,
+            "np": np,
+            "BytesIO": BytesIO,
+            "base64": base64,
+            "__builtins__": __builtins__,
         }
-        
-        exec(generated_code, {}, local_vars)
-        
-        # Get the result
-        if 'result' in local_vars:
-            return f"I generated and executed custom plotting code for your request. {sample_note}\n\n{local_vars['result']}"
+
+        local_vars = {}
+        exec(generated_code, safe_globals, local_vars)
+
+        # Now capture results
+        possible_keys = ["result", "results", "charts", "chart_images", "images", "base64_images","result_images",
+            "charts_base64" ,"chart_base64","chart_image","chart","charts_base64"]
+        found_result = None
+        for key in possible_keys:
+            if key in local_vars and local_vars[key]:
+                found_result = local_vars[key]
+                break
+        # print("found_result",found_result)            
+        # If nothing found, fallback
+        if not found_result:
+            print("⚠️ No chart result variable found in executed code")
+            return "Chart code was executed but did not return any images."
+
+        # --- Normalize output ---
+        if isinstance(found_result, str):
+            if not found_result.startswith("data:image"):
+                found_result = f"data:image/png;base64,{found_result}"
+            return f"I generated and executed custom plotting code for your request. {sample_note}\n\n{found_result}"
+
+        elif isinstance(found_result, list):
+            normalized = [
+                f"data:image/png;base64,{img}" if not img.startswith("data:image") else img
+                for img in found_result
+            ]
+            return f"I generated and executed custom plotting code for your request. {sample_note}\n\n" + "\n\n".join(normalized)
+
+        elif isinstance(found_result, dict):
+            normalized = []
+            for key, val in found_result.items():
+                if not str(val).startswith("data:image"):
+                    val = f"data:image/png;base64,{val}"
+                normalized.append(f"**{key}**:\n{val}")
+
+            if force_multi_chart:
+                # Always return all charts
+                return (
+                    f"I generated and executed custom plotting code for your request. {sample_note}\n\n"
+                    + "\n\n".join(normalized)
+                )
+            else:
+                # If not forced, return the first chart only (old behavior)
+                first_key, first_val = next(iter(found_result.items()))
+                if not str(first_val).startswith("data:image"):
+                    first_val = f"data:image/png;base64,{first_val}"
+                return (
+                    f"I generated and executed custom plotting code for your request. {sample_note}\n\n"
+                    f"**{first_key}**:\n{first_val}"
+                )
         else:
-            return "Chart code was executed but no result was returned. The chart may have been displayed."
+            return f"Chart code executed, but returned unexpected type: {type(found_result)}"
+
+        
             
     except Exception as e:
         print(f"[ChartingAgent] Dynamic code generation error: {e}")
+        import traceback
+        print(traceback.print_exc())
         return f"Error generating dynamic chart code: {e}"
 
 @tool
@@ -1036,6 +1105,7 @@ plt.tight_layout()
         }
         
         # Execute the generated code
+        exec_globals = {"__builtins__": __builtins__}
         exec(code_to_execute, exec_globals)
         
         # Save the plot to base64
