@@ -31,22 +31,21 @@ def safe_parse_action_input(action_input):
 def execute_python_code(code: str) -> str:
     """Executes Python code and returns the output. Use this for data analysis, statistics, calculations, and data transformations.
     Pre-loaded libraries: pandas (pd), numpy (np), json, os
-    Sample dataset is available at 'src/data/sample.csv'
+    Access uploaded data through the shared df_manager: df_manager.get_current_dataframe()
     """
     try:
-        # Pre-load common data science libraries and sample data
+        # Import the shared DataFrame manager
+        from .pandas_agent import df_manager
+        
+        # Pre-load common data science libraries
         global_vars = {
             'pd': pd, 
             'np': np, 
             'json': json,
             'os': os,
-            'df': None  # Will be loaded when needed
+            'df_manager': df_manager,
+            'df': df_manager.get_current_dataframe()  # Current uploaded dataset
         }
-        
-        # Load sample data if available
-        sample_path = 'src/data/sample.csv'
-        if os.path.exists(sample_path):
-            global_vars['sample_df'] = pd.read_csv(sample_path)
         
         local_vars = {}
         exec(code, global_vars, local_vars)

@@ -3,6 +3,11 @@
 import sys
 import os
 from pathlib import Path
+from unittest.mock import Mock, patch
+
+# Set environment variables for testing
+os.environ['OPENAI_API_KEY'] = 'test_key_for_testing'
+os.environ['TESTING'] = 'true'
 
 # Add src to path for imports
 sys.path.append(str(Path(__file__).parent / "src"))
@@ -13,8 +18,18 @@ from langchain_openai import ChatOpenAI
 def test_different_queries():
     """Test different types of queries to ensure pandas agent works correctly"""
     
-    # Create the workflow
-    workflow = build_agent_graph()
+    # Mock ChatOpenAI to avoid API calls
+    with patch('langchain_openai.ChatOpenAI') as mock_llm:
+        mock_instance = Mock()
+        mock_response = Mock()
+        mock_response.content = "Final Answer: chart"
+        mock_instance.invoke.return_value = mock_response
+        mock_instance.bind_tools.return_value = mock_instance
+        mock_instance.with_structured_output.return_value = mock_instance
+        mock_llm.return_value = mock_instance
+        
+        # Create the workflow
+        workflow = build_agent_graph()
     
     test_queries = [
         "hello",

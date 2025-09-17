@@ -41,23 +41,7 @@ class DataAnalyticsState(TypedDict):
     conversation_summary: str  # Summary of the conversation so far
 
 # Initialize LLM
-try:
-    llm = ChatOpenAI(temperature=0)
-    if llm is None:
-        raise ValueError("LLM initialization returned None")
-except Exception as e:
-    # For testing purposes, provide a fallback
-    import os
-    if not os.getenv("OPENAI_API_KEY"):
-        print("Warning: OPENAI_API_KEY not set. Using mock LLM for testing.")
-        # Create a mock LLM for testing - this should be replaced in production
-        class MockLLM:
-            def invoke(self, prompt):
-                return type('MockResponse', (), {'content': 'Mock response for testing'})()
-        llm = MockLLM()
-    else:
-        print(f"Error initializing LLM: {e}")
-        raise e
+llm = ChatOpenAI(temperature=0, model='gpt-4.1')
 
 # Global memory manager instance
 _global_memory_agent = None

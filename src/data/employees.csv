@@ -1,0 +1,21 @@
+employee_id,name,age,department,salary,years_experience,performance_score,last_promotion
+E001,Alice Johnson,28,Engineering,85000,5,4.2,2022-03-15
+E002,Bob Smith,34,Marketing,72000,8,3.8,2021-11-20
+E003,Carol Davis,31,Engineering,92000,7,4.5,2023-01-10
+E004,David Wilson,29,Sales,68000,4,3.9,2022-08-05
+E005,Eva Brown,26,Engineering,78000,3,4.1,2023-06-12
+E006,Frank Miller,42,Management,125000,15,4.0,2020-09-30
+E007,Grace Lee,33,Marketing,74000,6,4.3,2022-12-03
+E008,Henry Clark,27,Engineering,81000,4,3.7,2023-02-18
+E009,Iris Taylor,38,Sales,76000,12,4.4,2021-07-25
+E010,Jack Anderson,30,Engineering,88000,6,4.2,2022-05-14
+E011,Karen White,25,Marketing,65000,2,3.6,2023-08-09
+E012,Leo Thompson,36,Management,110000,10,4.1,2021-04-12
+E013,Maria Garcia,32,Sales,71000,7,4.0,2022-10-28
+E014,Nathan Adams,29,Engineering,84000,5,4.3,2023-03-22
+E015,Olivia Martinez,27,Marketing,69000,3,3.9,2023-05-17
+E016,Paul Rodriguez,45,Management,135000,18,4.2,2020-12-15
+E017,Quinn Jackson,31,Sales,73000,6,4.1,2022-07-08
+E018,Rachel Turner,28,Engineering,83000,4,4.4,2023-04-30
+E019,Steve Phillips,35,Marketing,77000,9,3.8,2021-10-14
+E020,Tina Campbell,33,Sales,75000,8,4.2,2022-01-26

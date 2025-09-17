@@ -28,6 +28,13 @@ def mock_openai():
         mock_response = Mock()
         mock_response.content = "Final Answer: chart"
         mock_instance.invoke.return_value = mock_response
+        
+        # Add bind_tools method for LangGraph compatibility
+        mock_instance.bind_tools.return_value = mock_instance
+        
+        # Add with_structured_output method for compatibility
+        mock_instance.with_structured_output.return_value = mock_instance
+        
         mock_llm.return_value = mock_instance
         yield mock_instance
 

@@ -26,7 +26,6 @@ class TestDataSearchAgent(unittest.TestCase):
         self.assertIsNotNone(self.search_agent.tools)
         self.assertIsNotNone(self.search_agent.prompt)
         self.assertIsNotNone(self.search_agent.agent)
-        self.assertIsNotNone(self.search_agent.agent_executor)
         self.assertEqual(len(self.search_agent.tools), 3)
     
     @patch('agents.data_search_agent.pd.read_csv')

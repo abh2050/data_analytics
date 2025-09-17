@@ -28,12 +28,17 @@ def safe_parse_action_input(action_input):
 
 @tool
 def search_data(query: str) -> str:
-    """Searches the sample.csv dataset for information relevant to the query.
+    """Searches the uploaded dataset for information relevant to the query.
     Supports text search, numerical filtering, and date range queries.
     Returns relevant rows or a summary of the search results.
     """
     try:
-        df = pd.read_csv("src/data/sample.csv")
+        # Use the shared DataFrame manager to get the current uploaded dataset
+        from .pandas_agent import df_manager
+        df = df_manager.get_current_dataframe()
+        
+        if df is None:
+            return "No dataset uploaded. Please upload a CSV or Excel file first to search for data."
         
         # Convert query to lowercase for case-insensitive search
         query_lower = query.lower()
@@ -74,12 +79,17 @@ def search_data(query: str) -> str:
 
 @tool
 def filter_data(column: str, operator: str, value: str) -> str:
-    """Filters the dataset based on specified criteria.
+    """Filters the uploaded dataset based on specified criteria.
     Operators: '>', '<', '>=', '<=', '==', '!=', 'contains'
     Example: filter_data('revenue', '>', '1000')
     """
     try:
-        df = pd.read_csv("src/data/sample.csv")
+        # Use the shared DataFrame manager to get the current uploaded dataset
+        from .pandas_agent import df_manager
+        df = df_manager.get_current_dataframe()
+        
+        if df is None:
+            return "No dataset uploaded. Please upload a CSV or Excel file first to filter data."
         
         if column not in df.columns:
             return f"Column '{column}' not found. Available columns: {list(df.columns)}"
@@ -133,9 +143,14 @@ def filter_data(column: str, operator: str, value: str) -> str:
 
 @tool 
 def get_data_summary() -> str:
-    """Returns a comprehensive summary of the sample dataset including statistics and structure."""
+    """Returns a comprehensive summary of the uploaded dataset including statistics and structure."""
     try:
-        df = pd.read_csv("src/data/sample.csv")
+        # Use the shared DataFrame manager to get the current uploaded dataset
+        from .pandas_agent import df_manager
+        df = df_manager.get_current_dataframe()
+        
+        if df is None:
+            return "No dataset uploaded. Please upload a CSV or Excel file first to get data summary."
         
         summary = {
             "shape": {"rows": df.shape[0], "columns": df.shape[1]},
@@ -173,14 +188,14 @@ class DataSearchAgent:
             """You are an advanced Data Search and Query agent. Your goal is to help users find, filter, and explore structured datasets efficiently.
 
             Available tools:
-            - search_data: Search for text patterns across all columns in the dataset
+            - search_data: Search for text patterns across all columns in the uploaded dataset
             - filter_data: Apply specific filters based on column values and operators
             - get_data_summary: Get comprehensive overview of dataset structure and statistics
             
             Dataset information:
-            - Primary dataset: sample.csv (located at src/data/sample.csv)
-            - Contains columns: date, revenue, expenses
-            - Sample data with financial information over time
+            - Works with user-uploaded datasets (CSV, Excel files)
+            - Dataset structure and columns depend on what the user has uploaded
+            - Use get_data_summary first to understand the dataset structure
             
             Capabilities:
             - Text-based search across all columns

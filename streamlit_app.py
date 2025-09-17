@@ -193,7 +193,12 @@ class StreamlitChatInterface:
     @st.cache_resource
     def get_workflow(_self):
         """Get the workflow with caching"""
-        return build_agent_graph()
+        try:
+            return build_agent_graph()
+        except Exception as e:
+            st.error(f"Failed to initialize AI agent: {str(e)}")
+            st.error("Please ensure your OPENAI_API_KEY environment variable is set.")
+            st.stop()
     
     def upload_file_section(self):
         """File upload section in sidebar"""

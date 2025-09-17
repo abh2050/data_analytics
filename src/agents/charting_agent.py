@@ -15,16 +15,15 @@ import json
 import ast
 from langchain_core.messages import HumanMessage, AIMessage, SystemMessage
 import matplotlib.pyplot as plt
-# Import the shared DataFrameManager - use try/except to handle import issues
+# Import the shared DataFrameManager singleton
 try:
-    from .pandas_agent import DataFrameManager, df_manager
+    from .pandas_agent import df_manager
 except ImportError:
-    # Fallback: create our own instance
+    # Fallback with proper import path for singleton
     import sys
     import os
     sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-    from pandas_agent import DataFrameManager
-    df_manager = DataFrameManager()
+    from pandas_agent import df_manager
 
 def safe_parse_action_input(action_input):
     """Safely parse action input from various formats (dict, JSON string, Python dict string)"""
@@ -141,7 +140,14 @@ def generate_chart_impl(data: str, chart_type: str, x_axis: str, y_axis: str, ti
         buf = BytesIO()
         plt.savefig(buf, format='png', dpi=80, bbox_inches='tight')  # Reduced DPI from 100 to 80
         buf.seek(0)
-        img_base64 = base64.b64encode(buf.read()).decode('utf-8')
+        img_data = buf.read()
+        img_base64 = base64.b64encode(img_data).decode('utf-8')
+        
+        # Ensure proper base64 padding
+        missing_padding = len(img_base64) % 4
+        if missing_padding:
+            img_base64 += '=' * (4 - missing_padding)
+            
         plt.close()
         return f"Chart generated successfully: data:image/png;base64,{img_base64}"
     except Exception as e:
@@ -198,12 +204,8 @@ def create_chart_from_uploaded_data(chart_type: str, x_column: str, y_column: st
     top_n: number of top values to show (for bar charts, pie charts)
     """
     try:
-        # Try to get dataframe from pandas_agent first, then fallback
-        try:
-            from .pandas_agent import df_manager as pandas_df_manager
-            df = pandas_df_manager.get_current_dataframe()
-        except:
-            df = df_manager.get_current_dataframe()
+        # Get dataframe from the shared df_manager
+        df = df_manager.get_current_dataframe()
             
         if df is None:
             return "No dataframe loaded. Please upload a file first."
@@ -318,7 +320,14 @@ def create_chart_from_uploaded_data(chart_type: str, x_column: str, y_column: st
         buf = BytesIO()
         plt.savefig(buf, format='png', dpi=100, bbox_inches='tight')
         buf.seek(0)
-        img_base64 = base64.b64encode(buf.read()).decode('utf-8')
+        img_data = buf.read()
+        img_base64 = base64.b64encode(img_data).decode('utf-8')
+        
+        # Ensure proper base64 padding
+        missing_padding = len(img_base64) % 4
+        if missing_padding:
+            img_base64 += '=' * (4 - missing_padding)
+            
         plt.close()
         
         return f"Chart generated successfully: data:image/png;base64,{img_base64}"
@@ -414,13 +423,8 @@ Use generate_and_execute_chart_code to create a custom visualization that perfec
         print(f"[ChartingAgent] Processing query: {query}")
         
         try:
-            # Check if data is available - be more thorough in checking
-            try:
-                from .pandas_agent import df_manager as pandas_df_manager
-                current_df = pandas_df_manager.get_current_dataframe()
-            except:
-                # Fallback to our own df_manager
-                current_df = df_manager.get_current_dataframe()
+            # Check if data is available using the shared df_manager
+            current_df = df_manager.get_current_dataframe()
             
             has_data = current_df is not None
             
@@ -819,11 +823,7 @@ def generate_and_execute_chart_code(user_request: str, chart_description: str = 
     """
     try:
         # Get the current dataframe
-        try:
-            from .pandas_agent import df_manager as pandas_df_manager
-            df = pandas_df_manager.get_current_dataframe()
-        except:
-            df = df_manager.get_current_dataframe()
+        df = df_manager.get_current_dataframe()
             
         if df is None:
             return "No dataframe loaded. Please upload a file first."
@@ -867,7 +867,7 @@ REQUIREMENTS:
 8. Close the plot after saving to prevent memory issues
 
 TEMPLATE STRUCTURE:
-```python
+
 import matplotlib.pyplot as plt
 import seaborn as sns
 import pandas as pd
@@ -894,7 +894,6 @@ img_base64 = base64.b64encode(buf.read()).decode('utf-8')
 plt.close()
 
 result = f"data:image/png;base64,{{img_base64}}"
-```
 
 Generate ONLY the Python code, no explanations. Make it intelligent and adaptive to the specific request.
 """
@@ -902,7 +901,7 @@ Generate ONLY the Python code, no explanations. Make it intelligent and adaptive
         # Get the LLM to generate the code
         from langchain_openai import ChatOpenAI
         import os
-        llm = ChatOpenAI(temperature=0, model='gpt-4o-mini', api_key=os.environ.get('OPENAI_API_KEY'))
+        llm = ChatOpenAI(temperature=0, model='gpt-4.1', api_key=os.environ.get('OPENAI_API_KEY'))
         
         code_response = llm.invoke(code_generation_prompt)
         generated_code = code_response.content if hasattr(code_response, 'content') else str(code_response)
@@ -1004,11 +1003,7 @@ def generate_dynamic_chart(query: str, chart_requirements: str = "") -> str:
     """
     try:
         # Get the current dataframe
-        try:
-            from .pandas_agent import df_manager as pandas_df_manager
-            df = pandas_df_manager.get_current_dataframe()
-        except:
-            df = df_manager.get_current_dataframe()
+        df = df_manager.get_current_dataframe()
             
         if df is None:
             return "No dataframe loaded. Please upload a file first."
@@ -1112,7 +1107,14 @@ plt.tight_layout()
         buf = BytesIO()
         plt.savefig(buf, format='png', dpi=100, bbox_inches='tight')
         buf.seek(0)
-        img_base64 = base64.b64encode(buf.read()).decode('utf-8')
+        img_data = buf.read()
+        img_base64 = base64.b64encode(img_data).decode('utf-8')
+        
+        # Ensure proper base64 padding
+        missing_padding = len(img_base64) % 4
+        if missing_padding:
+            img_base64 += '=' * (4 - missing_padding)
+            
         plt.close()
         
         return f"I generated custom code to create your visualization{sample_notice}:\n\n```python\n{code_to_execute}\n```\n\ndata:image/png;base64,{img_base64}"

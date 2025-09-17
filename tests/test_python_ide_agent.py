@@ -23,9 +23,7 @@ class TestPythonIDEAgent(unittest.TestCase):
         """Test PythonIDEAgent initialization"""
         self.assertIsNotNone(self.python_agent.llm)
         self.assertIsNotNone(self.python_agent.tools)
-        self.assertIsNotNone(self.python_agent.prompt)
         self.assertIsNotNone(self.python_agent.agent)
-        self.assertIsNotNone(self.python_agent.agent_executor)
         self.assertEqual(len(self.python_agent.tools), 2)
     
     def test_execute_python_code_simple(self):

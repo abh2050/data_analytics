@@ -397,7 +397,7 @@ def expand_query_context(query: str) -> str:
         from langchain_openai import ChatOpenAI
         import os
         
-        llm = ChatOpenAI(temperature=0, model='gpt-4o-mini', api_key=os.environ.get('OPENAI_API_KEY'))
+        llm = ChatOpenAI(temperature=0, model='gpt-4.1', api_key=os.environ.get('OPENAI_API_KEY'))
         context_agent = QueryContextAgent(llm)
         
         # Analyze the query
