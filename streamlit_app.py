@@ -10,6 +10,9 @@ from pathlib import Path
 from typing import Dict, Any, List
 import io
 
+# 🔑 Register dataframe for agents
+from src.agents.pandas_agent import df_manager
+import time
 # Add src to path for imports
 sys.path.append(str(Path(__file__).parent / "src"))
 
@@ -201,66 +204,109 @@ class StreamlitChatInterface:
             st.stop()
     
     def upload_file_section(self):
-        """File upload section in sidebar"""
+        """File upload section in sidebar with multiple file support and merging"""
+
         st.sidebar.markdown("""
         <div class="sidebar-header">
             <h2>🤖 Data Analytics AI</h2>
-            <p>Upload your data and start chatting!</p>
+            <p>Upload one or more data files and start analyzing!</p>
         </div>
         """, unsafe_allow_html=True)
-        
-        st.sidebar.markdown("### 📁 Upload Data")
-        
-        uploaded_file = st.sidebar.file_uploader(
-            "Choose a CSV or Excel file",
-            type=['csv', 'xlsx', 'xls'],
-            help="Upload your data file to start analysis"
+
+        uploaded_files = st.sidebar.file_uploader(
+            "Upload CSV or Excel files",
+            type=["csv", "xlsx"],
+            accept_multiple_files=True,
+            help="Upload one or more data files to start analysis"
         )
-        
-        if uploaded_file is not None:
-            try:
-                # Read the file
-                if uploaded_file.name.endswith('.csv'):
-                    df = pd.read_csv(uploaded_file)
-                else:
-                    df = pd.read_excel(uploaded_file)
-                
-                # Store in dataframe manager
-                df_manager.store_dataframe("uploaded_data", df)
-                st.session_state.uploaded_data = df
-                
-                # Store data info
-                st.session_state.data_info = {
-                    "filename": uploaded_file.name,
-                    "shape": df.shape,
-                    "columns": list(df.columns),
-                    "dtypes": df.dtypes.to_dict(),
-                    "memory_usage": df.memory_usage(deep=True).sum(),
-                    "upload_time": time.time()
-                }
-                
-                st.sidebar.success(f"✅ File uploaded successfully!")
-                
-                # Show data info
-                with st.sidebar.expander("📊 Data Overview", expanded=True):
-                    st.write(f"**File:** {uploaded_file.name}")
-                    st.write(f"**Rows:** {df.shape[0]:,}")
-                    st.write(f"**Columns:** {df.shape[1]}")
-                    st.write(f"**Size:** {df.memory_usage(deep=True).sum() / 1024 / 1024:.1f} MB")
+
+        if uploaded_files:
+            dfs = []
+            for file in uploaded_files:
+                try:
+                    if file.name.endswith(".csv"):
+                        df = pd.read_csv(file)
+                    else:
+                        df = pd.read_excel(file)
                     
-                    st.write("**Column Types:**")
-                    for dtype, count in df.dtypes.value_counts().items():
-                        st.write(f"  • {dtype}: {count} columns")
+                    dfs.append((file.name, df))
+                    
+                    # Store file in df_manager
+                    metadata = {
+                        'filename': file.name,
+                        'upload_time': time.time(),
+                        'file_type': 'csv' if file.name.endswith('.csv') else 'excel'
+                    }
+                    df_manager.store_dataframe(file.name, df, metadata)
+                    
+                    st.sidebar.success(f"✅ Uploaded {file.name}")
+                    
+                except Exception as e:
+                    st.sidebar.error(f"❌ Failed to read {file.name}: {e}")
+
+            # Save all uploaded dataframes
+            st.session_state["uploaded_dfs"] = dfs
+
+            # Store files separately - no merging to avoid column conflicts
+            if len(dfs) > 1:
+                st.sidebar.info("📊 Multiple files uploaded - stored separately for individual analysis")
+                # Use the first file as the default
+                merged_df = dfs[0][1]
+                st.session_state["merged_df"] = merged_df
                 
-                # Show data preview
+                with st.sidebar.expander("📊 Data Overview", expanded=True):
+                    for filename, df in dfs:
+                        st.write(f"**{filename}:** {df.shape[0]:,} rows, {df.shape[1]} cols")
+                
                 with st.sidebar.expander("👁️ Data Preview"):
-                    st.dataframe(df.head(3), use_container_width=True)
-                
-            except Exception as e:
-                st.sidebar.error(f"❌ Error reading file: {str(e)}")
+                    selected_file = st.selectbox("Preview file:", [f for f, _ in dfs])
+                    preview_df = next(df for f, df in dfs if f == selected_file)
+                    st.dataframe(preview_df.head(10), width="stretch")
+
+            else:
+                # Single file uploaded → use directly
+                merged_df = dfs[0][1]
+                st.session_state["merged_df"] = merged_df
+
+                with st.sidebar.expander("📊 Data Overview", expanded=True):
+                    st.write(f"**File:** {dfs[0][0]}")
+                    st.write(f"**Rows:** {merged_df.shape[0]:,}")
+                    st.write(f"**Columns:** {merged_df.shape[1]}")
+                    st.write(f"**Size:** {merged_df.memory_usage(deep=True).sum() / 1024 / 1024:.1f} MB")
+
+                    st.write("**Column Types:**")
+                    for dtype, count in merged_df.dtypes.value_counts().items():
+                        st.write(f"  • {dtype}: {count} columns")
+
+                with st.sidebar.expander("👁️ Data Preview"):
+                    st.dataframe(merged_df.head(10), width="stretch")
+
+
+            
+            st.session_state.uploaded_data = merged_df
+            st.session_state.data_info = {
+                "filename": [f for f, _ in dfs],
+                "shape": merged_df.shape,
+                "columns": list(merged_df.columns),
+                "dtypes": merged_df.dtypes.astype(str).to_dict(),
+                "memory_usage": merged_df.memory_usage(deep=True).sum(),
+                "upload_time": time.time()
+            }
+            df_manager.set_current_dataframe(merged_df)
         
-        # Data status
-        if st.session_state.uploaded_data is not None:
+        # Show all loaded files if any exist
+        if hasattr(df_manager, '_dataframes') and df_manager._dataframes:
+            st.sidebar.markdown("---")
+            st.sidebar.markdown("### 📂 Loaded Files")
+            for filename in df_manager._dataframes.keys():
+                if filename != 'merged_data':
+                    file_df = df_manager._dataframes[filename]
+                    st.sidebar.write(f"• **{filename}** ({file_df.shape[0]} rows, {file_df.shape[1]} cols)")
+            
+            st.sidebar.info("💡 The system will automatically select the most relevant file for each query!")
+
+        # Status indicator
+        if st.session_state.get("merged_df") is not None:
             st.sidebar.markdown("""
             <div class="status-indicator status-success">
                 ✅ Data Ready for Analysis
@@ -272,6 +318,7 @@ class StreamlitChatInterface:
                 ⚠️ No Data Uploaded
             </div>
             """, unsafe_allow_html=True)
+
     
     def display_conversation_stats(self):
         """Display conversation statistics in sidebar"""
@@ -348,13 +395,13 @@ class StreamlitChatInterface:
             
             content = re.sub(r'\s+', ' ', content).strip()
             
-            # Check for base64 charts
-            chart_data = None
+            # Check for multiple base64 charts
+            chart_data_list = []
             if "data:image/png;base64," in content:
                 pattern = r'data:image/png;base64,([A-Za-z0-9+/=]+)'
-                match = re.search(pattern, content)
-                if match:
-                    chart_data = match.group(1)
+                matches = re.findall(pattern, content)
+                if matches:
+                    chart_data_list = matches
                     content = re.sub(pattern, '', content)
             
             # Check for dataframes
@@ -385,13 +432,16 @@ class StreamlitChatInterface:
                     st.subheader("📊 Data Table")
                     st.dataframe(parsed_df, use_container_width=True)
                 
-                # Display chart if found
-                if chart_data:
-                    try:
-                        img_data = base64.b64decode(chart_data)
-                        st.image(img_data, use_container_width=True)
-                    except Exception as e:
-                        st.error(f"Error displaying chart: {e}")
+                # Display all charts if found
+                if chart_data_list:
+                    for i, chart_data in enumerate(chart_data_list):
+                        try:
+                            img_data = base64.b64decode(chart_data)
+                            st.image(img_data, use_container_width=True)
+                            if i < len(chart_data_list) - 1:  # Add spacing between charts
+                                st.markdown("---")
+                        except Exception as e:
+                            st.error(f"Error displaying chart {i+1}: {e}")
     
     def _process_content_for_display(self, content: str) -> str:
         """Process content to improve markdown display"""

@@ -89,34 +89,62 @@ class QueryContextAgent:
         if "agent_outputs" not in updated_state:
             updated_state["agent_outputs"] = {}
         
-        print(f"[QueryContextAgent] Processing query: {query}")
+        # print(f"[QueryContextAgent] Processing query: {query}")
         
         try:
-            # Get current dataframe for context
-            current_df = df_manager.get_current_dataframe()
+            # Check if this is a multi-dataset request
+            query_lower = query.lower()
+            general_chart_keywords = ['generate charts', 'create charts', 'show charts', 'make charts', 'charts and graphs', 'generate graphs', 'create graphs', 'generate all charts', 'create all charts', 'all charts', 'generate all graphs', 'all graphs']
+            multi_dataset_keywords = ['5 dataset', 'five dataset', 'all dataset', 'multiple dataset', 'with dataset', 'across dataset', 'compare dataset', 'each dataset', 'with each dataset', 'for each dataset']
             
-            if current_df is None:
+            is_general_chart_request = any(keyword in query_lower for keyword in general_chart_keywords)
+            is_multi_dataset_request = any(keyword in query_lower for keyword in multi_dataset_keywords)
+            
+            # Also check for specific chart types with dataset mentions
+            chart_types = ['pie chart', 'bar chart', 'line chart', 'scatter plot', 'histogram']
+            is_chart_with_datasets = any(chart in query_lower for chart in chart_types) and any(dataset_word in query_lower for dataset_word in ['dataset', 'file', 'data'])
+            
+            print(f"[QueryContextAgent] Query: '{query}', Lower: '{query_lower}'")
+            print(f"[QueryContextAgent] Is general chart request: {is_general_chart_request}")
+            print(f"[QueryContextAgent] Available files: {len(df_manager._dataframes) if hasattr(df_manager, '_dataframes') else 0}")
+            
+            if (is_general_chart_request or is_multi_dataset_request or is_chart_with_datasets) and hasattr(df_manager, '_dataframes') and len(df_manager._dataframes) > 1:
+                # For general chart requests with multiple files, signal to use all files
                 result = {
                     "original_query": query,
-                    "expanded_query": query,
-                    "context_hints": [],
+                    "expanded_query": f"Generate comprehensive charts and visualizations from all available datasets: {list(df_manager._dataframes.keys())}",
+                    "context_hints": ["Multi-file chart generation requested", "Use all available datasets for comprehensive analysis"],
                     "column_suggestions": [],
-                    "reasoning": "No dataset loaded for context analysis"
+                    "reasoning": "General chart request detected with multiple files available",
+                    "multi_file_request": True,
+                    "available_files": list(df_manager._dataframes.keys())
                 }
             else:
-                result = self._analyze_query_context(query, current_df)
-            
+                # Get current dataframe for context (single file analysis)
+                current_df, file_name = df_manager.get_relevant_dataframe(query)
+
+                if current_df is None:
+                    result = {
+                        "original_query": query,
+                        "expanded_query": query,
+                        "context_hints": [],
+                        "column_suggestions": [],
+                        "reasoning": "No dataset loaded for context analysis"
+                    }
+                else:
+                    result = self._analyze_query_context(query, current_df)
+            # print("result:", result)
             # Update state with context analysis
             updated_state["agent_outputs"]["query_context"] = {
                 "status": "completed",
                 "result": result,
                 "reasoning": "Completed query context analysis"
             }
-            
+            # print("updated_state1:", updated_state)
             # Also add the expanded query to the state for other agents to use
             updated_state["expanded_query"] = result.get("expanded_query", query)
             updated_state["query_context"] = result
-            
+            # print("updated_state2:", updated_state)
             return updated_state
             
         except Exception as e:
@@ -388,7 +416,7 @@ def expand_query_context(query: str) -> str:
     """
     try:
         # Get current dataframe
-        current_df = df_manager.get_current_dataframe()
+        current_df, file_name = df_manager.get_relevant_dataframe(query)
         
         if current_df is None:
             return f"Original query: {query}\nNote: No dataset loaded for context expansion."

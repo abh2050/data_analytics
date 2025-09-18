@@ -27,18 +27,21 @@ def safe_parse_action_input(action_input):
             return {}
 
 class DataFrameManager:
-    """Singleton class to manage uploaded dataframes across the application"""
+    """Enhanced singleton class to manage multiple uploaded dataframes with intelligent selection"""
     _instance = None
     _dataframes = {}
+    _file_metadata = {}  # Store metadata about each file
     
     def __new__(cls):
         if cls._instance is None:
             cls._instance = super(DataFrameManager, cls).__new__(cls)
         return cls._instance
     
-    def store_dataframe(self, name: str, df: pd.DataFrame):
-        """Store a dataframe with a given name"""
+    def store_dataframe(self, name: str, df: pd.DataFrame, metadata: dict = None):
+        """Store a dataframe with metadata"""
         self._dataframes[name] = df
+        self._file_metadata[name] = metadata or {}
+        print(f"[DataFrameManager] Stored dataframe '{name}' with shape {df.shape}")
     
     def get_dataframe(self, name: str) -> Optional[pd.DataFrame]:
         """Retrieve a dataframe by name"""
@@ -48,11 +51,106 @@ class DataFrameManager:
         """List all available dataframe names"""
         return list(self._dataframes.keys())
     
+    def get_file_info(self) -> dict:
+        """Get information about all loaded files"""
+        info = {}
+        for name, df in self._dataframes.items():
+            metadata = self._file_metadata.get(name, {})
+            info[name] = {
+                'shape': df.shape,
+                'columns': list(df.columns),
+                'dtypes': df.dtypes.astype(str).to_dict(),
+                'metadata': metadata
+            }
+        return info
+    
+    def set_current_dataframe(self, df):
+        """Manually set the active dataframe"""
+        self.current_df = df
+
     def get_current_dataframe(self) -> Optional[pd.DataFrame]:
         """Get the most recently uploaded dataframe"""
         if self._dataframes:
             return list(self._dataframes.values())[-1]
         return None
+    
+    def get_relevant_dataframe(self, query: str) -> tuple[Optional[pd.DataFrame], str]:
+        """Pick the most relevant dataframe for the query with intelligent matching"""
+        if not self._dataframes:
+            return None, "No dataframes available"
+        
+        query_lower = query.lower()
+        
+        # Score each dataframe based on relevance
+        scores = {}
+        
+        for name, df in self._dataframes.items():
+            score = 0
+            
+            # Check column name matches
+            for col in df.columns:
+                col_lower = col.lower()
+                if col_lower in query_lower:
+                    score += 10  # High score for exact column match
+                elif any(word in col_lower for word in query_lower.split()):
+                    score += 5   # Medium score for partial match
+            
+            # Check filename relevance
+            name_lower = name.lower()
+            if any(word in name_lower for word in query_lower.split()):
+                score += 3
+            
+            # Dynamic domain scoring based on query terms matching columns
+            query_terms = query_lower.split()
+            for term in query_terms:
+                # Boost score for files with columns matching query terms
+                for col in df.columns:
+                    col_lower = col.lower()
+                    if term in col_lower or col_lower in term:
+                        score += 8
+                # Boost score for filename matches
+                if term in name_lower:
+                    score += 6
+            
+            # Domain-specific scoring
+            if any(term in query_lower for term in ['salary', 'department', 'employee', 'performance']):
+                if any(col in df.columns for col in ['salary', 'department', 'employee_id', 'performance_score']):
+                    score += 15  # High boost for employee-related queries
+            
+            if any(term in query_lower for term in ['temperature', 'weather', 'humidity', 'pressure', 'wind']):
+                if any(col in df.columns for col in ['temperature', 'humidity', 'pressure', 'wind_speed']):
+                    score += 15  # High boost for weather-related queries
+            
+            scores[name] = score
+        
+        # Get the best match
+        if scores:
+            best_file = max(scores, key=scores.get)
+            if scores[best_file] > 0:
+                print(f"[DataFrameManager] Selected '{best_file}' (score: {scores[best_file]}) for query: {query[:50]}...")
+                return self._dataframes[best_file], best_file
+            else:
+                # No good match found - check for domain mismatch
+                available_files = list(self._dataframes.keys())
+                if len(available_files) > 1:
+                    # Suggest alternative files
+                    file_info = []
+                    for name, df in self._dataframes.items():
+                        if name != 'merged_data':
+                            file_info.append(f"{name}: {list(df.columns)[:3]}")
+                    
+                    suggestion_msg = f"No matching data found for query '{query[:50]}'. Available files: {'; '.join(file_info)}"
+                    print(f"[DataFrameManager] {suggestion_msg}")
+                    
+                    # Return the first non-merged file with a special indicator
+                    for name, df in self._dataframes.items():
+                        if name != 'merged_data':
+                            return df, f"mismatch:{name}"
+        
+        # Fallback to most recent file
+        fallback_name = list(self._dataframes.keys())[-1]
+        print(f"[DataFrameManager] Using fallback file '{fallback_name}' for query: {query[:50]}...")
+        return self._dataframes[fallback_name], fallback_name
 
 # Global dataframe manager
 df_manager = DataFrameManager()
@@ -67,9 +165,41 @@ def analyze_dataframe(analysis_type: str, column: str = None, additional_params:
     additional_params: JSON string with additional parameters like max_rows or detailed
     """
     try:
-        df = df_manager.get_current_dataframe()
+        # df = df_manager.get_current_dataframe()
+        # Handle files_info request
+        if analysis_type == "files_info":
+            file_info = df_manager.get_file_info()
+            if not file_info:
+                return "No dataframes loaded. Please upload files first."
+            
+            result = "Available datasets:\n\n"
+            for name, info in file_info.items():
+                result += f"📁 **{name}**\n"
+                result += f"   • Shape: {info['shape'][0]:,} rows × {info['shape'][1]} columns\n"
+                result += f"   • Columns: {', '.join(info['columns'][:5])}{'...' if len(info['columns']) > 5 else ''}\n\n"
+            return result
+        
+        # Get relevant dataframe for the query
+        query = str(analysis_type) + " " + str(column or "") + " " + str(additional_params or "")
+        df, file_name = df_manager.get_relevant_dataframe(query)
+        
         if df is None:
             return "No dataframe loaded. Please upload a file first."
+        
+        # Check for domain mismatch
+        if file_name.startswith('mismatch:'):
+            actual_file = file_name.split(':', 1)[1]
+            # Get all available files for suggestion
+            all_files = df_manager.get_file_info()
+            file_suggestions = []
+            for name, info in all_files.items():
+                if name != 'merged_data':
+                    file_suggestions.append(f"• {name}: {', '.join(info['columns'][:4])}")
+            
+            return f"The query '{query[:50]}' doesn't match the data in {actual_file}. Available datasets:\n\n" + "\n".join(file_suggestions) + "\n\nPlease specify which dataset you'd like to analyze or rephrase your query to match the available data."
+        
+        # Add file context to results
+        file_context = f"[Analyzing: {file_name}] "
         
         # Parse additional parameters
         max_rows = 5
@@ -93,21 +223,21 @@ def analyze_dataframe(analysis_type: str, column: str = None, additional_params:
         
         if analysis_type == "summary":
             # Return a concise summary
-            return f"{sample_notice}Dataset shape: {df.shape}\nColumns: {list(df.columns)}\nData types summary: " + \
+            return f"{file_context}{sample_notice}Dataset shape: {df.shape}\nColumns: {list(df.columns)}\nData types summary: " + \
                    f"{df.dtypes.value_counts().to_dict()}"
         
         elif analysis_type == "describe":
             if column:
                 if column in df.columns:
-                    return f"{sample_notice}{df[column].describe().to_string()}"
+                    return f"{file_context}{sample_notice}{df[column].describe().to_string()}"
                 else:
                     return f"Column '{column}' not found. Available columns: {list(df.columns)}"
             
             # For large datasets with many columns, show only numeric columns to save tokens
             if df.shape[1] > 10 and not detailed:
                 numeric_cols = df.select_dtypes(include=[np.number]).columns
-                return f"{sample_notice}Describing numeric columns only:\n{df[numeric_cols].describe().to_string()}"
-            return f"{sample_notice}{df.describe().to_string()}"
+                return f"{file_context}{sample_notice}Describing numeric columns only:\n{df[numeric_cols].describe().to_string()}"
+            return f"{file_context}{sample_notice}{df.describe().to_string()}"
         
         elif analysis_type == "head":
             rows = min(max_rows, 10)  # Cap at 10 rows to save tokens
@@ -121,8 +251,8 @@ def analyze_dataframe(analysis_type: str, column: str = None, additional_params:
             # For dataframes with many columns, show only a subset
             if df.shape[1] > 15 and not detailed:
                 important_cols = list(df.columns)[:15]
-                return f"{sample_notice}First {rows} rows (showing 15/{df.shape[1]} columns):\n{df[important_cols].head(rows).to_string()}"
-            return f"{sample_notice}First {rows} rows:\n{df.head(rows).to_string()}"
+                return f"{file_context}{sample_notice}First {rows} rows (showing 15/{df.shape[1]} columns):\n{df[important_cols].head(rows).to_string()}"
+            return f"{file_context}{sample_notice}First {rows} rows:\n{df.head(rows).to_string()}"
         
         elif analysis_type == "tail":
             rows = min(max_rows, 10)  # Cap at 10 rows to save tokens
@@ -136,13 +266,13 @@ def analyze_dataframe(analysis_type: str, column: str = None, additional_params:
             # For dataframes with many columns, show only a subset
             if df.shape[1] > 15 and not detailed:
                 important_cols = list(df.columns)[:15]
-                return f"{sample_notice}Last {rows} rows (showing 15/{df.shape[1]} columns):\n{df[important_cols].tail(rows).to_string()}"
-            return f"{sample_notice}Last {rows} rows:\n{df.tail(rows).to_string()}"
+                return f"{file_context}{sample_notice}Last {rows} rows (showing 15/{df.shape[1]} columns):\n{df[important_cols].tail(rows).to_string()}"
+            return f"{file_context}{sample_notice}Last {rows} rows:\n{df.tail(rows).to_string()}"
         
         elif analysis_type == "info":
             buffer = io.StringIO()
             sample_df.info(buf=buffer, verbose=detailed)
-            return f"{sample_notice}{buffer.getvalue()}"
+            return f"{file_context}{sample_notice}{buffer.getvalue()}"
         
         elif analysis_type == "columns":
             # For dataframes with many columns, show counts by type
@@ -230,14 +360,14 @@ def filter_dataframe(filter_expression: str) -> str:
     - "column_name.str.contains('search_term')"
     """
     try:
-        df = df_manager.get_current_dataframe()
+        df, file_name = df_manager.get_relevant_dataframe(filter_expression)
         if df is None:
             return "No dataframe loaded. Please upload a file first."
         
         # Try to evaluate the filter expression
         filtered_df = df.query(filter_expression)
         
-        result = f"Filter applied: {filter_expression}\n"
+        result = f"[Filtering: {file_name}] Filter applied: {filter_expression}\n"
         result += f"Original shape: {df.shape}\n"
         result += f"Filtered shape: {filtered_df.shape}\n"
         result += f"First 10 rows of filtered data:\n{filtered_df.head(10).to_string()}"
@@ -254,7 +384,8 @@ def group_and_aggregate(group_by_column: str, agg_column: str, agg_function: str
     agg_function: 'sum', 'mean', 'count', 'min', 'max', 'std', 'median'
     """
     try:
-        df = df_manager.get_current_dataframe()
+        df, file_name = df_manager.get_relevant_dataframe(f"group {group_by_column} agg {agg_column} {agg_function}")
+
         if df is None:
             return "No dataframe loaded. Please upload a file first."
         
@@ -283,7 +414,7 @@ def group_and_aggregate(group_by_column: str, agg_column: str, agg_function: str
         else:
             return f"Unknown aggregation function: {agg_function}"
         
-        return f"Groupby {group_by_column}, {agg_function} of {agg_column}:\n{result.to_string()}"
+        return f"[Analyzing: {file_name}] Groupby {group_by_column}, {agg_function} of {agg_column}:\n{result.to_string()}"
     
     except Exception as e:
         return f"Error grouping and aggregating: {e}"
@@ -296,7 +427,8 @@ def find_extreme_values(column: str, operation: str, top_n: int = 5) -> str:
     top_n: number of results to return (default 5)
     """
     try:
-        df = df_manager.get_current_dataframe()
+        df, file_name = df_manager.get_relevant_dataframe(f"{operation} {column}")
+
         if df is None:
             return "No dataframe loaded. Please upload a file first."
         
@@ -325,7 +457,7 @@ def find_extreme_values(column: str, operation: str, top_n: int = 5) -> str:
             return f"Unknown operation: {operation}. Use 'highest', 'lowest', 'maximum', 'minimum', 'top', or 'bottom'"
         
         # Format the result nicely
-        result = f"Top {len(result_df)} {operation.lower()} values in '{column}':\n"
+        result = f"[Analyzing: {file_name}] Top {len(result_df)} {operation.lower()} values in '{column}':\n"
         
         # Show relevant columns (try to find name/identifier columns)
         display_columns = [column]
@@ -356,7 +488,8 @@ def search_data(search_term: str, column: str = None) -> str:
     column: specific column to search in (optional, searches all text columns if not specified)
     """
     try:
-        df = df_manager.get_current_dataframe()
+        df, file_name = df_manager.get_relevant_dataframe(f"search {search_term} {column or ''}")
+
         if df is None:
             return "No dataframe loaded. Please upload a file first."
         
@@ -394,7 +527,7 @@ def search_data(search_term: str, column: str = None) -> str:
             
             # Report results
             if len(exact_matches) > 0:
-                results.append(f"Exact matches for '{search_term}' in column '{column}' ({len(exact_matches)} found):")
+                results.append(f"[Searching: {file_name}] Exact matches for '{search_term}' in column '{column}' ({len(exact_matches)} found):")
                 results.append("DATAFRAME_START")
                 results.append(exact_matches.head(10).to_string())
                 results.append("DATAFRAME_END")
@@ -402,7 +535,7 @@ def search_data(search_term: str, column: str = None) -> str:
             if len(contains_matches) > len(exact_matches):
                 additional_contains = contains_matches[~contains_matches.index.isin(exact_matches.index)]
                 if len(additional_contains) > 0:
-                    results.append(f"\nPartial matches containing '{search_term}' in column '{column}' ({len(additional_contains)} additional found):")
+                    results.append(f"\n[Searching: {file_name}] Partial matches containing '{search_term}' in column '{column}' ({len(additional_contains)} additional found):")
                     results.append("DATAFRAME_START")
                     results.append(additional_contains.head(10).to_string())
                     results.append("DATAFRAME_END")
@@ -416,7 +549,7 @@ def search_data(search_term: str, column: str = None) -> str:
                     results.append("DATAFRAME_END")
             
             if len(contains_matches) == 0:
-                results.append(f"No matches found for '{search_term}' in column '{column}'")
+                results.append(f"[Searching: {file_name}] No matches found for '{search_term}' in column '{column}'")
                 # Show sample data from the column
                 results.append(f"\nSample values in '{column}' column:")
                 sample_values = df[column].dropna().head(10).tolist()
@@ -434,13 +567,13 @@ def search_data(search_term: str, column: str = None) -> str:
                 
                 if len(matching_rows) > 0:
                     total_matches += len(matching_rows)
-                    results.append(f"\nFound {len(matching_rows)} matches in column '{col}':")
+                    results.append(f"\n[Searching: {file_name}] Found {len(matching_rows)} matches in column '{col}':")
                     results.append("DATAFRAME_START")
                     results.append(matching_rows.head(5).to_string())
                     results.append("DATAFRAME_END")
             
             if total_matches == 0:
-                results.append(f"No matches found for '{search_term}' in any text columns")
+                results.append(f"[Searching: {file_name}] No matches found for '{search_term}' in any text columns")
                 results.append(f"\nSearched in columns: {list(text_columns)}")
                 # Show sample data from each text column
                 results.append("\nSample data from text columns:")
@@ -460,7 +593,8 @@ def create_visualization(chart_type: str, x_column: str, y_column: str = None, t
     chart_type: 'line', 'bar', 'scatter', 'histogram', 'box', 'heatmap', 'pie'
     """
     try:
-        df = df_manager.get_current_dataframe()
+        df, file_name = df_manager.get_relevant_dataframe(f"chart {chart_type} {x_column} {y_column or ''}")
+
         if df is None:
             return "No dataframe loaded. Please upload a file first."
         
@@ -561,7 +695,7 @@ def create_visualization(chart_type: str, x_column: str, y_column: str = None, t
         else:
             return f"Unknown chart type: {chart_type}"
         
-        plt.title(f"{title_label} {sample_notice}", fontsize=12, fontweight='bold')
+        plt.title(f"{title_label} [{file_name}] {sample_notice}", fontsize=12, fontweight='bold')
         plt.tight_layout()
         
         # Save chart to base64 with lower DPI
@@ -584,7 +718,15 @@ def get_sample_data_for_display(rows: int = 10, columns: str = "all") -> str:
     columns: 'all' for all columns, or comma-separated list of column names
     """
     try:
+        # Show info about all files first
+        file_info = df_manager.get_file_info()
+        if not file_info:
+            return "No dataframes loaded. Please upload files first."
+        
+        # Get the most recent dataframe for display
         df = df_manager.get_current_dataframe()
+        current_file = list(df_manager.list_dataframes())[-1] if df_manager.list_dataframes() else "unknown"
+        
         if df is None:
             return "No dataframe loaded. Please upload a file first."
         
@@ -609,7 +751,12 @@ def get_sample_data_for_display(rows: int = 10, columns: str = "all") -> str:
             column_note = ""
         
         # Return in a format that can be parsed as a dataframe
-        result = f"Sample data from dataset{column_note}:\n\n"
+        # Add multi-file context
+        if len(file_info) > 1:
+            result = f"Available files: {', '.join(file_info.keys())}\n\n"
+            result += f"Showing sample from: {current_file}{column_note}\n\n"
+        else:
+            result = f"Sample data from {current_file}{column_note}:\n\n"
         result += f"DATAFRAME_START\n"
         result += display_df.to_string(index=True)
         result += f"\nDATAFRAME_END\n"
@@ -625,7 +772,13 @@ class PandasAgent:
         if llm is None:
             raise ValueError("PandasAgent requires a valid LLM instance")
         self.llm = llm
-        self.tools = [analyze_dataframe, filter_dataframe, group_and_aggregate, find_extreme_values, search_data, create_visualization, get_sample_data_for_display]
+        # Add new tool for multi-file operations
+        @tool
+        def list_available_files() -> str:
+            """List all available dataframes/files with their basic information"""
+            return analyze_dataframe.invoke("files_info")
+        
+        self.tools = [analyze_dataframe, filter_dataframe, group_and_aggregate, find_extreme_values, search_data, create_visualization, get_sample_data_for_display, list_available_files]
         
         # Create a comprehensive system prompt for intelligent data analysis
         self.prompt = PromptTemplate.from_template(
@@ -741,8 +894,33 @@ Remember: You have access to real data - use it! Don't give generic responses wh
                     shape = data_info.get('shape', current_df.shape if current_df is not None else (0, 0))
                     columns = data_info.get('columns', [])
                     
+                    # Get multi-file context
+                    file_info = df_manager.get_file_info()
+                    
                     # Create an enhanced system message with full context
-                    system_context = f"""You are analyzing a dataset called '{filename}' with {shape[0]:,} rows and {shape[1]} columns.
+                    if len(file_info) > 1:
+                        files_context = "\n".join([f"- {name}: {info['shape'][0]:,} rows × {info['shape'][1]} columns" for name, info in file_info.items()])
+                        system_context = f"""You are analyzing multiple datasets:
+{files_context}
+
+The system will automatically select the most relevant dataset for each query.
+Current primary dataset: '{filename}' with {shape[0]:,} rows and {shape[1]} columns.
+
+Available columns in primary dataset: {', '.join(columns[:20])}{'...' if len(columns) > 20 else ''}
+
+IMPORTANT TOOL USAGE RULES:
+1. For questions about "companies hiring" or "actively hiring" -> Use search_data tool to search for terms like "hiring", "recruiting", "open positions"
+2. For "highest/lowest/top/bottom" questions -> Use find_extreme_values tool with appropriate column and operation
+3. For "plot/chart/visualize" requests -> First analyze the data, then use create_visualization tool
+4. For general data questions -> Start with analyze_dataframe tool to understand the data structure
+5. For finding specific companies/organizations -> Use search_data tool
+6. Always provide specific, data-driven insights based on actual tool results
+
+User's question: {query}
+
+Analyze this query and use the appropriate tools to provide a comprehensive, data-driven response."""
+                    else:
+                        system_context = f"""You are analyzing a dataset called '{filename}' with {shape[0]:,} rows and {shape[1]} columns.
 
 Available columns: {', '.join(columns[:20])}{'...' if len(columns) > 20 else ''}
 
@@ -780,7 +958,7 @@ Analyze this query and use the appropriate tools to provide a comprehensive, dat
                     
                     # Intelligent fallback - try to handle the query with direct tool calls
                     try:
-                        result = self._intelligent_fallback(query, data_info, current_df)
+                        result = self._intelligent_fallback(query, data_info, current_df, df_manager.get_file_info())
                     except Exception as fallback_error:
                         print(f"[PandasAgent] Fallback error: {fallback_error}")
                         result = (f"I encountered an issue processing your request: {str(e)}. "
@@ -814,7 +992,7 @@ Analyze this query and use the appropriate tools to provide a comprehensive, dat
             
             return updated_state
     
-    def _intelligent_fallback(self, query: str, data_info: dict, current_df) -> str:
+    def _intelligent_fallback(self, query: str, data_info: dict, current_df, file_info: dict) -> str:
         """
         Intelligent fallback method that tries to handle queries with direct tool calls
         """
@@ -835,16 +1013,27 @@ Analyze this query and use the appropriate tools to provide a comprehensive, dat
         
         # Handle visualization requests
         elif any(term in query_lower for term in ['plot', 'chart', 'visualize', 'graph']):
-            # First get data structure
-            columns_info = analyze_dataframe.invoke("columns")
-            return f"I'd be happy to create a visualization! Here are the available columns:\n\n{columns_info}\n\nPlease specify which column(s) you'd like to visualize and what type of chart you prefer (bar, line, scatter, etc.)."
+            if len(file_info) > 1:
+                files_list = "\n".join([f"- {name}: {info['columns'][:5]}" for name, info in file_info.items()])
+                return f"I'd be happy to create a visualization! Available datasets and columns:\n\n{files_list}\n\nPlease specify which column(s) you'd like to visualize and what type of chart you prefer (bar, line, scatter, etc.)."
+            else:
+                columns_info = analyze_dataframe.invoke("columns")
+                return f"I'd be happy to create a visualization! Here are the available columns:\n\n{columns_info}\n\nPlease specify which column(s) you'd like to visualize and what type of chart you prefer (bar, line, scatter, etc)."
         
         # Handle extreme value queries
         elif any(term in query_lower for term in ['highest', 'lowest', 'maximum', 'minimum', 'top', 'bottom']):
-            columns_info = analyze_dataframe.invoke("columns")
-            return f"I can find extreme values for you! Here are the available columns:\n\n{columns_info}\n\nPlease specify which column you'd like me to analyze for extreme values."
+            if len(file_info) > 1:
+                files_list = "\n".join([f"- {name}: {info['columns'][:5]}" for name, info in file_info.items()])
+                return f"I can find extreme values for you! Available datasets and columns:\n\n{files_list}\n\nPlease specify which column you'd like me to analyze for extreme values."
+            else:
+                columns_info = analyze_dataframe.invoke("columns")
+                return f"I can find extreme values for you! Here are the available columns:\n\n{columns_info}\n\nPlease specify which column you'd like me to analyze for extreme values."
         
         # Default: provide data overview
         else:
-            summary = analyze_dataframe.invoke("summary")
-            return f"Here's an overview of your dataset:\n\n{summary}\n\nFeel free to ask specific questions about the data, request visualizations, or search for particular information!"
+            if len(file_info) > 1:
+                files_overview = analyze_dataframe.invoke("files_info")
+                return f"Here's an overview of your datasets:\n\n{files_overview}\n\nI can analyze any of these datasets. Feel free to ask specific questions about the data, request visualizations, or search for particular information!"
+            else:
+                summary = analyze_dataframe.invoke("summary")
+                return f"Here's an overview of your dataset:\n\n{summary}\n\nFeel free to ask specific questions about the data, request visualizations, or search for particular information!"
