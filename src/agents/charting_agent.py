@@ -459,6 +459,7 @@ Use generate_and_execute_chart_code to create a custom visualization that perfec
                     result = ("I'd be happy to create visualizations for you! However, I don't see any dataset uploaded yet. "
                              "Please upload a CSV or Excel file using the file uploader in the sidebar, and then I can "
                              "create charts and visualizations from your data.")
+                    has_data = False  # Ensure has_data is properly set
             
             print(f"[ChartingAgent] Has data: {has_data}")
             if has_data and not is_multi_file_request:
@@ -756,6 +757,12 @@ Use generate_and_execute_chart_code to create a custom visualization that perfec
         """
         print(f"[ChartingAgent] Intelligent processing: {query}")
         
+        # Check if df is None first
+        if df is None:
+            return ("I'd be happy to create visualizations for you! However, I don't see any dataset uploaded yet. "
+                   "Please upload a CSV or Excel file using the file uploader in the sidebar, and then I can "
+                   "create charts and visualizations from your data.")
+        
         try:
             safe_imports = """
             import matplotlib
@@ -794,6 +801,12 @@ Use generate_and_execute_chart_code to create a custom visualization that perfec
         """
         LLM analysis fallback when dynamic code generation fails
         """
+        # Check if df is None
+        if df is None:
+            return ("I'd be happy to create visualizations for you! However, I don't see any dataset uploaded yet. "
+                   "Please upload a CSV or Excel file using the file uploader in the sidebar, and then I can "
+                   "create charts and visualizations from your data.")
+        
         query_lower = query.lower()
         columns = list(df.columns)
         
@@ -1035,6 +1048,12 @@ REASONING: [brief explanation]"""
         """
         Direct chart creation fallback when React agent hits token limits
         """
+        # Check if df is None
+        if df is None:
+            return ("I'd be happy to create visualizations for you! However, I don't see any dataset uploaded yet. "
+                   "Please upload a CSV or Excel file using the file uploader in the sidebar, and then I can "
+                   "create charts and visualizations from your data.")
+        
         query_lower = query.lower()
         columns = list(df.columns)
         
@@ -1110,31 +1129,53 @@ def generate_and_execute_chart_code(user_request: str, chart_description: str = 
         # Check if this is a multi-file request or general chart request
         request_lower = user_request.lower()
         general_chart_keywords = ['generate charts', 'create charts', 'show charts', 'make charts', 'charts and graphs', 'generate graphs', 'create graphs', 'generate all charts', 'create all charts', 'all charts', 'generate all graphs', 'all graphs']
-        multi_file_keywords = ['all charts', 'all files', 'both files', 'from both', 'from all']
+        multi_file_keywords = ['all files', 'both files', 'from both', 'from all', 'compare files']
         
-        # Check if it's a general chart request or explicit multi-file request
-        is_general_chart_request = any(keyword in request_lower for keyword in general_chart_keywords)
+        # Check if it's an explicit multi-file request
         is_multi_file_request = any(keyword in request_lower for keyword in multi_file_keywords)
+        is_general_chart_request = any(keyword in request_lower for keyword in general_chart_keywords)
         
-        if is_general_chart_request or is_multi_file_request:
-            # Find common columns across all files
+        # Only do multi-file analysis if explicitly requested AND multiple files exist
+        if is_multi_file_request:
             all_files = df_manager._dataframes
             if not all_files:
                 return "No dataframes loaded. Please upload files first."
             
-            # Get common columns
             file_list = [(name, df) for name, df in all_files.items() if name != 'merged_data']
             if len(file_list) < 2:
                 return "Need at least 2 files for multi-file analysis."
+        elif is_general_chart_request:
+            # For general chart requests, check if multiple files exist but don't require it
+            all_files = df_manager._dataframes
+            if not all_files:
+                return "No dataframes loaded. Please upload files first."
             
-            common_cols = set(file_list[0][1].columns)
-            for _, df in file_list[1:]:
-                common_cols &= set(df.columns)
+            file_list = [(name, df) for name, df in all_files.items() if name != 'merged_data']
+            # If only one file, proceed with single file analysis
+            if len(file_list) == 1:
+                pass  # Continue to single file processing
+            elif len(file_list) > 1:
+                # Multiple files available, do multi-file analysis
+                pass
+            else:
+                return "No files available for analysis."
+        
+        if (is_multi_file_request or (is_general_chart_request and len(file_list) > 1)):
             
-            if not common_cols:
-                return "No common columns found across files for comparison."
-            
-            print(f"[ChartingAgent] Common columns found: {list(common_cols)}")
+            # Only check for common columns if we have multiple files
+            if len(file_list) > 1:
+                common_cols = set(file_list[0][1].columns)
+                for _, df in file_list[1:]:
+                    common_cols &= set(df.columns)
+                
+                if not common_cols:
+                    return "No common columns found across files for comparison."
+                
+                print(f"[ChartingAgent] Common columns found: {list(common_cols)}")
+            else:
+                # Single file case - use all columns
+                common_cols = set(file_list[0][1].columns)
+                print(f"[ChartingAgent] Single file analysis with columns: {list(common_cols)}")
             
             # Create combined analysis based on common columns
             import matplotlib.pyplot as plt
@@ -1208,6 +1249,12 @@ def generate_and_execute_chart_code(user_request: str, chart_description: str = 
             
             # Generate individual comprehensive charts for each file
             results = []
+            
+            # Add cross-file comparison only if multiple files
+            if len(file_list) > 1:
+                # Add the cross-file comparison chart first
+                results.insert(0, f"**Cross-File Comparison Analysis**:\ndata:image/png;base64,{img_base64}")
+            
             for file_name, df in file_list:
                 print(f"[ChartingAgent] Generating comprehensive charts for: {file_name}")
                 
@@ -1284,7 +1331,10 @@ def generate_and_execute_chart_code(user_request: str, chart_description: str = 
                 
                 results.append(f"**{file_name} - Comprehensive Analysis**:\ndata:image/png;base64,{img_base64}")
             
-            return "I generated comprehensive individual charts for each file:\n\n" + "\n\n".join(results)
+            if len(file_list) == 1:
+                return "I generated comprehensive charts for your dataset:\n\n" + "\n\n".join(results)
+            else:
+                return "I generated comprehensive individual charts for each file:\n\n" + "\n\n".join(results)
         
         # Single file request - use intelligent file selection
         df, file_name = df_manager.get_relevant_dataframe(user_request)
