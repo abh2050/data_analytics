@@ -221,6 +221,8 @@ class StreamlitChatInterface:
         )
 
         if uploaded_files:
+            from src.utils.multi_file_manager import MultiFileDataManager
+            
             dfs = []
             for file in uploaded_files:
                 try:
@@ -247,21 +249,56 @@ class StreamlitChatInterface:
             # Save all uploaded dataframes
             st.session_state["uploaded_dfs"] = dfs
 
-            # Store files separately - no merging to avoid column conflicts
+            # Handle multiple files with intelligent merging
             if len(dfs) > 1:
-                st.sidebar.info("📊 Multiple files uploaded - stored separately for individual analysis")
-                # Use the first file as the default
-                merged_df = dfs[0][1]
-                st.session_state["merged_df"] = merged_df
+                # Check for common columns
+                common_cols = MultiFileDataManager.find_common_columns(df_manager)
+                
+                if common_cols:
+                    st.sidebar.success(f"🔗 Found common columns for potential merging!")
+                    
+                    # Try automatic merge
+                    merged_df, merge_info, merged_files = MultiFileDataManager.attempt_smart_merge(df_manager)
+                    
+                    if merged_df is not None:
+                        st.sidebar.success(f"✅ {merge_info}")
+                        st.session_state["merged_df"] = merged_df
+                        st.session_state["merge_info"] = merge_info
+                        
+                        # Store merged dataframe
+                        df_manager.store_dataframe("merged_data", merged_df, {
+                            'merge_info': merge_info,
+                            'source_files': merged_files,
+                            'file_type': 'merged'
+                        })
+                    else:
+                        st.sidebar.warning(f"⚠️ Could not merge files. Using first file only.")
+                        merged_df = dfs[0][1]
+                        st.session_state["merged_df"] = merged_df
+                else:
+                    st.sidebar.warning(f"⚠️ No common columns found for merging. Using first file only.")
+                    merged_df = dfs[0][1]
+                    st.session_state["merged_df"] = merged_df
                 
                 with st.sidebar.expander("📊 Data Overview", expanded=True):
                     for filename, df in dfs:
                         st.write(f"**{filename}:** {df.shape[0]:,} rows, {df.shape[1]} cols")
+                    
+                    if common_cols:
+                        st.write("**Common Columns:**")
+                        for pair, cols in list(common_cols.items())[:3]:  # Show first 3
+                            st.write(f"  • {pair}: {', '.join(cols[:3])}{'...' if len(cols) > 3 else ''}")
                 
                 with st.sidebar.expander("👁️ Data Preview"):
-                    selected_file = st.selectbox("Preview file:", [f for f, _ in dfs])
-                    preview_df = next(df for f, df in dfs if f == selected_file)
-                    st.dataframe(preview_df.head(10), width="stretch")
+                    selected_file = st.selectbox("Preview file:", [f for f, _ in dfs] + (["merged_data"] if "merge_info" in st.session_state else []))
+                    
+                    if selected_file == "merged_data" and "merge_info" in st.session_state:
+                        preview_df = st.session_state["merged_df"]
+                        st.write(f"**Merged Data:** {st.session_state['merge_info']}")
+                    else:
+                        preview_df = next(df for f, df in dfs if f == selected_file)
+                    
+                    st.dataframe(preview_df.head(10), width='stretch')
 
             else:
                 # Single file uploaded → use directly
@@ -279,7 +316,7 @@ class StreamlitChatInterface:
                         st.write(f"  • {dtype}: {count} columns")
 
                 with st.sidebar.expander("👁️ Data Preview"):
-                    st.dataframe(merged_df.head(10), width="stretch")
+                    st.dataframe(merged_df.head(10), width='stretch')
 
 
             
@@ -303,15 +340,37 @@ class StreamlitChatInterface:
                     file_df = df_manager._dataframes[filename]
                     st.sidebar.write(f"• **{filename}** ({file_df.shape[0]} rows, {file_df.shape[1]} cols)")
             
+            # Show merge status if multiple files
+            if len(df_manager._dataframes) > 1:
+                if "merge_info" in st.session_state:
+                    st.sidebar.success("🔗 Files merged successfully!")
+                else:
+                    st.sidebar.info("⚠️ No common columns found for merging. Using first file only.")
+            
             st.sidebar.info("💡 The system will automatically select the most relevant file for each query!")
 
-        # Status indicator
+        # Enhanced status indicator
         if st.session_state.get("merged_df") is not None:
-            st.sidebar.markdown("""
-            <div class="status-indicator status-success">
-                ✅ Data Ready for Analysis
-            </div>
-            """, unsafe_allow_html=True)
+            file_count = len(df_manager._dataframes) if hasattr(df_manager, '_dataframes') else 0
+            if file_count > 1:
+                if "merge_info" in st.session_state:
+                    st.sidebar.markdown("""
+                    <div class="status-indicator status-success">
+                        ✅ Multi-File Data Ready (Merged)
+                    </div>
+                    """, unsafe_allow_html=True)
+                else:
+                    st.sidebar.markdown("""
+                    <div class="status-indicator status-info">
+                        📊 Multi-File Data Ready (Individual)
+                    </div>
+                    """, unsafe_allow_html=True)
+            else:
+                st.sidebar.markdown("""
+                <div class="status-indicator status-success">
+                    ✅ Data Ready for Analysis
+                </div>
+                """, unsafe_allow_html=True)
         else:
             st.sidebar.markdown("""
             <div class="status-indicator status-warning">
@@ -430,7 +489,7 @@ class StreamlitChatInterface:
                 # Display dataframe if found
                 if parsed_df is not None:
                     st.subheader("📊 Data Table")
-                    st.dataframe(parsed_df, use_container_width=True)
+                    st.dataframe(parsed_df, width='stretch')
                 
                 # Display all charts if found
                 if chart_data_list:
