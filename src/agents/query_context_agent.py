@@ -94,7 +94,7 @@ class QueryContextAgent:
         try:
             # Check if this is a multi-dataset request
             query_lower = query.lower()
-            general_chart_keywords = ['generate charts', 'create charts', 'show charts', 'make charts', 'charts and graphs', 'generate graphs', 'create graphs', 'generate all charts', 'create all charts', 'all charts', 'generate all graphs', 'all graphs']
+            general_chart_keywords = ['generate charts', 'create charts', 'show charts', 'make charts', 'charts and graphs', 'generate graphs', 'create graphs', 'generate all charts', 'create all charts', 'all charts', 'generate all graphs', 'all graphs', 'generate all chart and graph', 'all chart and graph', 'create all chart and graph', 'show all chart and graph']
             multi_dataset_keywords = ['5 dataset', 'five dataset', 'all dataset', 'multiple dataset', 'with dataset', 'across dataset', 'compare dataset', 'each dataset', 'with each dataset', 'for each dataset']
             
             is_general_chart_request = any(keyword in query_lower for keyword in general_chart_keywords)
@@ -106,9 +106,10 @@ class QueryContextAgent:
             
             print(f"[QueryContextAgent] Query: '{query}', Lower: '{query_lower}'")
             print(f"[QueryContextAgent] Is general chart request: {is_general_chart_request}")
-            print(f"[QueryContextAgent] Available files: {len(df_manager._dataframes) if hasattr(df_manager, '_dataframes') else 0}")
+            available_files_count = len(df_manager._dataframes) if hasattr(df_manager, '_dataframes') else 0
+            print(f"[QueryContextAgent] Available files: {available_files_count}")
             
-            if (is_general_chart_request or is_multi_dataset_request or is_chart_with_datasets) and hasattr(df_manager, '_dataframes') and len(df_manager._dataframes) > 1:
+            if (is_general_chart_request or is_multi_dataset_request or is_chart_with_datasets) and available_files_count > 1:
                 # For general chart requests with multiple files, signal to use all files
                 result = {
                     "original_query": query,

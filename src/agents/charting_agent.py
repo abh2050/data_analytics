@@ -99,42 +99,62 @@ def generate_chart_impl(data: str, chart_type: str, x_axis: str, y_axis: str, ti
         if len(title) > 50:
             title = title[:47] + "..."
             
-        plt.figure(figsize=(8, 5))  # Even smaller figure size
+        plt.figure(figsize=(10, 6))  # Larger figure for better spacing
         plt.style.use('seaborn-v0_8')
         
         if chart_type == "line":
-            plt.plot(df[x_axis], df[y_axis], marker='o', linewidth=2, markersize=6)
-        elif chart_type == "bar":
-            # Limit the number of bars shown
-            if len(df) > 15:
-                counts = df.groupby(x_axis)[y_axis].mean().nlargest(15)
-                plt.bar(counts.index, counts.values, alpha=0.8, color='skyblue', edgecolor='navy')
+            # Limit data points for line charts to prevent overlap
+            if len(df) > 50:
+                df_sample = df.sample(50, random_state=42).sort_values(x_axis)
+                plt.plot(df_sample[x_axis], df_sample[y_axis], marker='o', linewidth=2, markersize=6)
             else:
-                plt.bar(df[x_axis], df[y_axis], alpha=0.8, color='skyblue', edgecolor='navy')
+                plt.plot(df[x_axis], df[y_axis], marker='o', linewidth=2, markersize=6)
+        elif chart_type == "bar":
+            # Limit the number of bars shown to prevent x-axis overlap
+            if len(df) > 10:
+                counts = df.groupby(x_axis)[y_axis].mean().nlargest(10)
+                bars = plt.bar(range(len(counts)), counts.values, alpha=0.8, color='skyblue', edgecolor='navy')
+                plt.xticks(range(len(counts)), [str(x)[:15] for x in counts.index], rotation=45, ha='right')
+            else:
+                bars = plt.bar(df[x_axis], df[y_axis], alpha=0.8, color='skyblue', edgecolor='navy')
+                plt.xticks(rotation=45, ha='right')
         elif chart_type == "scatter":
-            plt.scatter(df[x_axis], df[y_axis], alpha=0.7, s=40, color='coral')  # Smaller point size
+            # Limit scatter points to prevent overcrowding
+            if len(df) > 200:
+                df_sample = df.sample(200, random_state=42)
+                plt.scatter(df_sample[x_axis], df_sample[y_axis], alpha=0.7, s=40, color='coral')
+            else:
+                plt.scatter(df[x_axis], df[y_axis], alpha=0.7, s=40, color='coral')
         elif chart_type == "histogram":
-            plt.hist(df[y_axis], bins=12, alpha=0.7, color='lightgreen', edgecolor='black')  # Further reduced bin count
+            plt.hist(df[y_axis], bins=8, alpha=0.7, color='lightgreen', edgecolor='black')  # Reduced bins
             plt.xlabel(y_label)
             plt.ylabel('Frequency')
         elif chart_type == "boxplot":
             df.boxplot(column=y_axis, by=x_axis)
             plt.suptitle('')  # Remove default title
+            plt.xticks(rotation=45, ha='right')
         elif chart_type == "pie":
-            # For pie charts, limit to top 8 categories to save tokens
-            if len(df) > 8:
-                counts = df[y_axis].value_counts().nlargest(8)
-                plt.pie(counts.values, labels=counts.index, autopct='%1.1f%%', startangle=90)
+            # For pie charts, limit to top 6 categories
+            if len(df) > 6:
+                counts = df[y_axis].value_counts().nlargest(6)
+                plt.pie(counts.values, labels=[str(x)[:10] for x in counts.index], autopct='%1.1f%%', startangle=90)
             else:
-                plt.pie(df[y_axis], labels=df[x_axis], autopct='%1.1f%%', startangle=90)
+                plt.pie(df[y_axis], labels=[str(x)[:10] for x in df[x_axis]], autopct='%1.1f%%', startangle=90)
         else:
             return f"Unsupported chart type: {chart_type}. Supported types: line, bar, scatter, histogram, boxplot, pie"
             
         if chart_type not in ["histogram", "boxplot", "pie"]:
             plt.xlabel(x_label)
             plt.ylabel(y_label)
+            # Fix overlapping labels - CRITICAL for axis overlap
+            plt.gca().xaxis.set_major_locator(plt.MaxNLocator(nbins=4))  # Max 4 x-ticks
+            plt.gca().yaxis.set_major_locator(plt.MaxNLocator(nbins=4))  # Max 4 y-ticks
+            plt.xticks(rotation=45, ha='right')
+            plt.yticks(rotation=0)
         
         plt.title(f"{title} {sample_notice}", fontsize=12, fontweight='bold')
+        # Add extra space for rotated labels
+        plt.subplots_adjust(bottom=0.2)
         plt.tight_layout()
         
         buf = BytesIO()
@@ -224,7 +244,7 @@ def create_chart_from_uploaded_data(chart_type: str, x_column: str, y_column: st
             df = df.sample(1000, random_state=42)
             sample_notice = " (Using 1000 sample rows)"
         
-        plt.figure(figsize=(10, 6))
+        plt.figure(figsize=(12, 8))  # Larger figure for better spacing
         plt.style.use('default')
         
         if chart_type == "bar":
@@ -246,9 +266,13 @@ def create_chart_from_uploaded_data(chart_type: str, x_column: str, y_column: st
                 if df[x_column].dtype == 'object':
                     # Categorical x-axis, aggregate y values
                     grouped = df.groupby(x_column)[y_column].sum().nlargest(top_n)
-                    plt.bar(range(len(grouped)), grouped.values)
-                    plt.xticks(range(len(grouped)), grouped.index, rotation=45, ha='right')
+                    bars = plt.bar(range(len(grouped)), grouped.values)
+                    # Truncate long labels and rotate
+                    labels = [str(x)[:15] + '...' if len(str(x)) > 15 else str(x) for x in grouped.index]
+                    plt.xticks(range(len(grouped)), labels, rotation=45, ha='right')
                     plt.ylabel(y_column)
+                    # Add space for rotated labels
+                    plt.subplots_adjust(bottom=0.25)
                 else:
                     # Numeric x-axis
                     sorted_df = df.nlargest(top_n, y_column)
@@ -258,15 +282,24 @@ def create_chart_from_uploaded_data(chart_type: str, x_column: str, y_column: st
             else:
                 # Value counts bar chart
                 value_counts = df[x_column].value_counts().head(top_n)
-                plt.bar(range(len(value_counts)), value_counts.values)
-                plt.xticks(range(len(value_counts)), value_counts.index, rotation=45, ha='right')
+                bars = plt.bar(range(len(value_counts)), value_counts.values)
+                # Truncate long labels and rotate
+                labels = [str(x)[:15] + '...' if len(str(x)) > 15 else str(x) for x in value_counts.index]
+                plt.xticks(range(len(value_counts)), labels, rotation=45, ha='right')
                 plt.ylabel('Count')
+                # Add space for rotated labels
+                plt.subplots_adjust(bottom=0.25)
             plt.xlabel(x_column)
         
         elif chart_type == "scatter":
             if y_column and y_column != "":
                 y_column = y_column if y_column != "" else None
-                plt.scatter(df[x_column], df[y_column], alpha=0.7)
+                # Limit scatter points to prevent overcrowding
+                if len(df) > 500:
+                    df_sample = df.sample(500, random_state=42)
+                    plt.scatter(df_sample[x_column], df_sample[y_column], alpha=0.7, s=30)
+                else:
+                    plt.scatter(df[x_column], df[y_column], alpha=0.7, s=30)
                 plt.xlabel(x_column)
                 plt.ylabel(y_column)
             else:
@@ -283,9 +316,11 @@ def create_chart_from_uploaded_data(chart_type: str, x_column: str, y_column: st
                 plt.ylabel(x_column)
         
         elif chart_type == "histogram":
-            plt.hist(df[x_column], bins=20, alpha=0.7, edgecolor='black')
+            plt.hist(df[x_column], bins=15, alpha=0.7, edgecolor='black')  # Reduced bins
             plt.xlabel(x_column)
             plt.ylabel('Frequency')
+            # Limit x-axis ticks to prevent overlap
+            plt.gca().xaxis.set_major_locator(plt.MaxNLocator(nbins=8))
         
         elif chart_type == "box":
             if y_column and y_column != "":
@@ -304,8 +339,10 @@ def create_chart_from_uploaded_data(chart_type: str, x_column: str, y_column: st
                 plt.ylabel(x_column)
         
         elif chart_type == "pie":
-            value_counts = df[x_column].value_counts().head(top_n)
-            plt.pie(value_counts.values, labels=value_counts.index, autopct='%1.1f%%')
+            value_counts = df[x_column].value_counts().head(min(top_n, 8))  # Max 8 slices
+            # Truncate long labels
+            labels = [str(x)[:12] + '...' if len(str(x)) > 12 else str(x) for x in value_counts.index]
+            plt.pie(value_counts.values, labels=labels, autopct='%1.1f%%', startangle=90)
         
         elif chart_type == "heatmap":
             # Correlation heatmap for numeric columns
@@ -320,6 +357,8 @@ def create_chart_from_uploaded_data(chart_type: str, x_column: str, y_column: st
             return f"Unknown chart type: {chart_type}. Supported types: line, bar, scatter, histogram, box, heatmap, pie"
         
         plt.title(f"{title} - {file_name}{sample_notice}")
+        # Add extra spacing for better label visibility
+        plt.subplots_adjust(bottom=0.15, left=0.1)
         plt.tight_layout()
         
         # Save chart to base64
@@ -437,17 +476,20 @@ Use generate_and_execute_chart_code to create a custom visualization that perfec
             print("query_context:", query_context)
             is_multi_file_request = query_context.get("multi_file_request", False)
             print("is_multi_file_request:", is_multi_file_request)
-            if is_multi_file_request:
-                print("if me h ")
-                # Multi-file chart generation - direct implementation
-                print(f"[ChartingAgent] Multi-file request detected for query: {query}")
+            # Check if this is a general chart request (regardless of multi-file detection)
+            query_lower = query.lower()
+            general_chart_keywords = ['generate all charts', 'create all charts', 'all charts', 'generate charts', 'create charts', 'show charts', 'make charts', 'charts and graphs', 'generate graphs', 'create graphs', 'generate all graphs', 'all graphs', 'generate all chart and graph', 'all chart and graph', 'create all chart and graph', 'show all chart and graph', 'generate all charts and graphs', 'create all charts and graphs', 'all charts and graphs']
+            is_general_request = any(keyword in query_lower for keyword in general_chart_keywords)
+            
+            if is_multi_file_request or is_general_request:
+                print("General chart request detected - using comprehensive analysis")
                 # Store query for use in the method
                 self._current_query = query
                 result = self._generate_individual_file_charts()
                 has_data = True
-                current_df = None  # Not needed for multi-file
+                current_df = None  # Not needed for comprehensive analysis
             else:
-                print("kyuu nhi jaa rhe if me ")
+                print("Specific chart request - using single file")
                 # Single file selection
                 current_df, file_name = df_manager.get_relevant_dataframe(query)
                 print(f"[ChartingAgent] Selected file for query '{query}': {file_name}")
@@ -462,7 +504,7 @@ Use generate_and_execute_chart_code to create a custom visualization that perfec
                     has_data = False  # Ensure has_data is properly set
             
             print(f"[ChartingAgent] Has data: {has_data}")
-            if has_data and not is_multi_file_request:
+            if has_data and not (is_multi_file_request or is_general_request) and current_df is not None:
                 print(f"[ChartingAgent] Data shape: {current_df.shape}")
                 print(f"[ChartingAgent] Columns: {list(current_df.columns)[:5]}")
             
@@ -493,141 +535,73 @@ Use generate_and_execute_chart_code to create a custom visualization that perfec
             return updated_state
     
     def _generate_individual_file_charts(self) -> str:
-        """Generate comprehensive charts for each file individually and cross-file comparisons"""
+        """Generate comprehensive charts from all available files"""
         try:
-            all_files = df_manager._dataframes
-            if not all_files:
-                return "No dataframes loaded. Please upload files first."
-            
-            file_list = [(name, df) for name, df in all_files.items() if name != 'merged_data']
-            if len(file_list) == 0:
-                return "No files available for chart generation."
-            
-            results = []
-            
             # Get query from the calling method's context
             query = getattr(self, '_current_query', '')
-            query_lower = query.lower() if query else ""
             
-            # Handle specific multi-dataset pie chart request
-            if 'pie chart' in query_lower and any(keyword in query_lower for keyword in ['5 dataset', 'five dataset', 'dataset', 'all dataset']):
-                multi_pie_chart = self._generate_multi_dataset_pie_chart(file_list)
-                if multi_pie_chart:
-                    results.append(multi_pie_chart)
-                    # Return early for specific pie chart request
-                    final_message = "I generated a pie chart comparing all 5 datasets:\n\n"
-                    final_message += multi_pie_chart
-                    return final_message
+            # Get all available files
+            all_files_info = df_manager.get_file_info()
+            available_files = [name for name in all_files_info.keys() if name != 'merged_data']
+            total_files = len(available_files)
             
-            # Generate cross-file comparison charts for general requests
-            cross_file_chart = self._generate_cross_file_comparison(file_list)
-            if cross_file_chart:
-                results.append(cross_file_chart)
-            for file_name, df in file_list:
-                print(f"[ChartingAgent] Generating comprehensive charts for: {file_name}")
-                
-                import matplotlib.pyplot as plt
-                import seaborn as sns
-                import base64
-                from io import BytesIO
-                
-                plt.figure(figsize=(15, 10))
-                
-                # Analyze this file's structure
-                numeric_cols = df.select_dtypes(include=['number']).columns.tolist()
-                categorical_cols = df.select_dtypes(include=['object', 'string']).columns.tolist()
-                
-                subplot_count = 0
-                
-                # Dynamic chart generation with diverse chart types
-                max_charts = 6
-                colors = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7', '#DDA0DD']
-                chart_types = ['hist', 'box', 'scatter', 'bar', 'pie', 'line']
-                
-                # Chart 1: Histogram for first numeric column
-                if len(numeric_cols) > 0 and subplot_count < max_charts:
-                    subplot_count += 1
-                    plt.subplot(2, 3, subplot_count)
-                    df[numeric_cols[0]].hist(bins=20, alpha=0.7, color=colors[0], edgecolor='black')
-                    plt.title(f'{numeric_cols[0]} - Histogram')
-                    plt.xlabel(numeric_cols[0])
-                
-                # Chart 2: Box plot for second numeric column
-                if len(numeric_cols) > 1 and subplot_count < max_charts:
-                    subplot_count += 1
-                    plt.subplot(2, 3, subplot_count)
-                    df.boxplot(column=numeric_cols[1], ax=plt.gca(), patch_artist=True, 
-                              boxprops=dict(facecolor=colors[1], alpha=0.7))
-                    plt.title(f'{numeric_cols[1]} - Box Plot')
-                
-                # Chart 3: Scatter plot if we have 2+ numeric columns
-                if len(numeric_cols) >= 2 and subplot_count < max_charts:
-                    subplot_count += 1
-                    plt.subplot(2, 3, subplot_count)
-                    plt.scatter(df[numeric_cols[0]], df[numeric_cols[1]], 
-                               color=colors[2], alpha=0.6, edgecolors='black')
-                    plt.title(f'{numeric_cols[0]} vs {numeric_cols[1]} - Scatter')
-                    plt.xlabel(numeric_cols[0])
-                    plt.ylabel(numeric_cols[1])
-                
-                # Chart 4: Bar chart for first categorical column
-                if len(categorical_cols) > 0 and subplot_count < max_charts:
-                    subplot_count += 1
-                    plt.subplot(2, 3, subplot_count)
-                    df[categorical_cols[0]].value_counts().head(8).plot(kind='bar', 
-                                                                       color=colors[3], edgecolor='black')
-                    plt.title(f'{categorical_cols[0]} - Bar Chart')
-                    plt.xticks(rotation=45)
-                
-                # Chart 5: Pie chart for categorical data
-                if len(categorical_cols) > 0 and subplot_count < max_charts:
-                    subplot_count += 1
-                    plt.subplot(2, 3, subplot_count)
-                    top_categories = df[categorical_cols[0]].value_counts().head(5)
-                    plt.pie(top_categories.values, labels=top_categories.index, 
-                           colors=colors[:len(top_categories)], autopct='%1.1f%%')
-                    plt.title(f'{categorical_cols[0]} - Pie Chart')
-                
-                # Chart 6: Line plot or correlation heatmap
-                if subplot_count < max_charts:
-                    subplot_count += 1
-                    plt.subplot(2, 3, subplot_count)
-                    if len(numeric_cols) > 2:
-                        # Correlation heatmap
-                        corr_matrix = df[numeric_cols[:4]].corr()
-                        sns.heatmap(corr_matrix, annot=True, cmap='coolwarm', center=0)
-                        plt.title('Correlation Heatmap')
-                    elif len(numeric_cols) > 0:
-                        # Line plot
-                        df[numeric_cols[0]].plot(kind='line', color=colors[5], linewidth=2)
-                        plt.title(f'{numeric_cols[0]} - Line Plot')
-                        plt.ylabel(numeric_cols[0])
-                
-                plt.suptitle(f'{file_name} - Data Analysis', fontsize=16)
-                plt.tight_layout()
-                
-                buf = BytesIO()
-                plt.savefig(buf, format='png', dpi=100, bbox_inches='tight')
-                buf.seek(0)
-                img_base64 = base64.b64encode(buf.read()).decode('utf-8')
-                plt.close()
-                
-                results.append(f"**{file_name} - Data Analysis**:\ndata:image/png;base64,{img_base64}")
-                print(f"[ChartingAgent] Added chart for {file_name}, total charts: {len(results)}")
+            print(f"[ChartingAgent] Generating charts for all {total_files} files: {available_files}")
             
-            print(f"[ChartingAgent] Final: Generated {len(results)} charts")
-            # Return each chart separately for proper display
-            final_message = "I generated comprehensive charts including cross-file comparisons:\n\n"
-            for i, result in enumerate(results):
-                final_message += result
-                if i < len(results) - 1:
-                    final_message += "\n\n"
-            print(f"[ChartingAgent] Final message length: {len(final_message)}")
-            print(f"[ChartingAgent] Number of base64 images in result: {final_message.count('data:image/png;base64,')}")
-            return final_message
-            
+            # Try merged data first for comprehensive cross-file analysis
+            merged_df = df_manager.get_dataframe('merged_data')
+            if merged_df is not None:
+                print(f"[ChartingAgent] Using merged data with {merged_df.shape[0]} rows and {merged_df.shape[1]} columns")
+                
+                # Use dynamic code generation for merged data with explicit file count
+                result = generate_and_execute_chart_code.invoke({
+                    "user_request": f"{query} - Generate comprehensive charts covering all {total_files} files",
+                    "chart_description": f"Create comprehensive visualizations from merged data representing all {total_files} files with cross-file relationships"
+                })
+                
+                if "Error" not in result and "data:image/png;base64," in result:
+                    return result
+                else:
+                    return f"Generated charts from merged data covering all {total_files} files with {merged_df.shape[0]} rows and {merged_df.shape[1]} columns."
+            else:
+                # No merged data - generate charts for each file individually
+                if total_files > 1:
+                    print(f"[ChartingAgent] No merged data, generating individual charts for {total_files} files")
+                    all_results = []
+                    
+                    for file_name in available_files:
+                        file_df = df_manager.get_dataframe(file_name)
+                        if file_df is not None:
+                            # Generate charts for this specific file
+                            result = generate_and_execute_chart_code.invoke({
+                                "user_request": f"{query} - Generate charts for {file_name}",
+                                "chart_description": f"Create visualizations from {file_name} (file {available_files.index(file_name)+1} of {total_files})"
+                            })
+                            
+                            if "Error" not in result and "data:image/png;base64," in result:
+                                all_results.append(result)
+                    
+                    if all_results:
+                        return "\n\n".join(all_results)
+                    else:
+                        return f"Generated individual charts for all {total_files} files."
+                else:
+                    # Single file case
+                    current_df, file_name = df_manager.get_relevant_dataframe(query)
+                    if current_df is None:
+                        return "No dataframes loaded. Please upload files first."
+                    
+                    result = generate_and_execute_chart_code.invoke({
+                        "user_request": query,
+                        "chart_description": f"Create comprehensive visualizations from {file_name}"
+                    })
+                    
+                    if "Error" not in result and "data:image/png;base64," in result:
+                        return result
+                    else:
+                        return f"Generated comprehensive charts from {file_name}."
+                
         except Exception as e:
-            print(f"[ChartingAgent] Error generating individual file charts: {e}")
+            print(f"[ChartingAgent] Error generating charts: {e}")
             return f"Error generating charts: {e}"
     
     def _generate_cross_file_comparison(self, file_list) -> str:
@@ -1044,6 +1018,50 @@ REASONING: [brief explanation]"""
         else:
             return f"This dataset has {len(df.columns)} columns: {list(df.columns)[:5]}{'...' if len(df.columns) > 5 else ''}. Please specify which columns you'd like to visualize and what type of chart you prefer."
     
+    def _analyze_file_requirement(self, user_request: str, available_files: list) -> dict:
+        """Use LLM to analyze which file(s) the user actually wants based on their request"""
+        try:
+            analysis_prompt = f"""Analyze this user request to determine which file(s) they want to work with:
+
+User Request: "{user_request}"
+Available Files: {available_files}
+
+Analyze the request and determine:
+1. Does the user mention a specific file name or content that matches one file?
+2. Do they want data from all files combined?
+3. Are they asking for a specific type of analysis that would require one particular file?
+
+Respond in this exact JSON format:
+{{
+    "specific_file": "filename.csv" or null,
+    "multi_file": true or false,
+    "reasoning": "explanation of decision"
+}}
+
+Guidelines:
+- If user mentions "railways", "pharma", "it" or similar, match to corresponding file
+- If user says "all files", "compare", "merged" set multi_file: true
+- If user asks for general charts without specifying, use intelligent matching
+- If unclear, default to single most relevant file"""
+
+            response = self.llm.invoke(analysis_prompt)
+            analysis_text = response.content if hasattr(response, 'content') else str(response)
+            
+            # Parse JSON response
+            import json
+            import re
+            json_match = re.search(r'\{.*\}', analysis_text, re.DOTALL)
+            if json_match:
+                analysis = json.loads(json_match.group())
+                print(f"[ChartingAgent] File analysis: {analysis}")
+                return analysis
+            else:
+                return {'specific_file': None, 'multi_file': False, 'reasoning': 'Failed to parse LLM response'}
+                
+        except Exception as e:
+            print(f"[ChartingAgent] Error in file analysis: {e}")
+            return {'specific_file': None, 'multi_file': False, 'reasoning': f'Error: {e}'}
+    
     def _direct_chart_fallback(self, query: str, df) -> str:
         """
         Direct chart creation fallback when React agent hits token limits
@@ -1118,6 +1136,55 @@ REASONING: [brief explanation]"""
         except Exception as e:
             return f"Error creating chart: {e}. Available columns: {columns[:10]}"
 
+def _analyze_file_requirement_standalone(user_request: str, available_files: list) -> dict:
+    """Standalone function to analyze which file(s) the user wants based on their request"""
+    try:
+        from langchain_openai import ChatOpenAI
+        import os
+        llm = ChatOpenAI(temperature=0, model='gpt-4.1', api_key=os.environ.get('OPENAI_API_KEY'))
+
+        
+        analysis_prompt = f"""Analyze this user request to determine which file(s) they want to work with:
+
+User Request: "{user_request}"
+Available Files: {available_files}
+
+Analyze the request and determine:
+1. Does the user mention a specific file name or content that matches one file?
+2. Do they want data from all files combined?
+3. Are they asking for a specific type of analysis that would require one particular file?
+
+Respond in this exact JSON format:
+{{
+    "specific_file": "filename.csv" or null,
+    "multi_file": true or false,
+    "reasoning": "explanation of decision"
+}}
+
+Guidelines:
+- If user mentions "railways", "pharma", "it" or similar, match to corresponding file
+- If user says "all files", "compare", "merged" set multi_file: true
+- If user asks for general charts without specifying, use intelligent matching
+- If unclear, default to single most relevant file"""
+
+        response = llm.invoke(analysis_prompt)
+        analysis_text = response.content if hasattr(response, 'content') else str(response)
+        
+        # Parse JSON response
+        import json
+        import re
+        json_match = re.search(r'\{.*\}', analysis_text, re.DOTALL)
+        if json_match:
+            analysis = json.loads(json_match.group())
+            print(f"[FileAnalysis] {analysis}")
+            return analysis
+        else:
+            return {'specific_file': None, 'multi_file': False, 'reasoning': 'Failed to parse LLM response'}
+            
+    except Exception as e:
+        print(f"[FileAnalysis] Error: {e}")
+        return {'specific_file': None, 'multi_file': False, 'reasoning': f'Error: {e}'}
+
 @tool
 def generate_and_execute_chart_code(user_request: str, chart_description: str = "") -> str:
     """Generate Python plotting code on the fly based on user request and execute it.
@@ -1126,222 +1193,53 @@ def generate_and_execute_chart_code(user_request: str, chart_description: str = 
     chart_description: Optional description of what chart to create
     """
     try:
+        from src.utils.multi_file_manager import MultiFileDataManager
+        
         # Check if this is a multi-file request or general chart request
         request_lower = user_request.lower()
         general_chart_keywords = ['generate charts', 'create charts', 'show charts', 'make charts', 'charts and graphs', 'generate graphs', 'create graphs', 'generate all charts', 'create all charts', 'all charts', 'generate all graphs', 'all graphs']
-        multi_file_keywords = ['all files', 'both files', 'from both', 'from all', 'compare files']
+        multi_file_keywords = ['all files', 'both files', 'from both', 'from all', 'compare files', 'merged data', 'combined data']
         
-        # Check if it's an explicit multi-file request
+        # Check if it's an explicit multi-file request OR general chart request
         is_multi_file_request = any(keyword in request_lower for keyword in multi_file_keywords)
         is_general_chart_request = any(keyword in request_lower for keyword in general_chart_keywords)
         
-        # Only do multi-file analysis if explicitly requested AND multiple files exist
-        if is_multi_file_request:
-            all_files = df_manager._dataframes
-            if not all_files:
-                return "No dataframes loaded. Please upload files first."
-            
-            file_list = [(name, df) for name, df in all_files.items() if name != 'merged_data']
-            if len(file_list) < 2:
-                return "Need at least 2 files for multi-file analysis."
-        elif is_general_chart_request:
-            # For general chart requests, check if multiple files exist but don't require it
-            all_files = df_manager._dataframes
-            if not all_files:
-                return "No dataframes loaded. Please upload files first."
-            
-            file_list = [(name, df) for name, df in all_files.items() if name != 'merged_data']
-            # If only one file, proceed with single file analysis
-            if len(file_list) == 1:
-                pass  # Continue to single file processing
-            elif len(file_list) > 1:
-                # Multiple files available, do multi-file analysis
-                pass
-            else:
-                return "No files available for analysis."
+        # Use LLM to intelligently analyze which file(s) the user wants
+        file_info = df_manager.get_file_info()
+        file_selection_analysis = _analyze_file_requirement_standalone(user_request, list(file_info.keys()))
         
-        if (is_multi_file_request or (is_general_chart_request and len(file_list) > 1)):
-            
-            # Only check for common columns if we have multiple files
-            if len(file_list) > 1:
-                common_cols = set(file_list[0][1].columns)
-                for _, df in file_list[1:]:
-                    common_cols &= set(df.columns)
-                
-                if not common_cols:
-                    return "No common columns found across files for comparison."
-                
-                print(f"[ChartingAgent] Common columns found: {list(common_cols)}")
-            else:
-                # Single file case - use all columns
-                common_cols = set(file_list[0][1].columns)
-                print(f"[ChartingAgent] Single file analysis with columns: {list(common_cols)}")
-            
-            # Create combined analysis based on common columns
-            import matplotlib.pyplot as plt
-            import base64
-            from io import BytesIO
-            import pandas as pd
-            
-            plt.figure(figsize=(15, 10))
-            
-            # Find best common columns for visualization
-            numeric_common = [col for col in common_cols if all(pd.api.types.is_numeric_dtype(df[col]) for _, df in file_list)]
-            categorical_common = [col for col in common_cols if all(df[col].dtype == 'object' for _, df in file_list)]
-            
-            subplot_count = 0
-            
-            # Revenue comparison if available
-            if 'revenue' in numeric_common:
-                subplot_count += 1
-                plt.subplot(2, 3, subplot_count)
-                for file_name, df in file_list:
-                    plt.plot(df.index, df['revenue'], label=file_name, marker='o')
-                plt.title('Revenue Comparison Across Files')
-                plt.legend()
-                plt.ylabel('Revenue')
-            
-            # Region distribution if available
-            if 'region' in categorical_common:
-                subplot_count += 1
-                plt.subplot(2, 3, subplot_count)
-                combined_regions = pd.concat([df['region'].value_counts() for _, df in file_list], axis=1, keys=[name for name, _ in file_list])
-                combined_regions.plot(kind='bar', ax=plt.gca())
-                plt.title('Region Distribution Across Files')
-                plt.xticks(rotation=45)
-            
-            # Date-based analysis if available
-            if 'date' in common_cols:
-                subplot_count += 1
-                plt.subplot(2, 3, subplot_count)
-                for file_name, df in file_list:
-                    if 'revenue' in df.columns:
-                        daily_revenue = df.groupby('date')['revenue'].sum()
-                        plt.plot(daily_revenue.index, daily_revenue.values, label=file_name, marker='o')
-                plt.title('Revenue Over Time Comparison')
-                plt.legend()
-                plt.xticks(rotation=45)
-            
-            # Product analysis if available
-            if 'product_name' in categorical_common and any('revenue' in df.columns for _, df in file_list):
-                subplot_count += 1
-                plt.subplot(2, 3, subplot_count)
-                all_products = set()
-                for _, df in file_list:
-                    all_products.update(df['product_name'].unique())
-                
-                product_revenue = {}
-                for file_name, df in file_list:
-                    if 'revenue' in df.columns:
-                        product_revenue[file_name] = df.groupby('product_name')['revenue'].sum()
-                
-                combined_products = pd.DataFrame(product_revenue).fillna(0)
-                combined_products.plot(kind='bar', ax=plt.gca())
-                plt.title('Product Revenue Comparison')
-                plt.xticks(rotation=45)
-            
-            plt.tight_layout()
-            buf = BytesIO()
-            plt.savefig(buf, format='png', dpi=100, bbox_inches='tight')
-            buf.seek(0)
-            img_base64 = base64.b64encode(buf.read()).decode('utf-8')
-            plt.close()
-            
-            # Generate individual comprehensive charts for each file
-            results = []
-            
-            # Add cross-file comparison only if multiple files
-            if len(file_list) > 1:
-                # Add the cross-file comparison chart first
-                results.insert(0, f"**Cross-File Comparison Analysis**:\ndata:image/png;base64,{img_base64}")
-            
-            for file_name, df in file_list:
-                print(f"[ChartingAgent] Generating comprehensive charts for: {file_name}")
-                
-                plt.figure(figsize=(15, 10))
-                
-                # Analyze this file's structure
-                numeric_cols = df.select_dtypes(include=['number']).columns.tolist()
-                categorical_cols = df.select_dtypes(include=['object', 'string']).columns.tolist()
-                
-                subplot_count = 0
-                
-                # Revenue analysis if available
-                if 'revenue' in numeric_cols:
-                    subplot_count += 1
-                    plt.subplot(2, 3, subplot_count)
-                    df['revenue'].hist(bins=20, alpha=0.7)
-                    plt.title(f'{file_name} - Revenue Distribution')
-                    plt.xlabel('Revenue')
-                
-                # Region analysis if available
-                if 'region' in categorical_cols:
-                    subplot_count += 1
-                    plt.subplot(2, 3, subplot_count)
-                    df['region'].value_counts().plot(kind='bar')
-                    plt.title(f'{file_name} - Region Distribution')
-                    plt.xticks(rotation=45)
-                
-                # Time series if date available
-                if 'date' in df.columns and 'revenue' in numeric_cols:
-                    subplot_count += 1
-                    plt.subplot(2, 3, subplot_count)
-                    daily_revenue = df.groupby('date')['revenue'].sum()
-                    plt.plot(daily_revenue.index, daily_revenue.values, marker='o')
-                    plt.title(f'{file_name} - Revenue Over Time')
-                    plt.xticks(rotation=45)
-                
-                # Product analysis if available
-                if 'product_name' in categorical_cols and 'revenue' in numeric_cols:
-                    subplot_count += 1
-                    plt.subplot(2, 3, subplot_count)
-                    product_revenue = df.groupby('product_name')['revenue'].sum().head(5)
-                    product_revenue.plot(kind='bar')
-                    plt.title(f'{file_name} - Top Products by Revenue')
-                    plt.xticks(rotation=45)
-                
-                # Correlation heatmap if multiple numeric columns
-                if len(numeric_cols) > 2:
-                    subplot_count += 1
-                    plt.subplot(2, 3, subplot_count)
-                    import seaborn as sns
-                    corr_matrix = df[numeric_cols].corr()
-                    sns.heatmap(corr_matrix, annot=True, cmap='coolwarm', center=0, ax=plt.gca())
-                    plt.title(f'{file_name} - Correlation Matrix')
-                
-                # Additional analysis based on file-specific columns
-                if subplot_count < 6:
-                    remaining_numeric = [col for col in numeric_cols if col != 'revenue'][:2]
-                    for col in remaining_numeric:
-                        if subplot_count < 6:
-                            subplot_count += 1
-                            plt.subplot(2, 3, subplot_count)
-                            df[col].hist(bins=15, alpha=0.7)
-                            plt.title(f'{file_name} - {col} Distribution')
-                            plt.xlabel(col)
-                
-                plt.suptitle(f'{file_name} - Comprehensive Analysis', fontsize=16)
-                plt.tight_layout()
-                
-                buf = BytesIO()
-                plt.savefig(buf, format='png', dpi=100, bbox_inches='tight')
-                buf.seek(0)
-                img_base64 = base64.b64encode(buf.read()).decode('utf-8')
-                plt.close()
-                
-                results.append(f"**{file_name} - Comprehensive Analysis**:\ndata:image/png;base64,{img_base64}")
-            
-            if len(file_list) == 1:
-                return "I generated comprehensive charts for your dataset:\n\n" + "\n\n".join(results)
-            else:
-                return "I generated comprehensive individual charts for each file:\n\n" + "\n\n".join(results)
+        mentioned_file = file_selection_analysis.get('specific_file')
+        requires_multi_file = file_selection_analysis.get('multi_file', False)
         
-        # Single file request - use intelligent file selection
-        df, file_name = df_manager.get_relevant_dataframe(user_request)
-        print(f"[ChartingAgent] Selected file: {file_name} for query: {user_request}")
-            
-        if df is None:
-            return "No dataframe loaded. Please upload a file first."
+        # Determine which data to use
+        if mentioned_file:
+            # User mentioned a specific file - use ONLY that file
+            df = df_manager.get_dataframe(mentioned_file)
+            file_name = mentioned_file
+            print(f"[ChartingAgent] Using specific file: {mentioned_file} for request: {user_request}")
+            if df is None:
+                return f"File '{mentioned_file}' not found. Available files: {list(file_info.keys())}"
+        elif requires_multi_file or is_multi_file_request or (is_general_chart_request and len([name for name in file_info.keys() if name != 'merged_data']) > 1):
+            # Only use merged data for explicit multi-file requests
+            merged_df = df_manager.get_dataframe('merged_data')
+            if merged_df is not None:
+                df = merged_df
+                file_name = "merged_data"
+                print(f"[ChartingAgent] Using merged data for multi-file request with {merged_df.shape[0]} rows and {merged_df.shape[1]} columns")
+            else:
+                merged_df, merge_status = MultiFileDataManager.get_merged_dataframe(df_manager)
+                if merged_df is not None:
+                    df = merged_df
+                    file_name = "merged_data"
+                else:
+                    return "Could not create merged data for multi-file analysis."
+        else:
+            # Single file selection using intelligent matching
+            df, file_name = df_manager.get_relevant_dataframe(user_request)
+            if df is None:
+                return "No dataframes loaded. Please upload files first."
+        
+        print(f"[ChartingAgent] Using data from: {file_name} for request: {user_request}")
         
         # Analyze the dataframe structure
         columns = list(df.columns)
@@ -1349,40 +1247,47 @@ def generate_and_execute_chart_code(user_request: str, chart_description: str = 
         numeric_cols = df.select_dtypes(include=['number']).columns.tolist()
         categorical_cols = df.select_dtypes(include=['object', 'string']).columns.tolist()
         
-        # Sample data for large dataframes
-        if len(df) > 1000:
-            df_sample = df.sample(1000, random_state=42)
-            sample_note = f"(Using 1000 random samples from {len(df)} total rows)"
-        else:
-            df_sample = df
-            sample_note = ""
+        # Use full data for analysis - no sampling to avoid null data issues
+        df_sample = df
+        sample_note = ""
+            
         
-        # Generate intelligent plotting code using LLM
+        # Get all available files for comprehensive chart generation
+        all_files_info = df_manager.get_file_info()
+        available_files = [name for name in all_files_info.keys() if name != 'merged_data']
+        total_files = len(available_files)
+        
+        # Enhanced code generation prompt for comprehensive chart coverage
         code_generation_prompt = f"""
-You are an expert Python data visualization programmer. Generate matplotlib/seaborn code to create a chart based on the user's request.
+You are an expert Python data visualization programmer. Generate matplotlib/seaborn code to create charts based on the user's request.
 
 USER REQUEST: "{user_request}"
-CHART DESCRIPTION: "{chart_description}"
+FILE BEING ANALYZED: "{file_name}"
+TOTAL FILES AVAILABLE: {total_files}
+ALL AVAILABLE FILES: {available_files}
 
 AVAILABLE DATA:
-- Dataset shape: {df.shape}
-- Columns: {columns}
+- Dataset: {file_name}
+- Shape: {df.shape}
+- ALL COLUMNS: {columns}
 - Numeric columns: {numeric_cols}
 - Categorical columns: {categorical_cols}
-- Data types: {dtypes}
+- Sample data: {df.head(2).to_dict() if len(df) > 0 else 'No data'}
 
-REQUIREMENTS:
-1. Write clean, executable Python code using matplotlib and/or seaborn
-2. The dataframe is already available as 'df'
-3. Include proper error handling
-4. Use appropriate chart types for the data
-5. Add titles, labels, and formatting
-6. Handle large datasets appropriately (sampling, limiting categories)
-7. Return the chart as base64 encoded image
-8. Close the plot after saving to prevent memory issues
+CRITICAL REQUIREMENTS - READ CAREFULLY:
+1. NEVER READ FILES: The dataframe 'df' is already loaded in memory - DO NOT use pd.read_csv() or any file operations
+2. USE EXISTING DATAFRAME: Always use the variable 'df' which contains all the data you need
+3. NO FILE OPERATIONS: Do not try to read 'merged_data.csv' or any CSV files - the data is already in 'df'
+4. GENERATE CHARTS FOR ALL COLUMN TYPES: Create visualizations for ALL columns from ALL {total_files} files
+5. COMPREHENSIVE COVERAGE: Generate at least 12-15 charts to cover all possible column combinations
+6. COLUMN VERIFICATION: Always check if column exists before using: if 'column_name' in df.columns
+7. ERROR HANDLING: Use try-except blocks around all chart operations
+8. DYNAMIC FORMATTING: Handle overlapping labels, limit categories, rotate text as needed
+9. CHART QUALITY: Use proper figure sizes, limit data points for readability
+10. RETURN FORMAT: Return dictionary with chart names as keys and base64 images as values
 
-TEMPLATE STRUCTURE:
-
+CODE TEMPLATE:
+```python
 import matplotlib.pyplot as plt
 import seaborn as sns
 import pandas as pd
@@ -1390,27 +1295,85 @@ import numpy as np
 import base64
 from io import BytesIO
 
-# Your chart generation code here
-plt.figure(figsize=(10, 6))
+# Set style
+plt.style.use('default')
+sns.set_palette("husl")
 
-# Chart creation logic
-# ...
+# Helper function to save chart as base64 with proper formatting
+def save_chart_as_base64():
+    buf = BytesIO()
+    plt.tight_layout()
+    plt.savefig(buf, format='png', dpi=100, bbox_inches='tight', facecolor='white')
+    buf.seek(0)
+    img_data = buf.read()
+    img_base64 = base64.b64encode(img_data).decode('utf-8')
+    # Ensure proper base64 padding
+    missing_padding = len(img_base64) % 4
+    if missing_padding:
+        img_base64 += '=' * (4 - missing_padding)
+    plt.close('all')
+    plt.clf()
+    return img_base64
 
-plt.title("Your Chart Title")
-plt.xlabel("X Label")
-plt.ylabel("Y Label")
-plt.tight_layout()
+# Helper function to handle overlapping labels
+def fix_overlapping_labels(ax, max_labels=6):
+    labels = ax.get_xticklabels()
+    if len(labels) > max_labels:
+        # Show every nth label to avoid overlap
+        step = len(labels) // max_labels + 1
+        for i, label in enumerate(labels):
+            if i % step != 0:
+                label.set_visible(False)
+    # Rotate labels and adjust spacing
+    plt.xticks(rotation=45, ha='right')
+    plt.yticks(rotation=0)
+    plt.gca().xaxis.set_major_locator(plt.MaxNLocator(nbins=4))
+    plt.gca().yaxis.set_major_locator(plt.MaxNLocator(nbins=4))
+    plt.subplots_adjust(bottom=0.25, left=0.15)
+    return ax
 
-# Save to base64
-buf = BytesIO()
-plt.savefig(buf, format='png', dpi=100, bbox_inches='tight')
-buf.seek(0)
-img_base64 = base64.b64encode(buf.read()).decode('utf-8')
-plt.close()
+# Initialize result dictionary
+result = {{}}
 
-result = f"data:image/png;base64,{{img_base64}}"
+# CRITICAL: The dataframe 'df' is already loaded - DO NOT read any files
+# Use 'df' directly for all operations - it contains all the data you need
 
-Generate ONLY the Python code, no explanations. Make it intelligent and adaptive to the specific request.
+# CRITICAL CHART FORMATTING GUIDELINES:
+# 1. USE FULL DATA: Don't sample data to avoid null columns: use full df
+# 2. LIMIT CATEGORIES: For bar charts, use only top 8: .value_counts().head(8)
+# 3. FIX OVERLAPPING LABELS: Always use plt.xticks(rotation=45, ha='right')
+# 4. PROPER FIGURE SIZE: Use plt.figure(figsize=(12, 8))
+# 5. CLEAN NUMERIC DATA: pd.to_numeric(df[col], errors='coerce').dropna()
+# 6. AVOID DENSE PLOTS: For line plots with >5 series, group or filter data
+# 7. READABLE SPACING: Use plt.subplots_adjust(bottom=0.3) for label space
+# 8. TRUNCATE LABELS: Limit axis labels to 12 chars: str(x)[:12]
+# 9. LIMIT AXIS TICKS: Use plt.gca().xaxis.set_major_locator(plt.MaxNLocator(nbins=4))
+# 10. LIMIT Y AXIS TICKS: Use plt.gca().yaxis.set_major_locator(plt.MaxNLocator(nbins=4))
+# 11. MANDATORY: Add these lines after EVERY chart to prevent overlapping:
+#     plt.xticks(rotation=45, ha='right')
+#     plt.yticks(rotation=0)
+#     plt.subplots_adjust(bottom=0.25, left=0.15)
+#     plt.tight_layout()
+
+# Generate comprehensive visualizations using ONLY the existing 'df' variable
+# CRITICAL: MANDATORY lines after EVERY chart to prevent overlapping:
+# plt.figure(figsize=(12, 8))  # Larger figure size
+# plt.gca().xaxis.set_major_locator(plt.MaxNLocator(nbins=4))  # Max 4 x-ticks
+# plt.gca().yaxis.set_major_locator(plt.MaxNLocator(nbins=4))  # Max 4 y-ticks
+# plt.xticks(rotation=45, ha='right')  # Rotate x-axis labels
+# plt.yticks(rotation=0)  # Keep y-axis labels horizontal
+# plt.subplots_adjust(bottom=0.25, left=0.15)  # Extra space for labels
+# plt.tight_layout()  # Adjust layout
+# # Truncate long labels: labels = [str(x)[:10] for x in labels]
+
+# CRITICAL DATA CONVERSION: Always convert to numeric before groupby operations:
+# df['column'] = pd.to_numeric(df['column'], errors='coerce')
+# df = df.dropna(subset=['column'])  # Remove NaN values after conversion
+```
+
+WARNING: DO NOT include any lines like 'merged_data = pd.read_csv(...)' or similar file reading operations. The data is already available in the 'df' variable.
+
+IMPORTANT: Generate ONLY executable Python code that uses the existing 'df' dataframe. Always add proper spacing and label rotation to prevent overlapping.
 """
 
         # Get the LLM to generate the code
@@ -1433,7 +1396,11 @@ Generate ONLY the Python code, no explanations. Make it intelligent and adaptive
         # print(f"[ChartingAgent] Code preview: {generated_code[:200]}...")
         print("generated_code", generated_code)
         request_lower = user_request.lower()
-        force_multi_chart = "all chart" in request_lower  
+        # Force multi-chart for comprehensive requests or when multiple files are available
+        all_files_info = df_manager.get_file_info()
+        total_files = len([name for name in all_files_info.keys() if name != 'merged_data'])
+        # Always force comprehensive charts for multi-file scenarios
+        force_multi_chart = "all chart" in request_lower or "generate chart" in request_lower or total_files > 1  
         # Import required libraries
         import matplotlib.pyplot as plt
         import seaborn as sns
@@ -1524,14 +1491,18 @@ Generate ONLY the Python code, no explanations. Make it intelligent and adaptive
                     val = f"data:image/png;base64,{val}"
                 normalized.append(f"**{key}**:\n{val}")
 
-            if force_multi_chart:
-                # Always return all charts
+            # Check if this is a comprehensive chart request
+            all_files_info = df_manager.get_file_info()
+            total_files = len([name for name in all_files_info.keys() if name != 'merged_data'])
+            
+            if force_multi_chart or total_files > 1:
+                # Always return all charts for multi-file scenarios
                 return (
-                    f"[Analyzing: {file_name}] I generated and executed custom plotting code for your request. {sample_note}\n\n"
+                    f"[Analyzing: {file_name}] I generated and executed custom plotting code for your request covering all {total_files} files. {sample_note}\n\n"
                     + "\n\n".join(normalized)
                 )
             else:
-                # If not forced, return the first chart only (old behavior)
+                # Single file - return first chart only
                 first_key, first_val = next(iter(found_result.items()))
                 if not str(first_val).startswith("data:image"):
                     first_val = f"data:image/png;base64,{first_val}"

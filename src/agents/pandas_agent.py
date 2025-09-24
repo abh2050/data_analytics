@@ -31,6 +31,7 @@ class DataFrameManager:
     _instance = None
     _dataframes = {}
     _file_metadata = {}  # Store metadata about each file
+    _metadata = {}  # Store additional metadata for merged data
     
     def __new__(cls):
         if cls._instance is None:
@@ -41,6 +42,8 @@ class DataFrameManager:
         """Store a dataframe with metadata"""
         self._dataframes[name] = df
         self._file_metadata[name] = metadata or {}
+        # Also store in _metadata for compatibility
+        self._metadata[name] = metadata or {}
         print(f"[DataFrameManager] Stored dataframe '{name}' with shape {df.shape}")
     
     def get_dataframe(self, name: str) -> Optional[pd.DataFrame]:
@@ -100,7 +103,7 @@ class DataFrameManager:
             if any(word in name_lower for word in query_lower.split()):
                 score += 3
             
-            # Dynamic domain scoring based on query terms matching columns
+            # Dynamic scoring based on query terms matching columns
             query_terms = query_lower.split()
             for term in query_terms:
                 # Boost score for files with columns matching query terms
@@ -111,15 +114,6 @@ class DataFrameManager:
                 # Boost score for filename matches
                 if term in name_lower:
                     score += 6
-            
-            # Domain-specific scoring
-            if any(term in query_lower for term in ['salary', 'department', 'employee', 'performance']):
-                if any(col in df.columns for col in ['salary', 'department', 'employee_id', 'performance_score']):
-                    score += 15  # High boost for employee-related queries
-            
-            if any(term in query_lower for term in ['temperature', 'weather', 'humidity', 'pressure', 'wind']):
-                if any(col in df.columns for col in ['temperature', 'humidity', 'pressure', 'wind_speed']):
-                    score += 15  # High boost for weather-related queries
             
             scores[name] = score
         

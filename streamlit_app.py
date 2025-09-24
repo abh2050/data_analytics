@@ -170,6 +170,32 @@ st.markdown("""
     .main::-webkit-scrollbar-thumb:hover {
         background: #a8a8a8;
     }
+    
+    /* Fix chart overlapping completely */
+    .stImage {
+        margin: 50px 0 !important;
+        display: block !important;
+        width: 100% !important;
+        clear: both !important;
+    }
+    
+    /* Add space between all elements */
+    .element-container {
+        margin-bottom: 40px !important;
+    }
+    
+    /* Chat input at bottom with huge margin */
+    .stChatInput {
+        margin-top: 100px !important;
+        position: relative !important;
+        clear: both !important;
+    }
+    
+    /* Markdown separators */
+    hr {
+        margin: 30px 0 !important;
+        border: 2px solid #e0e0e0 !important;
+    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -192,6 +218,11 @@ class StreamlitChatInterface:
             st.session_state.uploaded_data = None
         if 'data_info' not in st.session_state:
             st.session_state.data_info = {}
+        if 'files_uploaded_this_session' not in st.session_state:
+            st.session_state.files_uploaded_this_session = False
+        
+        # Clear any stale data from df_manager on fresh session
+        self.clear_stale_data_on_refresh()
     
     @st.cache_resource
     def get_workflow(_self):
@@ -213,11 +244,26 @@ class StreamlitChatInterface:
         </div>
         """, unsafe_allow_html=True)
 
+        # Check for refresh scenario before showing uploader
+        has_manager_data = hasattr(df_manager, '_dataframes') and len(df_manager._dataframes) > 0
+        files_uploaded_this_session = st.session_state.get('files_uploaded_this_session', False)
+        
+        if has_manager_data and not files_uploaded_this_session:
+            st.sidebar.warning("🔄 Stale data detected from before page refresh")
+            if st.sidebar.button("🗑️ Clear Stale Data", use_container_width=True):
+                df_manager._dataframes.clear()
+                df_manager._file_metadata.clear()
+                df_manager._metadata.clear()
+                if hasattr(df_manager, 'current_df'):
+                    df_manager.current_df = None
+                st.rerun()
+        
         uploaded_files = st.sidebar.file_uploader(
             "Upload CSV or Excel files",
             type=["csv", "xlsx"],
             accept_multiple_files=True,
-            help="Upload one or more data files to start analysis"
+            help="Upload one or more data files to start analysis",
+            key="file_uploader"  # Add key to ensure proper state management
         )
 
         if uploaded_files:
@@ -246,37 +292,35 @@ class StreamlitChatInterface:
                 except Exception as e:
                     st.sidebar.error(f"❌ Failed to read {file.name}: {e}")
 
-            # Save all uploaded dataframes
+            # Save all uploaded dataframes and mark as uploaded this session
             st.session_state["uploaded_dfs"] = dfs
+            st.session_state.files_uploaded_this_session = True
 
-            # Handle multiple files with intelligent merging
+            # Handle multiple files with FORCE merge (always create merged file)
             if len(dfs) > 1:
-                # Check for common columns
-                common_cols = MultiFileDataManager.find_common_columns(df_manager)
+                # FORCE merge - always create merged data
+                merged_df, merge_info, merged_files = MultiFileDataManager.attempt_smart_merge(df_manager)
                 
-                if common_cols:
-                    st.sidebar.success(f"🔗 Found common columns for potential merging!")
+                if merged_df is not None:
+                    st.sidebar.success(f"✅ {merge_info}")
+                    st.session_state["merged_df"] = merged_df
+                    st.session_state["merge_info"] = merge_info
                     
-                    # Try automatic merge
-                    merged_df, merge_info, merged_files = MultiFileDataManager.attempt_smart_merge(df_manager)
+                    # Store merged dataframe
+                    df_manager.store_dataframe("merged_data", merged_df, {
+                        'merge_info': merge_info,
+                        'source_files': merged_files,
+                        'file_type': 'merged'
+                    })
                     
-                    if merged_df is not None:
-                        st.sidebar.success(f"✅ {merge_info}")
-                        st.session_state["merged_df"] = merged_df
-                        st.session_state["merge_info"] = merge_info
-                        
-                        # Store merged dataframe
-                        df_manager.store_dataframe("merged_data", merged_df, {
-                            'merge_info': merge_info,
-                            'source_files': merged_files,
-                            'file_type': 'merged'
-                        })
+                    # Show merge type
+                    if '_source_file' in merged_df.columns:
+                        st.sidebar.info("📋 FORCE MERGED: All files combined with union merge")
                     else:
-                        st.sidebar.warning(f"⚠️ Could not merge files. Using first file only.")
-                        merged_df = dfs[0][1]
-                        st.session_state["merged_df"] = merged_df
+                        st.sidebar.info("🔗 FORCE MERGED: Files merged on common columns")
                 else:
-                    st.sidebar.warning(f"⚠️ No common columns found for merging. Using first file only.")
+                    # This should never happen with force merge, but just in case
+                    st.sidebar.error(f"❌ CRITICAL: Force merge failed - {merge_info}")
                     merged_df = dfs[0][1]
                     st.session_state["merged_df"] = merged_df
                 
@@ -284,10 +328,17 @@ class StreamlitChatInterface:
                     for filename, df in dfs:
                         st.write(f"**{filename}:** {df.shape[0]:,} rows, {df.shape[1]} cols")
                     
-                    if common_cols:
-                        st.write("**Common Columns:**")
-                        for pair, cols in list(common_cols.items())[:3]:  # Show first 3
-                            st.write(f"  • {pair}: {', '.join(cols[:3])}{'...' if len(cols) > 3 else ''}")
+                    # Show merge information
+                    if "merge_info" in st.session_state:
+                        st.write("**Merge Status:**")
+                        st.write(f"✅ {st.session_state['merge_info']}")
+                        
+                        # Show data distribution if it's a union merge
+                        if '_source_file' in st.session_state["merged_df"].columns:
+                            source_counts = st.session_state["merged_df"]['_source_file'].value_counts()
+                            st.write("**Data Distribution:**")
+                            for source, count in source_counts.items():
+                                st.write(f"  • {source}: {count:,} rows")
                 
                 with st.sidebar.expander("👁️ Data Preview"):
                     selected_file = st.selectbox("Preview file:", [f for f, _ in dfs] + (["merged_data"] if "merge_info" in st.session_state else []))
@@ -349,10 +400,33 @@ class StreamlitChatInterface:
             
             st.sidebar.info("💡 The system will automatically select the most relevant file for each query!")
 
-        # Enhanced status indicator
-        if st.session_state.get("merged_df") is not None:
+        # Enhanced status indicator with refresh detection
+        has_session_data = st.session_state.get("merged_df") is not None or st.session_state.get("uploaded_data") is not None
+        has_manager_data = hasattr(df_manager, '_dataframes') and len(df_manager._dataframes) > 0
+        files_uploaded_this_session = st.session_state.get('files_uploaded_this_session', False)
+        
+        if has_session_data or has_manager_data:
             file_count = len(df_manager._dataframes) if hasattr(df_manager, '_dataframes') else 0
-            if file_count > 1:
+            
+            # Check for data mismatch (refresh scenario)
+            if has_manager_data and not files_uploaded_this_session:
+                st.sidebar.markdown("""
+                <div class="status-indicator status-warning">
+                    ⚠️ Data Detected After Refresh - Please Re-upload
+                </div>
+                """, unsafe_allow_html=True)
+                st.sidebar.warning("🔄 Page was refreshed. Please re-upload your files to continue analysis.")
+                
+                # Add button to clear stale data
+                if st.sidebar.button("🗑️ Clear Stale Data", use_container_width=True):
+                    df_manager._dataframes.clear()
+                    df_manager._file_metadata.clear()
+                    df_manager._metadata.clear()
+                    if hasattr(df_manager, 'current_df'):
+                        df_manager.current_df = None
+                    st.rerun()
+            
+            elif file_count > 1:
                 if "merge_info" in st.session_state:
                     st.sidebar.markdown("""
                     <div class="status-indicator status-success">
@@ -491,14 +565,21 @@ class StreamlitChatInterface:
                     st.subheader("📊 Data Table")
                     st.dataframe(parsed_df, width='stretch')
                 
-                # Display all charts if found
+                # Display all charts with proper containers and spacing
                 if chart_data_list:
                     for i, chart_data in enumerate(chart_data_list):
                         try:
-                            img_data = base64.b64decode(chart_data)
-                            st.image(img_data, use_container_width=True)
-                            if i < len(chart_data_list) - 1:  # Add spacing between charts
-                                st.markdown("---")
+                            # Create a unique container for each chart
+                            with st.container():
+                                st.markdown(f"### 📊 Chart {i+1}")
+                                img_data = base64.b64decode(chart_data)
+                                st.image(img_data, use_container_width=True)
+                                
+                                # Add significant spacing between charts
+                                if i < len(chart_data_list) - 1:  # Not the last chart
+                                    st.markdown("<br><br>", unsafe_allow_html=True)
+                                    st.markdown("---")
+                                    st.markdown("<br>", unsafe_allow_html=True)
                         except Exception as e:
                             st.error(f"Error displaying chart {i+1}: {e}")
     
@@ -830,6 +911,63 @@ class StreamlitChatInterface:
             st.error(f"❌ Error clearing memory: {e}")
         st.rerun()
     
+    def clear_stale_data_on_refresh(self):
+        """Clear stale data from df_manager if session state is fresh but df_manager has data"""
+        # Check if this is a fresh session (no files uploaded this session)
+        # but df_manager still has data (indicating a page refresh)
+        if (not st.session_state.get('files_uploaded_this_session') and 
+            not st.session_state.get('uploaded_data') and 
+            not st.session_state.get('data_info') and 
+            hasattr(df_manager, '_dataframes') and 
+            df_manager._dataframes):
+            
+            print("[StreamlitApp] Detected stale data after page refresh - clearing df_manager")
+            # Clear all data from df_manager
+            df_manager._dataframes.clear()
+            df_manager._file_metadata.clear()
+            df_manager._metadata.clear()
+            
+            # Also clear any current_df reference
+            if hasattr(df_manager, 'current_df'):
+                df_manager.current_df = None
+    
+    def clear_all_data(self):
+        """Clear everything - conversation, memory, and uploaded data"""
+        try:
+            # Clear conversation and memory
+            old_session_id = st.session_state.session_id
+            st.session_state.messages = []
+            st.session_state.conversation_history = []
+            st.session_state.session_id = str(uuid.uuid4())
+            
+            # Clear uploaded data from session state
+            st.session_state.uploaded_data = None
+            st.session_state.data_info = {}
+            st.session_state.files_uploaded_this_session = False
+            if 'uploaded_dfs' in st.session_state:
+                del st.session_state['uploaded_dfs']
+            if 'merged_df' in st.session_state:
+                del st.session_state['merged_df']
+            if 'merge_info' in st.session_state:
+                del st.session_state['merge_info']
+            
+            # Clear all data from df_manager
+            df_manager._dataframes.clear()
+            df_manager._file_metadata.clear()
+            df_manager._metadata.clear()
+            
+            # Clear any current_df reference
+            if hasattr(df_manager, 'current_df'):
+                df_manager.current_df = None
+            
+            # Clear memory from the memory agent
+            clear_memory_agent(old_session_id)
+            
+            st.success("✅ Everything cleared successfully! Upload new files to start fresh.")
+            
+        except Exception as e:
+            st.error(f"❌ Error clearing data: {e}")
+    
     def export_conversation(self):
         """Export conversation as text"""
         if not st.session_state.conversation_history:
@@ -907,9 +1045,7 @@ class StreamlitChatInterface:
         
         with col4:
             if st.button("🔄 Fresh Start", use_container_width=True, help="Clear everything and start completely fresh"):
-                self.clear_conversation()
-                st.session_state.uploaded_data = None
-                st.session_state.data_info = {}
+                self.clear_all_data()
                 st.rerun()
         
         # Display conversation stats
@@ -920,24 +1056,48 @@ class StreamlitChatInterface:
         
         # Welcome message if no conversation
         if not st.session_state.messages:
-            st.markdown("""
-            <div class="assistant-message">
-                <div style="display: flex; align-items: flex-start;">
-                    <div class="avatar assistant-avatar">🤖</div>
-                    <div style="flex: 1;">
-                        Hello! I'm your Data Analytics AI Assistant. I can help you analyze data, create visualizations, and answer questions about your datasets.
-                        <br><br>
-                        <strong>To get started:</strong>
-                        <ul>
-                            <li>📁 Upload a CSV or Excel file in the sidebar</li>
-                            <li>💬 Ask me questions about your data</li>
-                            <li>📊 Request charts and visualizations</li>
-                            <li>🐍 Get help with Python code for analysis</li>
-                        </ul>
+            # Check for stale data scenario
+            has_manager_data = hasattr(df_manager, '_dataframes') and len(df_manager._dataframes) > 0
+            files_uploaded_this_session = st.session_state.get('files_uploaded_this_session', False)
+            
+            if has_manager_data and not files_uploaded_this_session:
+                st.markdown("""
+                <div class="assistant-message">
+                    <div style="display: flex; align-items: flex-start;">
+                        <div class="avatar assistant-avatar">🤖</div>
+                        <div style="flex: 1;">
+                            <strong>⚠️ Page Refresh Detected</strong><br><br>
+                            I notice there's some data from before the page refresh, but it's no longer properly connected. 
+                            For the best experience, please:
+                            <br><br>
+                            <ul>
+                                <li>🔄 Re-upload your files using the sidebar</li>
+                                <li>🗑️ Or click "Clear Stale Data" in the sidebar to start fresh</li>
+                            </ul>
+                            This ensures all your data is properly loaded and ready for analysis.
+                        </div>
                     </div>
                 </div>
-            </div>
-            """, unsafe_allow_html=True)
+                """, unsafe_allow_html=True)
+            else:
+                st.markdown("""
+                <div class="assistant-message">
+                    <div style="display: flex; align-items: flex-start;">
+                        <div class="avatar assistant-avatar">🤖</div>
+                        <div style="flex: 1;">
+                            Hello! I'm your Data Analytics AI Assistant. I can help you analyze data, create visualizations, and answer questions about your datasets.
+                            <br><br>
+                            <strong>To get started:</strong>
+                            <ul>
+                                <li>📁 Upload a CSV or Excel file in the sidebar</li>
+                                <li>💬 Ask me questions about your data</li>
+                                <li>📊 Request charts and visualizations</li>
+                                <li>🐍 Get help with Python code for analysis</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                """, unsafe_allow_html=True)
         
         # Display conversation history
         for i in range(0, len(st.session_state.messages), 2):
@@ -966,16 +1126,24 @@ class StreamlitChatInterface:
         
         st.markdown('</div>', unsafe_allow_html=True)
         
-        # Chat input
-        st.markdown("---")
+        # Add spacing before input to prevent overlap
+        st.markdown("<div style='height: 50px;'></div>", unsafe_allow_html=True)
         
-        # Input area
+        # Chat input
         user_input = st.chat_input(
             "Type your message here...",
             key="chat_input"
         )
         
         if user_input:
+            # Check for stale data before processing
+            has_manager_data = hasattr(df_manager, '_dataframes') and len(df_manager._dataframes) > 0
+            files_uploaded_this_session = st.session_state.get('files_uploaded_this_session', False)
+            
+            if has_manager_data and not files_uploaded_this_session:
+                st.error("⚠️ Please re-upload your files after the page refresh before asking questions.")
+                return
+            
             # Display user message immediately
             self.display_message({"content": user_input}, is_user=True)
             

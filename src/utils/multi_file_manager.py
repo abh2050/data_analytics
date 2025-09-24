@@ -41,105 +41,84 @@ class MultiFileDataManager:
     
     @staticmethod
     def attempt_smart_merge(df_manager) -> Tuple[Optional[pd.DataFrame], str, List[str]]:
-        """Attempt to intelligently merge ALL files based on common columns"""
+        """Create ONE unified merged file from ALL uploaded files"""
         file_info = df_manager.get_file_info()
         if len(file_info) < 2:
             return None, "Need at least 2 files for merging", []
         
-        common_cols = MultiFileDataManager.find_common_columns(df_manager)
+        files_to_merge = [(name, df_manager.get_dataframe(name)) 
+                         for name in file_info.keys() 
+                         if name != 'merged_data' and df_manager.get_dataframe(name) is not None]
         
-        if not common_cols:
-            return None, "No common columns found for merging", []
+        if len(files_to_merge) < 2:
+            return None, "Not enough valid files to merge", []
         
-        # Check if there are columns common to ALL files
-        if "All Files" in common_cols:
-            all_common_cols = common_cols["All Files"]
+        print(f"[MultiFileManager] Creating ONE unified merged file from {len(files_to_merge)} files")
+        
+        # ALWAYS use union merge to create ONE file with ALL data
+        try:
+            # Get all unique columns across ALL files
+            all_columns = set()
+            for _, df in files_to_merge:
+                all_columns.update(df.columns)
             
-            # Find the best merge column from all-common columns
-            id_patterns = ['id', 'key', 'code', 'number', 'ref']
-            best_merge_col = None
-            best_priority = 0
+            all_columns = sorted(list(all_columns))
+            print(f"[MultiFileManager] Total unique columns across all files: {len(all_columns)}")
             
-            for col in all_common_cols:
-                col_lower = col.lower()
-                if any(pattern in col_lower for pattern in id_patterns):
-                    priority = 10
-                elif col_lower in ['date', 'time', 'timestamp']:
-                    priority = 8
-                else:
-                    priority = 5
+            # Standardize ALL dataframes to have the same column structure
+            standardized_dfs = []
+            file_names = []
+            
+            for file_name, df in files_to_merge:
+                print(f"[MultiFileManager] Processing {file_name} with {df.shape[0]} rows, {df.shape[1]} columns")
                 
-                if priority > best_priority:
-                    best_merge_col = col
-                    best_priority = priority
-            
-            if best_merge_col:
-                try:
-                    # Get all files except merged_data
-                    files_to_merge = [(name, df_manager.get_dataframe(name)) 
-                                    for name in file_info.keys() 
-                                    if name != 'merged_data' and df_manager.get_dataframe(name) is not None]
-                    
-                    if len(files_to_merge) < 2:
-                        return None, "Not enough valid files to merge", []
-                    
-                    # Start with first file
-                    merged_df = files_to_merge[0][1].copy()
-                    merged_files = [files_to_merge[0][0]]
-                    
-                    # Merge with each subsequent file
-                    for file_name, df in files_to_merge[1:]:
-                        # Check overlap before merging
-                        overlap = set(merged_df[best_merge_col].dropna()) & set(df[best_merge_col].dropna())
-                        if len(overlap) > 0:
-                            # Create unique suffixes for each file
-                            suffix_num = len(merged_files)
-                            merged_df = pd.merge(merged_df, df, on=best_merge_col, how='inner', 
-                                               suffixes=(f'_{merged_files[0]}' if suffix_num == 1 else '', f'_{file_name}'))
-                            merged_files.append(file_name)
-                    
-                    if len(merged_df) > 0:
-                        overlap_info = f"Successfully merged {len(merged_files)} files: {', '.join(merged_files)} on '{best_merge_col}'"
-                        return merged_df, overlap_info, merged_files
-                        
-                except Exception as e:
-                    print(f"Error merging all files: {e}")
-        
-        # Fallback: try pairwise merging with best overlap
-        best_merge = None
-        best_overlap_ratio = 0
-        
-        for pair, cols in common_cols.items():
-            if pair == "All Files":
-                continue
+                # Create a copy and convert all columns to compatible types
+                standardized_df = df.copy()
                 
+                # Convert all columns to string to avoid type conflicts
+                for col in standardized_df.columns:
+                    try:
+                        standardized_df[col] = standardized_df[col].astype(str)
+                    except:
+                        pass
+                
+                # Add missing columns with empty strings for columns not in this file
+                for col in all_columns:
+                    if col not in standardized_df.columns:
+                        standardized_df[col] = ''
+                
+                # Reorder columns to match the standard order
+                standardized_df = standardized_df[all_columns]
+                
+                # Add source file identifier to track which file each row came from
+                standardized_df['_source_file'] = file_name
+                
+                standardized_dfs.append(standardized_df)
+                file_names.append(file_name)
+                print(f"[MultiFileManager] Standardized {file_name}: {standardized_df.shape[0]} rows, {standardized_df.shape[1]} columns")
+            
+            # Concatenate ALL standardized dataframes into ONE unified file
+            merged_df = pd.concat(standardized_dfs, ignore_index=True, sort=False)
+            
+            total_rows = merged_df.shape[0]
+            total_cols = merged_df.shape[1]
+            
+            merge_info = f"UNIFIED MERGE: Combined ALL {len(file_names)} files into one dataset ({total_rows} rows, {total_cols} columns)"
+            print(f"[MultiFileManager] {merge_info}")
+            
+            return merged_df, merge_info, file_names
+            
+        except Exception as e:
+            print(f"[MultiFileManager] CRITICAL ERROR - Union merge failed: {e}")
+            # Emergency fallback - just concatenate without column standardization
             try:
-                file1, file2 = pair.split(' & ')
-                df1 = df_manager.get_dataframe(file1)
-                df2 = df_manager.get_dataframe(file2)
-                
-                if df1 is None or df2 is None:
-                    continue
-                
-                # Try each common column
-                for merge_col in cols:
-                    overlap = set(df1[merge_col].dropna()) & set(df2[merge_col].dropna())
-                    if len(overlap) > 0:
-                        overlap_ratio = len(overlap) / min(df1[merge_col].nunique(), df2[merge_col].nunique())
-                        
-                        if overlap_ratio > best_overlap_ratio:
-                            merged_df = pd.merge(df1, df2, on=merge_col, how='inner', suffixes=('_1', '_2'))
-                            if len(merged_df) > 0:
-                                best_merge = (merged_df, f"Successfully merged {file1} and {file2} on '{merge_col}' (overlap: {overlap_ratio:.1%})", [file1, file2])
-                                best_overlap_ratio = overlap_ratio
-                        
-            except Exception as e:
-                continue
+                all_dfs = [df for _, df in files_to_merge]
+                merged_df = pd.concat(all_dfs, ignore_index=True, sort=False)
+                return merged_df, f"Emergency concatenation of {len(files_to_merge)} files", [name for name, _ in files_to_merge]
+            except:
+                pass
         
-        if best_merge:
-            return best_merge
-        
-        return None, "Merge attempts failed - no sufficient data overlap", list(common_cols.keys())
+        return None, "CRITICAL: All merge strategies failed", [name for name, _ in files_to_merge]
     
     @staticmethod
     def get_file_summary(df_manager) -> str:
@@ -250,6 +229,15 @@ class MultiFileDataManager:
         if merged_df is not None:
             result = f"🔗 **Combined Analysis Result**\n\n"
             result += f"{merge_info}\n\n"
+            
+            # Show merge statistics
+            if '_source_file' in merged_df.columns:
+                source_counts = merged_df['_source_file'].value_counts()
+                result += f"**Data Distribution by Source:**\n"
+                for source, count in source_counts.items():
+                    result += f"  • {source}: {count:,} rows\n"
+                result += "\n"
+            
             result += MultiFileDataManager.create_table_output(merged_df, "Merged Data", 15)
             return result
         else:
@@ -261,3 +249,25 @@ class MultiFileDataManager:
                     result += MultiFileDataManager.create_table_output(df, name, 5)
                     result += "\n\n"
             return result
+    
+    @staticmethod
+    def get_merged_dataframe(df_manager) -> Tuple[Optional[pd.DataFrame], str]:
+        """Get or create a merged dataframe from all available files"""
+        # Check if merged_data already exists
+        merged_df = df_manager.get_dataframe('merged_data')
+        if merged_df is not None:
+            return merged_df, "merged_data"
+        
+        # Attempt to create merged dataframe
+        merged_df, merge_info, merged_files = MultiFileDataManager.attempt_smart_merge(df_manager)
+        
+        if merged_df is not None:
+            # Store the merged dataframe
+            df_manager.store_dataframe('merged_data', merged_df, {
+                'merge_info': merge_info,
+                'source_files': merged_files,
+                'file_type': 'merged'
+            })
+            return merged_df, "merged_data"
+        
+        return None, "merge_failed"
