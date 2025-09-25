@@ -110,14 +110,19 @@ def generate_chart_impl(data: str, chart_type: str, x_axis: str, y_axis: str, ti
             else:
                 plt.plot(df[x_axis], df[y_axis], marker='o', linewidth=2, markersize=6)
         elif chart_type == "bar":
-            # Limit the number of bars shown to prevent x-axis overlap
-            if len(df) > 10:
-                counts = df.groupby(x_axis)[y_axis].mean().nlargest(10)
+            # Smart bar chart handling
+            if len(df) > 15:
+                # Group and show top categories
+                counts = df.groupby(x_axis)[y_axis].mean().nlargest(12)
                 bars = plt.bar(range(len(counts)), counts.values, alpha=0.8, color='skyblue', edgecolor='navy')
-                plt.xticks(range(len(counts)), [str(x)[:15] for x in counts.index], rotation=45, ha='right')
+                # Truncate labels smartly
+                labels = [str(x)[:12] + '...' if len(str(x)) > 12 else str(x) for x in counts.index]
+                plt.xticks(range(len(counts)), labels)
             else:
                 bars = plt.bar(df[x_axis], df[y_axis], alpha=0.8, color='skyblue', edgecolor='navy')
-                plt.xticks(rotation=45, ha='right')
+                # Keep original labels but truncate if too long
+                current_labels = [str(x)[:15] + '...' if len(str(x)) > 15 else str(x) for x in df[x_axis]]
+                plt.xticks(range(len(df)), current_labels)
         elif chart_type == "scatter":
             # Limit scatter points to prevent overcrowding
             if len(df) > 200:
@@ -146,11 +151,32 @@ def generate_chart_impl(data: str, chart_type: str, x_axis: str, y_axis: str, ti
         if chart_type not in ["histogram", "boxplot", "pie"]:
             plt.xlabel(x_label)
             plt.ylabel(y_label)
-            # Fix overlapping labels - CRITICAL for axis overlap
-            plt.gca().xaxis.set_major_locator(plt.MaxNLocator(nbins=4))  # Max 4 x-ticks
-            plt.gca().yaxis.set_major_locator(plt.MaxNLocator(nbins=4))  # Max 4 y-ticks
-            plt.xticks(rotation=45, ha='right')
-            plt.yticks(rotation=0)
+            
+            # Dynamic axis handling based on data type and size
+            if chart_type == "bar":
+                # For bar charts, show all labels but rotate and truncate if needed
+                current_labels = plt.gca().get_xticklabels()
+                if len(current_labels) > 15:
+                    # Show every nth label to prevent overlap
+                    step = len(current_labels) // 10
+                    for i, label in enumerate(current_labels):
+                        if i % step != 0:
+                            label.set_visible(False)
+                plt.xticks(rotation=45, ha='right')
+            else:
+                # For line/scatter, use smart tick selection
+                n_points = len(df)
+                if n_points > 20:
+                    plt.gca().xaxis.set_major_locator(plt.MaxNLocator(nbins=8))
+                elif n_points > 10:
+                    plt.gca().xaxis.set_major_locator(plt.MaxNLocator(nbins=6))
+                else:
+                    plt.gca().xaxis.set_major_locator(plt.MaxNLocator(nbins=n_points))
+                
+                plt.xticks(rotation=30, ha='right')
+            
+            # Y-axis always readable
+            plt.gca().yaxis.set_major_locator(plt.MaxNLocator(nbins=6))
         
         plt.title(f"{title} {sample_notice}", fontsize=12, fontweight='bold')
         # Add extra space for rotated labels
@@ -1149,11 +1175,6 @@ def _analyze_file_requirement_standalone(user_request: str, available_files: lis
 User Request: "{user_request}"
 Available Files: {available_files}
 
-Analyze the request and determine:
-1. Does the user mention a specific file name or content that matches one file?
-2. Do they want data from all files combined?
-3. Are they asking for a specific type of analysis that would require one particular file?
-
 Respond in this exact JSON format:
 {{
     "specific_file": "filename.csv" or null,
@@ -1161,11 +1182,8 @@ Respond in this exact JSON format:
     "reasoning": "explanation of decision"
 }}
 
-Guidelines:
-- If user mentions "railways", "pharma", "it" or similar, match to corresponding file
-- If user says "all files", "compare", "merged" set multi_file: true
-- If user asks for general charts without specifying, use intelligent matching
-- If unclear, default to single most relevant file"""
+Analyze the request intelligently based on context and keywords.
+"""
 
         response = llm.invoke(analysis_prompt)
         analysis_text = response.content if hasattr(response, 'content') else str(response)
@@ -1204,12 +1222,32 @@ def generate_and_execute_chart_code(user_request: str, chart_description: str = 
         is_multi_file_request = any(keyword in request_lower for keyword in multi_file_keywords)
         is_general_chart_request = any(keyword in request_lower for keyword in general_chart_keywords)
         
-        # Use LLM to intelligently analyze which file(s) the user wants
+        # First do dynamic keyword matching
         file_info = df_manager.get_file_info()
-        file_selection_analysis = _analyze_file_requirement_standalone(user_request, list(file_info.keys()))
+        mentioned_file = None
+        requires_multi_file = False
         
-        mentioned_file = file_selection_analysis.get('specific_file')
-        requires_multi_file = file_selection_analysis.get('multi_file', False)
+        request_lower = user_request.lower()
+        for file_name_check in file_info.keys():
+            if file_name_check == 'merged_data':
+                continue
+            # Extract keywords from filename (remove extensions, split by underscore/space)
+            file_keywords = file_name_check.lower().replace('.csv', '').replace('_', ' ').replace('(', '').replace(')', '').split()
+            # Check if any keyword from filename appears in user request
+            for keyword in file_keywords:
+                if len(keyword) > 2 and keyword in request_lower:  # Skip short words like 'a', 'of'
+                    mentioned_file = file_name_check
+                    requires_multi_file = False
+                    print(f"[ChartingAgent] Dynamic match: '{keyword}' found in request, using file: {file_name_check}")
+                    break
+            if mentioned_file:
+                break
+        
+        # If no dynamic match found, use LLM analysis as fallback
+        if not mentioned_file:
+            file_selection_analysis = _analyze_file_requirement_standalone(user_request, list(file_info.keys()))
+            mentioned_file = file_selection_analysis.get('specific_file')
+            requires_multi_file = file_selection_analysis.get('multi_file', False)
         
         # Determine which data to use
         if mentioned_file:
@@ -1257,34 +1295,68 @@ def generate_and_execute_chart_code(user_request: str, chart_description: str = 
         available_files = [name for name in all_files_info.keys() if name != 'merged_data']
         total_files = len(available_files)
         
-        # Enhanced code generation prompt for comprehensive chart coverage
+        # Use LLM to intelligently analyze the request type
+        analysis_prompt = f"""Analyze this user request to determine if they want:
+1. A specific single chart type (histogram, bar chart, pie chart, etc.)
+2. Multiple comprehensive charts covering all data
+
+User Request: "{user_request}"
+
+Respond with either:
+- "SPECIFIC" if they want one specific chart type
+- "COMPREHENSIVE" if they want multiple charts or general analysis
+
+Examples:
+- "histogram" → SPECIFIC
+- "bar chart" → SPECIFIC  
+- "show me charts" → COMPREHENSIVE
+- "analyze data" → COMPREHENSIVE
+- "pie chart of sectors" → SPECIFIC
+- "visualize everything" → COMPREHENSIVE"""
+        
+        from langchain_openai import ChatOpenAI
+        import os
+        llm = ChatOpenAI(temperature=0, model='gpt-4.1', api_key=os.environ.get('OPENAI_API_KEY'))
+        analysis_response = llm.invoke(analysis_prompt)
+        analysis_result = analysis_response.content if hasattr(analysis_response, 'content') else str(analysis_response)
+        
+        is_comprehensive = "COMPREHENSIVE" in analysis_result.upper()
+        
+        # Enhanced code generation prompt based on request type
+        if is_comprehensive:
+            chart_instruction = f"Generate 12-15 different charts covering all columns and relationships"
+        else:
+            chart_instruction = f"Generate ONLY the specific chart type requested by the user. Create just ONE chart that matches their exact request."
+        
         code_generation_prompt = f"""
-You are an expert Python data visualization programmer. Generate matplotlib/seaborn code to create charts based on the user's request.
+You are an expert Python data visualization programmer. Generate matplotlib/seaborn code based on the user's request.
 
 USER REQUEST: "{user_request}"
-FILE BEING ANALYZED: "{file_name}"
-TOTAL FILES AVAILABLE: {total_files}
-ALL AVAILABLE FILES: {available_files}
+FILE: "{file_name}" | TOTAL FILES: {total_files} | ALL FILES: {available_files}
 
-AVAILABLE DATA:
-- Dataset: {file_name}
+DATA SUMMARY:
 - Shape: {df.shape}
-- ALL COLUMNS: {columns}
-- Numeric columns: {numeric_cols}
-- Categorical columns: {categorical_cols}
-- Sample data: {df.head(2).to_dict() if len(df) > 0 else 'No data'}
+- Columns: {columns}
+- Numeric: {numeric_cols}
+- Categorical: {categorical_cols}
+- Sample: {df.head(2).to_dict() if len(df) > 0 else 'No data'}
 
-CRITICAL REQUIREMENTS - READ CAREFULLY:
-1. NEVER READ FILES: The dataframe 'df' is already loaded in memory - DO NOT use pd.read_csv() or any file operations
-2. USE EXISTING DATAFRAME: Always use the variable 'df' which contains all the data you need
-3. NO FILE OPERATIONS: Do not try to read 'merged_data.csv' or any CSV files - the data is already in 'df'
-4. GENERATE CHARTS FOR ALL COLUMN TYPES: Create visualizations for ALL columns from ALL {total_files} files
-5. COMPREHENSIVE COVERAGE: Generate at least 12-15 charts to cover all possible column combinations
-6. COLUMN VERIFICATION: Always check if column exists before using: if 'column_name' in df.columns
-7. ERROR HANDLING: Use try-except blocks around all chart operations
-8. DYNAMIC FORMATTING: Handle overlapping labels, limit categories, rotate text as needed
-9. CHART QUALITY: Use proper figure sizes, limit data points for readability
-10. RETURN FORMAT: Return dictionary with chart names as keys and base64 images as values
+CHART INSTRUCTION:
+{chart_instruction}
+
+CRITICAL REQUIREMENTS:
+1. NEVER READ FILES: Use only 'df'; do NOT use pd.read_csv or file ops.
+2. COLUMN CHECK: Always verify column exists: if 'col' in df.columns
+3. ERROR HANDLING: Wrap chart ops in try-except
+4. FORMAT CHARTS: 
+   - Figure size: plt.figure(figsize=(12,8))
+   - Limit categories for bars: top 8 (.value_counts().head(8))
+   - Limit axis ticks: x-max 8, y-max 6
+   - Rotate long labels: plt.xticks(rotation=45, ha='right')
+   - Adaptive spacing: plt.subplots_adjust(bottom=0.25)
+   - Truncate long labels: str(x)[:12]
+5. DATA CLEANING: Convert numeric before groupby: pd.to_numeric(df[col], errors='coerce')
+6. RETURN: Dict with chart names as keys and base64 images as values
 
 CODE TEMPLATE:
 ```python
@@ -1295,81 +1367,35 @@ import numpy as np
 import base64
 from io import BytesIO
 
-# Set style
 plt.style.use('default')
 sns.set_palette("husl")
 
-# Helper function to save chart as base64 with proper formatting
 def save_chart_as_base64():
     buf = BytesIO()
     plt.tight_layout()
     plt.savefig(buf, format='png', dpi=100, bbox_inches='tight', facecolor='white')
     buf.seek(0)
-    img_data = buf.read()
-    img_base64 = base64.b64encode(img_data).decode('utf-8')
-    # Ensure proper base64 padding
-    missing_padding = len(img_base64) % 4
-    if missing_padding:
-        img_base64 += '=' * (4 - missing_padding)
-    plt.close('all')
-    plt.clf()
+    img_base64 = base64.b64encode(buf.read()).decode('utf-8')
+    img_base64 += '=' * ((4 - len(img_base64) % 4) % 4)
+    plt.close('all'); plt.clf()
     return img_base64
 
-# Helper function to handle overlapping labels
-def fix_overlapping_labels(ax, max_labels=6):
+def fix_labels(ax, max_labels=6):
     labels = ax.get_xticklabels()
     if len(labels) > max_labels:
-        # Show every nth label to avoid overlap
         step = len(labels) // max_labels + 1
-        for i, label in enumerate(labels):
-            if i % step != 0:
-                label.set_visible(False)
-    # Rotate labels and adjust spacing
-    plt.xticks(rotation=45, ha='right')
+        for i, l in enumerate(labels):
+            if i % step != 0: l.set_visible(False)
+    max_len = max([len(str(l.get_text())) for l in labels]+[0])
+    if max_len > 8 or len(labels) > 6: plt.xticks(rotation=45, ha='right'); plt.subplots_adjust(bottom=0.2)
+    else: plt.xticks(rotation=0); plt.subplots_adjust(bottom=0.1)
     plt.yticks(rotation=0)
     plt.gca().xaxis.set_major_locator(plt.MaxNLocator(nbins=4))
     plt.gca().yaxis.set_major_locator(plt.MaxNLocator(nbins=4))
-    plt.subplots_adjust(bottom=0.25, left=0.15)
     return ax
 
-# Initialize result dictionary
-result = {{}}
-
-# CRITICAL: The dataframe 'df' is already loaded - DO NOT read any files
-# Use 'df' directly for all operations - it contains all the data you need
-
-# CRITICAL CHART FORMATTING GUIDELINES:
-# 1. USE FULL DATA: Don't sample data to avoid null columns: use full df
-# 2. LIMIT CATEGORIES: For bar charts, use only top 8: .value_counts().head(8)
-# 3. FIX OVERLAPPING LABELS: Always use plt.xticks(rotation=45, ha='right')
-# 4. PROPER FIGURE SIZE: Use plt.figure(figsize=(12, 8))
-# 5. CLEAN NUMERIC DATA: pd.to_numeric(df[col], errors='coerce').dropna()
-# 6. AVOID DENSE PLOTS: For line plots with >5 series, group or filter data
-# 7. READABLE SPACING: Use plt.subplots_adjust(bottom=0.3) for label space
-# 8. TRUNCATE LABELS: Limit axis labels to 12 chars: str(x)[:12]
-# 9. LIMIT AXIS TICKS: Use plt.gca().xaxis.set_major_locator(plt.MaxNLocator(nbins=4))
-# 10. LIMIT Y AXIS TICKS: Use plt.gca().yaxis.set_major_locator(plt.MaxNLocator(nbins=4))
-# 11. MANDATORY: Add these lines after EVERY chart to prevent overlapping:
-#     plt.xticks(rotation=45, ha='right')
-#     plt.yticks(rotation=0)
-#     plt.subplots_adjust(bottom=0.25, left=0.15)
-#     plt.tight_layout()
-
-# Generate comprehensive visualizations using ONLY the existing 'df' variable
-# CRITICAL: MANDATORY lines after EVERY chart to prevent overlapping:
-# plt.figure(figsize=(12, 8))  # Larger figure size
-# plt.gca().xaxis.set_major_locator(plt.MaxNLocator(nbins=4))  # Max 4 x-ticks
-# plt.gca().yaxis.set_major_locator(plt.MaxNLocator(nbins=4))  # Max 4 y-ticks
-# plt.xticks(rotation=45, ha='right')  # Rotate x-axis labels
-# plt.yticks(rotation=0)  # Keep y-axis labels horizontal
-# plt.subplots_adjust(bottom=0.25, left=0.15)  # Extra space for labels
-# plt.tight_layout()  # Adjust layout
-# # Truncate long labels: labels = [str(x)[:10] for x in labels]
-
-# CRITICAL DATA CONVERSION: Always convert to numeric before groupby operations:
-# df['column'] = pd.to_numeric(df['column'], errors='coerce')
-# df = df.dropna(subset=['column'])  # Remove NaN values after conversion
-```
+result ={ {}}
+# Use df directly; follow formatting, label, and numeric conversion guidelines
 
 WARNING: DO NOT include any lines like 'merged_data = pd.read_csv(...)' or similar file reading operations. The data is already available in the 'df' variable.
 
@@ -1399,8 +1425,8 @@ IMPORTANT: Generate ONLY executable Python code that uses the existing 'df' data
         # Force multi-chart for comprehensive requests or when multiple files are available
         all_files_info = df_manager.get_file_info()
         total_files = len([name for name in all_files_info.keys() if name != 'merged_data'])
-        # Always force comprehensive charts for multi-file scenarios
-        force_multi_chart = "all chart" in request_lower or "generate chart" in request_lower or total_files > 1  
+        # Only force comprehensive charts based on LLM analysis
+        force_multi_chart = is_comprehensive  
         # Import required libraries
         import matplotlib.pyplot as plt
         import seaborn as sns
@@ -1409,6 +1435,22 @@ IMPORTANT: Generate ONLY executable Python code that uses the existing 'df' data
         from io import BytesIO
         import base64
         
+        # Helper function for saving charts as base64
+        def save_chart_as_base64(fig=None, dpi=150):
+            if fig is None:
+                fig = plt.gcf()
+            from io import BytesIO
+            buf = BytesIO()
+            fig.savefig(buf, format='png', dpi=dpi, bbox_inches='tight')
+            buf.seek(0)
+            img_data = buf.read()
+            img_base64 = base64.b64encode(img_data).decode('utf-8')
+            missing_padding = len(img_base64) % 4
+            if missing_padding:
+                img_base64 += '=' * (4 - missing_padding)
+            plt.close(fig)
+            return img_base64
+
         # Execute the generated code
         safe_globals = {
             'df': df_sample,
@@ -1419,6 +1461,12 @@ IMPORTANT: Generate ONLY executable Python code that uses the existing 'df' data
             "BytesIO": BytesIO,
             "base64": base64,
             "__builtins__": __builtins__,
+            'save_chart_as_base64': save_chart_as_base64,
+            'result': {},
+            'results': {},
+            'charts': {},
+            'chart_images': {},
+            
         }
 
         # Add automatic function call if code contains commented usage
@@ -1431,7 +1479,13 @@ IMPORTANT: Generate ONLY executable Python code that uses the existing 'df' data
                     generated_code += f"\n{func_call}"
                     break
         
-        local_vars = {}
+        local_vars = {
+            'result': {},
+            'results': {},
+            'charts': {},
+            'chart_images': {},
+            'save_chart_as_base64': save_chart_as_base64
+        }
         exec(generated_code, safe_globals, local_vars)
 
         # Check if a function was defined and call it if no result exists

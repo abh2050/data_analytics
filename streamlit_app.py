@@ -171,17 +171,17 @@ st.markdown("""
         background: #a8a8a8;
     }
     
-    /* Fix chart overlapping completely */
+        /* Optimized chart spacing */
     .stImage {
-        margin: 50px 0 !important;
+        margin: 15px 0 !important;
         display: block !important;
         width: 100% !important;
         clear: both !important;
     }
     
-    /* Add space between all elements */
+    /* Reduced space between elements */
     .element-container {
-        margin-bottom: 40px !important;
+        margin-bottom: 15px !important;
     }
     
     /* Chat input at bottom with huge margin */
@@ -575,14 +575,11 @@ class StreamlitChatInterface:
                                 img_data = base64.b64decode(chart_data)
                                 st.image(img_data, use_container_width=True)
                                 
-                                # Add significant spacing between charts
+                                # Add minimal spacing between charts
                                 if i < len(chart_data_list) - 1:  # Not the last chart
-                                    st.markdown("<br><br>", unsafe_allow_html=True)
-                                    st.markdown("---")
                                     st.markdown("<br>", unsafe_allow_html=True)
                         except Exception as e:
                             st.error(f"Error displaying chart {i+1}: {e}")
-    
     def _process_content_for_display(self, content: str) -> str:
         """Process content to improve markdown display"""
         # Handle bullet points and formatting
