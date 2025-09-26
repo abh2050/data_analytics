@@ -321,11 +321,58 @@ class StreamlitChatInterface:
                     st.sidebar.error(f"❌ CRITICAL: Force merge failed - {merge_info}")
                     merged_df = dfs[0][1]
                     st.session_state["merged_df"] = merged_df
+                
+                # 📊 Data Overview (multi-file)
+                with st.sidebar.expander("📊 Data Overview", expanded=True):
+                    for filename, df in dfs:
+                        st.write(f"**{filename}:** {df.shape[0]:,} rows, {df.shape[1]} cols")
+                    
+                    if "merge_info" in st.session_state:
+                        st.write("**Merge Status:**")
+                        st.write(f"✅ {st.session_state['merge_info']}")
+                        
+                        if '_source_file' in st.session_state["merged_df"].columns:
+                            source_counts = st.session_state["merged_df"]['_source_file'].value_counts()
+                            st.write("**Data Distribution:**")
+                            for source, count in source_counts.items():
+                                st.write(f"  • {source}: {count:,} rows")
+                
+                # 👁️ Data Preview (multi-file)
+                with st.sidebar.expander("👁️ Data Preview"):
+                    selected_file = st.selectbox(
+                        "Preview file:",
+                        [f for f, _ in dfs] + (["merged_data"] if "merge_info" in st.session_state else [])
+                    )
+                    
+                    if selected_file == "merged_data" and "merge_info" in st.session_state:
+                        preview_df = st.session_state["merged_df"]
+                        st.write(f"**Merged Data:** {st.session_state['merge_info']}")
+                    else:
+                        preview_df = next(df for f, df in dfs if f == selected_file)
+                    
+                    st.dataframe(preview_df.head(10), width='stretch')
+
             else:
                 # Single file uploaded → use directly
                 merged_df = dfs[0][1]
                 st.session_state["merged_df"] = merged_df
 
+                # 📊 Data Overview (single file)
+                with st.sidebar.expander("📊 Data Overview", expanded=True):
+                    st.write(f"**File:** {dfs[0][0]}")
+                    st.write(f"**Rows:** {merged_df.shape[0]:,}")
+                    st.write(f"**Columns:** {merged_df.shape[1]}")
+                    st.write(f"**Size:** {merged_df.memory_usage(deep=True).sum() / 1024 / 1024:.1f} MB")
+
+                    st.write("**Column Types:**")
+                    for dtype, count in merged_df.dtypes.value_counts().items():
+                        st.write(f"  • {dtype}: {count} columns")
+
+                # 👁️ Data Preview (single file)
+                with st.sidebar.expander("👁️ Data Preview"):
+                    st.dataframe(merged_df.head(10), width='stretch')
+
+            # Store meta info
             st.session_state.uploaded_data = merged_df
             st.session_state.data_info = {
                 "filename": [f for f, _ in dfs],
