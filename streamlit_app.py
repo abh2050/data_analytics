@@ -247,8 +247,9 @@ class StreamlitChatInterface:
         # Check for refresh scenario before showing uploader
         has_manager_data = hasattr(df_manager, '_dataframes') and len(df_manager._dataframes) > 0
         files_uploaded_this_session = st.session_state.get('files_uploaded_this_session', False)
-        
-        if has_manager_data and not files_uploaded_this_session:
+        just_uploaded = st.session_state.get("just_uploaded", False)
+
+        if has_manager_data and not files_uploaded_this_session and not just_uploaded:
             st.sidebar.warning("🔄 Stale data detected from before page refresh")
             if st.sidebar.button("🗑️ Clear Stale Data", use_container_width=True):
                 df_manager._dataframes.clear()
@@ -263,7 +264,7 @@ class StreamlitChatInterface:
             type=["csv", "xlsx"],
             accept_multiple_files=True,
             help="Upload one or more data files to start analysis",
-            key="file_uploader"  # Add key to ensure proper state management
+            key="file_uploader"
         )
 
         if uploaded_files:
@@ -295,10 +296,10 @@ class StreamlitChatInterface:
             # Save all uploaded dataframes and mark as uploaded this session
             st.session_state["uploaded_dfs"] = dfs
             st.session_state.files_uploaded_this_session = True
+            st.session_state.just_uploaded = True   # 👈 Add this
 
-            # Handle multiple files with FORCE merge (always create merged file)
+            # Handle multiple files with FORCE merge
             if len(dfs) > 1:
-                # FORCE merge - always create merged data
                 merged_df, merge_info, merged_files = MultiFileDataManager.attempt_smart_merge(df_manager)
                 
                 if merged_df is not None:
@@ -306,71 +307,25 @@ class StreamlitChatInterface:
                     st.session_state["merged_df"] = merged_df
                     st.session_state["merge_info"] = merge_info
                     
-                    # Store merged dataframe
                     df_manager.store_dataframe("merged_data", merged_df, {
                         'merge_info': merge_info,
                         'source_files': merged_files,
                         'file_type': 'merged'
                     })
                     
-                    # Show merge type
                     if '_source_file' in merged_df.columns:
                         st.sidebar.info("📋 FORCE MERGED: All files combined with union merge")
                     else:
                         st.sidebar.info("🔗 FORCE MERGED: Files merged on common columns")
                 else:
-                    # This should never happen with force merge, but just in case
                     st.sidebar.error(f"❌ CRITICAL: Force merge failed - {merge_info}")
                     merged_df = dfs[0][1]
                     st.session_state["merged_df"] = merged_df
-                
-                with st.sidebar.expander("📊 Data Overview", expanded=True):
-                    for filename, df in dfs:
-                        st.write(f"**{filename}:** {df.shape[0]:,} rows, {df.shape[1]} cols")
-                    
-                    # Show merge information
-                    if "merge_info" in st.session_state:
-                        st.write("**Merge Status:**")
-                        st.write(f"✅ {st.session_state['merge_info']}")
-                        
-                        # Show data distribution if it's a union merge
-                        if '_source_file' in st.session_state["merged_df"].columns:
-                            source_counts = st.session_state["merged_df"]['_source_file'].value_counts()
-                            st.write("**Data Distribution:**")
-                            for source, count in source_counts.items():
-                                st.write(f"  • {source}: {count:,} rows")
-                
-                with st.sidebar.expander("👁️ Data Preview"):
-                    selected_file = st.selectbox("Preview file:", [f for f, _ in dfs] + (["merged_data"] if "merge_info" in st.session_state else []))
-                    
-                    if selected_file == "merged_data" and "merge_info" in st.session_state:
-                        preview_df = st.session_state["merged_df"]
-                        st.write(f"**Merged Data:** {st.session_state['merge_info']}")
-                    else:
-                        preview_df = next(df for f, df in dfs if f == selected_file)
-                    
-                    st.dataframe(preview_df.head(10), width='stretch')
-
             else:
                 # Single file uploaded → use directly
                 merged_df = dfs[0][1]
                 st.session_state["merged_df"] = merged_df
 
-                with st.sidebar.expander("📊 Data Overview", expanded=True):
-                    st.write(f"**File:** {dfs[0][0]}")
-                    st.write(f"**Rows:** {merged_df.shape[0]:,}")
-                    st.write(f"**Columns:** {merged_df.shape[1]}")
-                    st.write(f"**Size:** {merged_df.memory_usage(deep=True).sum() / 1024 / 1024:.1f} MB")
-
-                    st.write("**Column Types:**")
-                    for dtype, count in merged_df.dtypes.value_counts().items():
-                        st.write(f"  • {dtype}: {count} columns")
-
-                with st.sidebar.expander("👁️ Data Preview"):
-                    st.dataframe(merged_df.head(10), width='stretch')
-
-
-            
             st.session_state.uploaded_data = merged_df
             st.session_state.data_info = {
                 "filename": [f for f, _ in dfs],
@@ -382,7 +337,7 @@ class StreamlitChatInterface:
             }
             df_manager.set_current_dataframe(merged_df)
         
-        # Show all loaded files if any exist
+        # Show loaded files if exist
         if hasattr(df_manager, '_dataframes') and df_manager._dataframes:
             st.sidebar.markdown("---")
             st.sidebar.markdown("### 📂 Loaded Files")
@@ -391,7 +346,6 @@ class StreamlitChatInterface:
                     file_df = df_manager._dataframes[filename]
                     st.sidebar.write(f"• **{filename}** ({file_df.shape[0]} rows, {file_df.shape[1]} cols)")
             
-            # Show merge status if multiple files
             if len(df_manager._dataframes) > 1:
                 if "merge_info" in st.session_state:
                     st.sidebar.success("🔗 Files merged successfully!")
@@ -399,52 +353,6 @@ class StreamlitChatInterface:
                     st.sidebar.info("⚠️ No common columns found for merging. Using first file only.")
             
             st.sidebar.info("💡 The system will automatically select the most relevant file for each query!")
-
-        # Enhanced status indicator with refresh detection
-        has_session_data = st.session_state.get("merged_df") is not None or st.session_state.get("uploaded_data") is not None
-        has_manager_data = hasattr(df_manager, '_dataframes') and len(df_manager._dataframes) > 0
-        files_uploaded_this_session = st.session_state.get('files_uploaded_this_session', False)
-        
-        if has_session_data or has_manager_data:
-            file_count = len(df_manager._dataframes) if hasattr(df_manager, '_dataframes') else 0
-            
-            # Check for data mismatch (refresh scenario)
-            if has_manager_data and not files_uploaded_this_session:
-                st.sidebar.markdown("""
-                <div class="status-indicator status-warning">
-                    ⚠️ Data Detected After Refresh - Please Re-upload
-                </div>
-                """, unsafe_allow_html=True)
-                st.sidebar.warning("🔄 Page was refreshed. Please re-upload your files to continue analysis.")
-                
-                # Add button to clear stale data
-                if st.sidebar.button("🗑️ Clear Stale Data", use_container_width=True):
-                    df_manager._dataframes.clear()
-                    df_manager._file_metadata.clear()
-                    df_manager._metadata.clear()
-                    if hasattr(df_manager, 'current_df'):
-                        df_manager.current_df = None
-                    st.rerun()
-            
-            elif file_count > 1:
-                if "merge_info" in st.session_state:
-                    st.sidebar.markdown("""
-                    <div class="status-indicator status-success">
-                        ✅ Multi-File Data Ready (Merged)
-                    </div>
-                    """, unsafe_allow_html=True)
-                else:
-                    st.sidebar.markdown("""
-                    <div class="status-indicator status-info">
-                        📊 Multi-File Data Ready (Individual)
-                    </div>
-                    """, unsafe_allow_html=True)
-            else:
-                st.sidebar.markdown("""
-                <div class="status-indicator status-success">
-                    ✅ Data Ready for Analysis
-                </div>
-                """, unsafe_allow_html=True)
         else:
             st.sidebar.markdown("""
             <div class="status-indicator status-warning">
@@ -452,7 +360,11 @@ class StreamlitChatInterface:
             </div>
             """, unsafe_allow_html=True)
 
-    
+        # 👇 Reset just_uploaded flag after one render
+        if st.session_state.get("just_uploaded"):
+            st.session_state.just_uploaded = False
+
+
     def display_conversation_stats(self):
         """Display conversation statistics in sidebar"""
         if st.session_state.conversation_history:
