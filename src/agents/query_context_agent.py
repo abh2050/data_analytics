@@ -7,12 +7,14 @@ import pandas as pd
 
 # Import the shared DataFrameManager
 try:
-    from .pandas_agent import df_manager
+    from .pandas_agent import get_df_manager
+    df_manager = get_df_manager()
 except ImportError:
     import sys
     import os
     sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-    from pandas_agent import df_manager
+    from pandas_agent import get_df_manager
+    df_manager = get_df_manager()
 
 class QueryContextAgent:
     """

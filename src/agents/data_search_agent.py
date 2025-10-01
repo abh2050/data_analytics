@@ -34,7 +34,8 @@ def search_data(query: str) -> str:
     """
     try:
         # Use the shared DataFrame manager to get the current uploaded dataset
-        from .pandas_agent import df_manager
+        from .pandas_agent import get_df_manager
+        df_manager = get_df_manager()
         df = df_manager.get_current_dataframe()
         
         if df is None:
@@ -85,7 +86,8 @@ def filter_data(column: str, operator: str, value: str) -> str:
     """
     try:
         # Use the shared DataFrame manager to get the current uploaded dataset
-        from .pandas_agent import df_manager
+        from .pandas_agent import get_df_manager
+        df_manager = get_df_manager()
         df = df_manager.get_current_dataframe()
         
         if df is None:
@@ -146,7 +148,8 @@ def get_data_summary() -> str:
     """Returns a comprehensive summary of the uploaded dataset including statistics and structure."""
     try:
         # Use the shared DataFrame manager to get the current uploaded dataset
-        from .pandas_agent import df_manager
+        from .pandas_agent import get_df_manager
+        df_manager = get_df_manager()
         df = df_manager.get_current_dataframe()
         
         if df is None:

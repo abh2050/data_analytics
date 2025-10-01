@@ -3,7 +3,7 @@ from langchain_openai import ChatOpenAI
 from langchain.tools import tool, BaseTool
 from langchain_core.callbacks import CallbackManagerForToolRun
 from langgraph.prebuilt import create_react_agent
-from typing import Optional, Type, Dict, Any, List, TypedDict
+from typing import Optional, Type, Dict, Any, List, Tuple, TypedDict
 from pydantic import BaseModel, Field
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -15,15 +15,15 @@ import json
 import ast
 from langchain_core.messages import HumanMessage, AIMessage, SystemMessage
 import matplotlib.pyplot as plt
-# Import the shared DataFrameManager singleton
-try:
-    from .pandas_agent import df_manager
-except ImportError:
-    # Fallback with proper import path for singleton
-    import sys
-    import os
-    sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-    from pandas_agent import df_manager
+import sys
+from pathlib import Path
+
+# Add utils to path for imports
+sys.path.append(str(Path(__file__).parent.parent))
+from utils.agent_tracker import track_agent_execution
+# Import the shared DataFrameManager singleton - MUST be same instance as streamlit app
+from src.agents.pandas_agent import get_df_manager
+df_manager = get_df_manager()
 
 def safe_parse_action_input(action_input):
     """Safely parse action input from various formats (dict, JSON string, Python dict string)"""
@@ -253,7 +253,6 @@ def create_chart_from_uploaded_data(chart_type: str, x_column: str, y_column: st
         # Get dataframe from the shared df_manager with intelligent file selection
         query_for_selection = f"chart {chart_type} {x_column} {y_column or ''}"
         df, file_name = df_manager.get_relevant_dataframe(query_for_selection)
-        print(f"[create_chart_from_uploaded_data] Selected file: {file_name} for query: {query_for_selection}")
             
         if df is None:
             return "No dataframe loaded. Please upload a file first."
@@ -455,6 +454,7 @@ Use generate_and_execute_chart_code to create a custom visualization that perfec
         # Create the LangGraph React agent
         self.agent = create_react_agent(self.llm, self.tools)
 
+    @track_agent_execution("chart")
     def invoke(self, state: Dict[str, Any]) -> Dict[str, Any]:
         """
         Intelligently generate data visualizations based on user requests
@@ -491,52 +491,68 @@ Use generate_and_execute_chart_code to create a custom visualization that perfec
         if "agent_outputs" not in updated_state:
             updated_state["agent_outputs"] = {}
         
-        print(f"[ChartingAgent] Processing query: {query}")
-        print("updated_state",updated_state)
+
         try:
             # Check if this is a multi-file request from query context
             query_context = updated_state.get("query_context", {})
             # Also check agent_outputs for query_context
             if not query_context and "agent_outputs" in updated_state and "query_context" in updated_state["agent_outputs"]:
                 query_context = updated_state["agent_outputs"]["query_context"].get("result", {})
-            print("query_context:", query_context)
             is_multi_file_request = query_context.get("multi_file_request", False)
-            print("is_multi_file_request:", is_multi_file_request)
             # Check if this is a general chart request (regardless of multi-file detection)
             query_lower = query.lower()
             general_chart_keywords = ['generate all charts', 'create all charts', 'all charts', 'generate charts', 'create charts', 'show charts', 'make charts', 'charts and graphs', 'generate graphs', 'create graphs', 'generate all graphs', 'all graphs', 'generate all chart and graph', 'all chart and graph', 'create all chart and graph', 'show all chart and graph', 'generate all charts and graphs', 'create all charts and graphs', 'all charts and graphs']
             is_general_request = any(keyword in query_lower for keyword in general_chart_keywords)
             
             if is_multi_file_request or is_general_request:
-                print("General chart request detected - using comprehensive analysis")
                 # Store query for use in the method
                 self._current_query = query
                 result = self._generate_individual_file_charts()
                 has_data = True
                 current_df = None  # Not needed for comprehensive analysis
             else:
-                print("Specific chart request - using single file")
                 # Single file selection
                 current_df, file_name = df_manager.get_relevant_dataframe(query)
-                print(f"[ChartingAgent] Selected file for query '{query}': {file_name}")
+
+                
+                # Fallback to current dataframe if get_relevant_dataframe returns None
+                if current_df is None:
+                    current_df = df_manager.get_current_dataframe()
+                    file_name = "current_data"
+                    
+                    # Check all available dataframes in df_manager
+                    if current_df is None:
+                        available_files = list(df_manager._dataframes.keys())
+                        
+                        # Try to get any available dataframe
+                        if available_files:
+                            for file_name in available_files:
+                                if file_name != 'merged_data':  # Prefer original files over merged
+                                    current_df = df_manager.get_dataframe(file_name)
+                                    if current_df is not None:
+                                        print(f"[ChartingAgent] Using available dataframe: {file_name}")
+                                        break
+                            
+                            # If no original files, try merged_data
+                            if current_df is None and 'merged_data' in available_files:
+                                current_df = df_manager.get_dataframe('merged_data')
+                                file_name = 'merged_data'
+                
                 has_data = current_df is not None
                 
                 if has_data:
                     result = self._intelligent_chart_creation(query, current_df)
                 else:
+                    
                     result = ("I'd be happy to create visualizations for you! However, I don't see any dataset uploaded yet. "
                              "Please upload a CSV or Excel file using the file uploader in the sidebar, and then I can "
                              "create charts and visualizations from your data.")
-                    has_data = False  # Ensure has_data is properly set
+                    has_data = False
             
-            print(f"[ChartingAgent] Has data: {has_data}")
             if has_data and not (is_multi_file_request or is_general_request) and current_df is not None:
                 print(f"[ChartingAgent] Data shape: {current_df.shape}")
                 print(f"[ChartingAgent] Columns: {list(current_df.columns)[:5]}")
             
-
-            
-            print(f"[ChartingAgent] Result: {result[:200]}...")
             
             # Update state with chart generation results
             updated_state["agent_outputs"]["chart"] = {
@@ -571,12 +587,10 @@ Use generate_and_execute_chart_code to create a custom visualization that perfec
             available_files = [name for name in all_files_info.keys() if name != 'merged_data']
             total_files = len(available_files)
             
-            print(f"[ChartingAgent] Generating charts for all {total_files} files: {available_files}")
             
             # Try merged data first for comprehensive cross-file analysis
             merged_df = df_manager.get_dataframe('merged_data')
             if merged_df is not None:
-                print(f"[ChartingAgent] Using merged data with {merged_df.shape[0]} rows and {merged_df.shape[1]} columns")
                 
                 # Use dynamic code generation for merged data with explicit file count
                 result = generate_and_execute_chart_code.invoke({
@@ -591,7 +605,6 @@ Use generate_and_execute_chart_code to create a custom visualization that perfec
             else:
                 # No merged data - generate charts for each file individually
                 if total_files > 1:
-                    print(f"[ChartingAgent] No merged data, generating individual charts for {total_files} files")
                     all_results = []
                     
                     for file_name in available_files:
@@ -648,7 +661,6 @@ Use generate_and_execute_chart_code to create a custom visualization that perfec
             if not common_cols:
                 return None
             
-            print(f"[ChartingAgent] Found common columns: {list(common_cols)}")
             
             # Filter to numeric common columns for meaningful comparisons
             numeric_common = []
@@ -755,7 +767,6 @@ Use generate_and_execute_chart_code to create a custom visualization that perfec
         """
         Use LLM intelligence to analyze the query and create appropriate charts
         """
-        print(f"[ChartingAgent] Intelligent processing: {query}")
         
         # Check if df is None first
         if df is None:
@@ -779,7 +790,6 @@ Use generate_and_execute_chart_code to create a custom visualization that perfec
                 "user_request": query,
                 "chart_description": f"Create a visualization based on the user request: {query}"
             })
-            print(f"[ChartingAgent] Dynamic generation result: {result[:200]}...")
             if "Error" not in result:
                 if isinstance(result, list) and any(r.startswith("data:image/png;base64,") for r in result):
                     # Join all charts into one message
@@ -809,10 +819,7 @@ Use generate_and_execute_chart_code to create a custom visualization that perfec
         
         query_lower = query.lower()
         columns = list(df.columns)
-        
-        print(f"[ChartingAgent] LLM analysis fallback: {query}")
-        print(f"[ChartingAgent] Available columns: {columns[:10]}")
-        
+
         # Let the LLM analyze the query and suggest the approach
         try:
             analysis_prompt = f"""Analyze this data visualization request and suggest the best approach:
@@ -845,7 +852,6 @@ REASONING: [brief explanation]"""
             llm_response = self.llm.invoke(analysis_prompt)
             analysis = llm_response.content if hasattr(llm_response, 'content') else str(llm_response)
             
-            print(f"[ChartingAgent] LLM Analysis: {analysis[:200]}...")
             
             # Parse the LLM response
             chart_params = self._parse_llm_analysis(analysis, df)
@@ -990,7 +996,6 @@ REASONING: [brief explanation]"""
         data_analysis = self._analyze_data_structure(df)
         query_lower = query.lower()
         
-        print(f"[ChartingAgent] Data analysis: {data_analysis}")
         
         # Look for distribution/status related queries
         distribution_keywords = ['status', 'distribution', 'breakdown', 'categories', 'types', 'different']
@@ -1079,7 +1084,6 @@ Guidelines:
             json_match = re.search(r'\{.*\}', analysis_text, re.DOTALL)
             if json_match:
                 analysis = json.loads(json_match.group())
-                print(f"[ChartingAgent] File analysis: {analysis}")
                 return analysis
             else:
                 return {'specific_file': None, 'multi_file': False, 'reasoning': 'Failed to parse LLM response'}
@@ -1100,10 +1104,7 @@ Guidelines:
         
         query_lower = query.lower()
         columns = list(df.columns)
-        
-        print(f"[ChartingAgent] Fallback processing: {query}")
-        print(f"[ChartingAgent] Available columns: {columns[:10]}")
-        
+
         # Use generic data analysis instead of hardcoded keywords
         data_analysis = self._analyze_data_structure(df)
         
@@ -1194,7 +1195,6 @@ Analyze the request intelligently based on context and keywords.
         json_match = re.search(r'\{.*\}', analysis_text, re.DOTALL)
         if json_match:
             analysis = json.loads(json_match.group())
-            print(f"[FileAnalysis] {analysis}")
             return analysis
         else:
             return {'specific_file': None, 'multi_file': False, 'reasoning': 'Failed to parse LLM response'}
@@ -1238,7 +1238,6 @@ def generate_and_execute_chart_code(user_request: str, chart_description: str = 
                 if len(keyword) > 2 and keyword in request_lower:  # Skip short words like 'a', 'of'
                     mentioned_file = file_name_check
                     requires_multi_file = False
-                    print(f"[ChartingAgent] Dynamic match: '{keyword}' found in request, using file: {file_name_check}")
                     break
             if mentioned_file:
                 break
@@ -1254,7 +1253,6 @@ def generate_and_execute_chart_code(user_request: str, chart_description: str = 
             # User mentioned a specific file - use ONLY that file
             df = df_manager.get_dataframe(mentioned_file)
             file_name = mentioned_file
-            print(f"[ChartingAgent] Using specific file: {mentioned_file} for request: {user_request}")
             if df is None:
                 return f"File '{mentioned_file}' not found. Available files: {list(file_info.keys())}"
         elif requires_multi_file or is_multi_file_request or (is_general_chart_request and len([name for name in file_info.keys() if name != 'merged_data']) > 1):
@@ -1263,7 +1261,6 @@ def generate_and_execute_chart_code(user_request: str, chart_description: str = 
             if merged_df is not None:
                 df = merged_df
                 file_name = "merged_data"
-                print(f"[ChartingAgent] Using merged data for multi-file request with {merged_df.shape[0]} rows and {merged_df.shape[1]} columns")
             else:
                 merged_df, merge_status = MultiFileDataManager.get_merged_dataframe(df_manager)
                 if merged_df is not None:
@@ -1277,7 +1274,6 @@ def generate_and_execute_chart_code(user_request: str, chart_description: str = 
             if df is None:
                 return "No dataframes loaded. Please upload files first."
         
-        print(f"[ChartingAgent] Using data from: {file_name} for request: {user_request}")
         
         # Analyze the dataframe structure
         columns = list(df.columns)
@@ -1418,9 +1414,7 @@ IMPORTANT: Generate ONLY executable Python code that uses the existing 'df' data
             
         generated_code = generated_code.strip()
         
-        print(f"[ChartingAgent] Generated code length: {len(generated_code)} characters")
-        # print(f"[ChartingAgent] Code preview: {generated_code[:200]}...")
-        print("generated_code", generated_code)
+
         request_lower = user_request.lower()
         # Force multi-chart for comprehensive requests or when multiple files are available
         all_files_info = df_manager.get_file_info()
@@ -1518,14 +1512,12 @@ IMPORTANT: Generate ONLY executable Python code that uses the existing 'df' data
         
         # If nothing found, fallback
         if not found_result:
-            print("⚠️ No chart result variable found in executed code")
             return "Chart code was executed but did not return any images."
 
         # --- Normalize output ---
         if isinstance(found_result, str):
             # Check if result contains an error
             if "Error" in found_result or "error" in found_result:
-                print(f"[ChartingAgent] Generated code returned error: {found_result}")
                 raise Exception(f"Chart generation failed: {found_result}")
             if not found_result.startswith("data:image"):
                 found_result = f"data:image/png;base64,{found_result}"
@@ -1668,7 +1660,6 @@ plt.tight_layout()
             # If no markdown formatting, use the entire response
             code_to_execute = generated_code.strip()
         
-        print(f"[ChartingAgent] Generated code: {code_to_execute[:200]}...")
         
         # Create execution environment
         exec_globals = {

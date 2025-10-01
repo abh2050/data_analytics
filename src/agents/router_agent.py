@@ -3,6 +3,12 @@ from langchain_openai import ChatOpenAI
 import ast
 from typing import Dict, Any, TypedDict, List
 from langchain_core.messages import HumanMessage, AIMessage, SystemMessage
+import sys
+from pathlib import Path
+
+# Add utils to path for imports
+sys.path.append(str(Path(__file__).parent.parent))
+from utils.agent_tracker import track_agent_execution
 
 class RouterAgent:
     def __init__(self, llm):
@@ -24,6 +30,7 @@ Based on the user's intent, which agent should handle this query? Respond with o
 """
         )
 
+    @track_agent_execution("router")
     def invoke(self, state: Dict[str, Any]) -> Dict[str, Any]:
         """
         Intelligently route the user's query to the appropriate agent using LLM

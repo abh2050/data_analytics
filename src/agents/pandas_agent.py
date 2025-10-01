@@ -13,6 +13,12 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from typing import Optional, Dict, Any, List, TypedDict
 from langchain_core.messages import HumanMessage, AIMessage, SystemMessage
+import sys
+from pathlib import Path
+
+# Add utils to path for imports
+sys.path.append(str(Path(__file__).parent.parent))
+from utils.agent_tracker import track_agent_execution
 
 def safe_parse_action_input(action_input):
     """Safely parse action input from various formats (dict, JSON string, Python dict string)"""
@@ -29,13 +35,13 @@ def safe_parse_action_input(action_input):
 class DataFrameManager:
     """Enhanced singleton class to manage multiple uploaded dataframes with intelligent selection"""
     _instance = None
-    _dataframes = {}
-    _file_metadata = {}  # Store metadata about each file
-    _metadata = {}  # Store additional metadata for merged data
     
     def __new__(cls):
         if cls._instance is None:
             cls._instance = super(DataFrameManager, cls).__new__(cls)
+            cls._instance._dataframes = {}
+            cls._instance._file_metadata = {}  # Store metadata about each file
+            cls._instance._metadata = {}  # Store additional metadata for merged data
         return cls._instance
     
     def store_dataframe(self, name: str, df: pd.DataFrame, metadata: dict = None):
@@ -146,8 +152,11 @@ class DataFrameManager:
         print(f"[DataFrameManager] Using fallback file '{fallback_name}' for query: {query[:50]}...")
         return self._dataframes[fallback_name], fallback_name
 
-# Global dataframe manager
-df_manager = DataFrameManager()
+# Global dataframe manager - ensure singleton
+def get_df_manager():
+    return DataFrameManager()
+
+df_manager = get_df_manager()
 
 @tool
 def analyze_dataframe(analysis_type: str, column: str = None, additional_params: str = None) -> str:
@@ -816,6 +825,7 @@ INSTRUCTIONS:
 Remember: You have access to real data - use it! Don't give generic responses when you can provide specific, data-driven insights."""
         )
 
+    @track_agent_execution("pandas")
     def invoke(self, state: Dict[str, Any]) -> Dict[str, Any]:
         """
         Intelligently process user's data analysis query using pandas operations and tools
@@ -855,28 +865,47 @@ Remember: You have access to real data - use it! Don't give generic responses wh
         print(f"[PandasAgent] Processing query: {query}")
         
         try:
-            # Check if data is available
+            # Check if data is available - with debug info
             current_df = df_manager.get_current_dataframe()
             has_data = current_df is not None
             data_info = state.get("dataframe_info", {})
             
-            print(f"[PandasAgent] Has data: {has_data}")
+
+            
+            # If no current dataframe but state says has_data, try to get any available dataframe
+            if not has_data and state.get("has_data", False):
+                available_files = list(df_manager._dataframes.keys())
+                if available_files:
+                    current_df = df_manager.get_dataframe(available_files[0])
+                    has_data = current_df is not None
             
             # Handle case where no data is uploaded
             if not has_data:
-                result = ("I'd love to help you analyze data! However, I don't see any dataset uploaded yet. "
-                         "Please upload a CSV or Excel file using the file uploader in the sidebar, and then I can "
-                         "provide detailed analysis, create visualizations, and answer specific questions about your data.")
+                # Final check - maybe data was uploaded but not detected
+                all_files = df_manager.get_file_info()
+                if all_files:
+                    current_df = df_manager.get_current_dataframe()
+                    has_data = current_df is not None
+                    if has_data:
+                        print(f"[PandasAgent] Data found on final check: {current_df.shape}")
+                    else:
+                        result = ("I'd love to help you analyze data! However, I don't see any dataset uploaded yet. "
+                                 "Please upload a CSV or Excel file using the file uploader in the sidebar, and then I can "
+                                 "provide detailed analysis, create visualizations, and answer specific questions about your data.")
+                else:
+                    result = ("I'd love to help you analyze data! However, I don't see any dataset uploaded yet. "
+                             "Please upload a CSV or Excel file using the file uploader in the sidebar, and then I can "
+                             "provide detailed analysis, create visualizations, and answer specific questions about your data.")
             
             # Handle very simple greetings (only basic ones)
-            elif query.lower().strip() in ['hi', 'hello', 'help']:
+            elif has_data and query.lower().strip() in ['hi', 'hello', 'help']:
                 filename = data_info.get('filename', 'uploaded dataset')
                 shape = data_info.get('shape', current_df.shape if current_df is not None else (0, 0))
                 result = (f"Hello! I can see you have '{filename}' loaded with {shape[0]:,} rows and {shape[1]} columns. "
                          f"I'm ready to help you analyze this data. What would you like to explore?")
             
-            # For all other queries with data available, use React agent with intelligent tool calling
-            else:
+            # For all other queries with data available, use React agent with intelligent tool calling  
+            elif has_data:
                 try:
                     print(f"[PandasAgent] Using React agent for intelligent analysis")
                     
@@ -961,6 +990,10 @@ Analyze this query and use the appropriate tools to provide a comprehensive, dat
                                 f"• 'Show me a summary of the data'\n"
                                 f"• 'What are the column names?'\n"
                                 f"• 'Create a chart of [column name]'")
+            elif not has_data:
+                result = ("I'd love to help you analyze data! However, I don't see any dataset uploaded yet. "
+                         "Please upload a CSV or Excel file using the file uploader in the sidebar, and then I can "
+                         "provide detailed analysis, create visualizations, and answer specific questions about your data.")
             
             print(f"[PandasAgent] Result length: {len(result)} characters")
             

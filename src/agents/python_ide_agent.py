@@ -35,7 +35,8 @@ def execute_python_code(code: str) -> str:
     """
     try:
         # Import the shared DataFrame manager
-        from .pandas_agent import df_manager
+        from .pandas_agent import get_df_manager
+        df_manager = get_df_manager()
         
         # Pre-load common data science libraries
         global_vars = {

@@ -41,6 +41,14 @@ This system uses a sophisticated swarm of specialized agents with intelligent or
 - **Query History**: Learns from previous interactions
 - **Multi-Turn Conversations**: Supports follow-up questions and refinements
 
+### 🔍 LangSmith Integration
+- **Query Tracking**: Monitor every user query and agent routing decision
+- **Performance Analytics**: Track response times, success rates, and bottlenecks
+- **Agent Monitoring**: Individual agent execution metrics and performance
+- **Session Management**: Comprehensive conversation context tracking
+- **Error Logging**: Detailed error tracking with context for debugging
+- **Real-time Dashboard**: Streamlit sidebar with live metrics and insights
+
 ## Quick Start
 
 ### 1. Install Dependencies
@@ -51,6 +59,11 @@ pip install -r requirements.txt
 ### 2. Set Environment Variables
 ```bash
 export OPENAI_API_KEY="your-openai-api-key"
+
+# Optional: Enable LangSmith tracking
+export LANGCHAIN_TRACING_V2=true
+export LANGCHAIN_API_KEY="your-langsmith-api-key"
+export LANGCHAIN_PROJECT="data-analytics-agents"
 ```
 
 ### 3. Run the Streamlit Web Interface
@@ -230,6 +243,7 @@ https://langgraphdataanalyticsagents.streamlit.app/
 - **Frontend**: Streamlit (Web), Terminal (CLI)
 - **Agent Framework**: LangGraph + LangChain  
 - **LLM Backend**: OpenAI GPT-4o-mini
+- **Tracking & Monitoring**: LangSmith
 - **Data Processing**: Pandas + NumPy
 - **Visualization**: Matplotlib + Seaborn
 - **Language**: Python 3.8+
@@ -313,6 +327,32 @@ agent_swarm_analytics/
 - **Export Features**: PDF reports, Excel dashboards
 - **API Extensions**: RESTful API for external integrations
 - **Performance**: Caching, async processing, parallel execution
+
+## LangSmith Tracking Setup
+
+This system includes comprehensive LangSmith integration for tracking and monitoring:
+
+### Quick Setup
+1. Get your LangSmith API key from [smith.langchain.com](https://smith.langchain.com)
+2. Add to your `.env` file:
+   ```bash
+   LANGCHAIN_TRACING_V2=true
+   LANGCHAIN_API_KEY=your_langsmith_api_key_here
+   LANGCHAIN_PROJECT=data-analytics-agents
+   ```
+3. Restart the application
+4. View tracking status in the Streamlit sidebar
+5. Monitor queries and performance in the LangSmith dashboard
+
+### Features
+- **Real-time Monitoring**: Track every query and agent execution
+- **Performance Analytics**: Response times, success rates, bottlenecks
+- **Agent Insights**: Individual agent performance and usage patterns
+- **Error Tracking**: Detailed error logs with context
+- **Session Management**: Conversation flow and context tracking
+- **Export Capabilities**: Download session data for analysis
+
+For detailed setup instructions, see [LANGSMITH_SETUP.md](LANGSMITH_SETUP.md)
 
 ---
 

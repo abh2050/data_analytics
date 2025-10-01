@@ -9,16 +9,21 @@ import base64
 from pathlib import Path
 from typing import Dict, Any, List
 import io
+from dotenv import load_dotenv
 
-# 🔑 Register dataframe for agents
-from src.agents.pandas_agent import df_manager
-import time
+# Load environment variables for LangSmith
+load_dotenv()
+
 # Add src to path for imports
 sys.path.append(str(Path(__file__).parent / "src"))
 
-from langgraph_engine.graph_builder import build_agent_graph, clear_memory_agent
-from agents.pandas_agent import df_manager
+from src.langgraph_engine.graph_builder import build_agent_graph, clear_memory_agent
+# 🔑 Register dataframe for agents - ensure singleton
+from src.agents.pandas_agent import get_df_manager
+df_manager = get_df_manager()
 from langchain_core.messages import HumanMessage, AIMessage
+from src.utils.langsmith_config import get_langsmith_tracker
+from src.utils.langsmith_dashboard import get_langsmith_dashboard
 
 # Page configuration
 st.set_page_config(
@@ -205,6 +210,9 @@ class StreamlitChatInterface:
     def __init__(self):
         self.initialize_session_state()
         self.workflow = self.get_workflow()
+        # Initialize LangSmith tracker and dashboard
+        self.langsmith_tracker = get_langsmith_tracker()
+        self.langsmith_dashboard = get_langsmith_dashboard()
     
     def initialize_session_state(self):
         """Initialize session state variables"""
@@ -775,6 +783,27 @@ class StreamlitChatInterface:
     
     def send_message(self, user_message: str) -> Dict[str, Any]:
         """Send a message to the agent and get response"""
+        # CRITICAL: Ensure data is available before ANY processing
+
+        if st.session_state.get('uploaded_data') is not None and not df_manager._dataframes:
+            if 'uploaded_dfs' in st.session_state:
+                for filename, df in st.session_state['uploaded_dfs']:
+                    metadata = {
+                        'filename': filename,
+                        'upload_time': time.time(),
+                        'file_type': 'csv' if filename.endswith('.csv') else 'excel'
+                    }
+                    df_manager.store_dataframe(filename, df, metadata)
+                
+                # Also store merged data if exists
+                if 'merged_df' in st.session_state:
+                    df_manager.store_dataframe('merged_data', st.session_state['merged_df'], {
+                        'file_type': 'merged',
+                        'merge_info': st.session_state.get('merge_info', '')
+                    })
+                
+                df_manager.set_current_dataframe(st.session_state['uploaded_data'])
+        
         # Add user message to conversation
         user_msg = HumanMessage(content=user_message)
         st.session_state.messages.append(user_msg)
@@ -1007,6 +1036,12 @@ class StreamlitChatInterface:
         # Display conversation stats
         self.display_conversation_stats()
         
+        # Display LangSmith tracking information
+        self.langsmith_dashboard.display_tracking_status()
+        self.langsmith_dashboard.display_session_metrics(st.session_state.session_id)
+        self.langsmith_dashboard.display_performance_insights()
+        self.langsmith_dashboard.display_export_options(st.session_state.session_id)
+        
         # Main chat area
         st.markdown('<div class="chat-container">', unsafe_allow_html=True)
         
@@ -1092,7 +1127,29 @@ class StreamlitChatInterface:
         )
         
         if user_input:
-            # Check for stale data before processing
+            # CRITICAL: Force data sync FIRST before any processing
+            if st.session_state.get('uploaded_data') is not None:
+                if not df_manager._dataframes:
+                    # Re-upload data to df_manager from session state
+                    if 'uploaded_dfs' in st.session_state:
+                        for filename, df in st.session_state['uploaded_dfs']:
+                            metadata = {
+                                'filename': filename,
+                                'upload_time': time.time(),
+                                'file_type': 'csv' if filename.endswith('.csv') else 'excel'
+                            }
+                            df_manager.store_dataframe(filename, df, metadata)
+                        
+                        # Also store merged data if exists
+                        if 'merged_df' in st.session_state:
+                            df_manager.store_dataframe('merged_data', st.session_state['merged_df'], {
+                                'file_type': 'merged',
+                                'merge_info': st.session_state.get('merge_info', '')
+                            })
+                        
+                        df_manager.set_current_dataframe(st.session_state['uploaded_data'])
+            
+            # Check for stale data after sync attempt
             has_manager_data = hasattr(df_manager, '_dataframes') and len(df_manager._dataframes) > 0
             files_uploaded_this_session = st.session_state.get('files_uploaded_this_session', False)
             

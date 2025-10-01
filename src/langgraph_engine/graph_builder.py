@@ -6,6 +6,8 @@ from dotenv import load_dotenv
 from typing import Dict, Any, List, Optional, TypedDict, Annotated
 from langchain_core.messages import HumanMessage, AIMessage, SystemMessage
 from langgraph.graph.message import add_messages
+import uuid
+import time
 
 # Load environment variables first
 load_dotenv()
@@ -21,6 +23,7 @@ from agents.pandas_agent import PandasAgent, df_manager
 from agents.memory_agent import ConversationMemoryAgent, ChatResponseFormatter
 from agents.query_context_agent import QueryContextAgent
 from langchain_openai import ChatOpenAI
+from utils.langsmith_config import get_langsmith_tracker, setup_langsmith_for_llm
 
 # Define the state for our graph using TypedDict for more structure
 class DataAnalyticsState(TypedDict):
@@ -39,9 +42,17 @@ class DataAnalyticsState(TypedDict):
     chat_response: Dict[str, Any]  # Chat-formatted response for UI
     session_id: str  # Session identifier for conversation tracking
     conversation_summary: str  # Summary of the conversation so far
+    # LangSmith tracking fields
+    langsmith_run_id: str  # LangSmith run ID for tracking
+    langsmith_session_id: str  # LangSmith session ID
+    query_start_time: float  # Query processing start time
 
-# Initialize LLM
+# Initialize LLM with LangSmith tracking
 llm = ChatOpenAI(temperature=0, model='gpt-4.1')
+llm = setup_langsmith_for_llm(llm)
+
+# Initialize LangSmith tracker
+langsmith_tracker = get_langsmith_tracker()
 
 # Global memory manager instance
 _global_memory_agent = None
@@ -63,6 +74,9 @@ def build_agent_graph():
     """Create a more sophisticated agent graph with coordinator-based routing and conversation memory"""
     global _global_memory_agent
     workflow = StateGraph(DataAnalyticsState)
+    
+    # Import tracking utilities
+    from utils.agent_tracker import initialize_tracking_state, finalize_tracking
 
     # Validate LLM before proceeding
     if llm is None:
@@ -78,6 +92,49 @@ def build_agent_graph():
     _global_memory_agent = memory_agent  # Store globally for memory management
     query_context_agent = QueryContextAgent(llm)
 
+    # Add data sync node to ensure data is available before processing
+    def data_sync_node(state):
+        """Ensure data is synced from session state before processing"""
+        
+        # Import here to avoid circular imports
+        import streamlit as st
+        from agents.pandas_agent import get_df_manager
+        
+        df_manager = get_df_manager()
+        
+        # Check if streamlit session state has data but df_manager doesn't
+        if hasattr(st, 'session_state'):
+            has_session_data = st.session_state.get('uploaded_data') is not None
+            has_manager_data = len(df_manager._dataframes) > 0
+            
+            
+            if has_session_data and not has_manager_data:
+                
+                if 'uploaded_dfs' in st.session_state:
+                    for filename, df in st.session_state['uploaded_dfs']:
+                        metadata = {
+                            'filename': filename,
+                            'upload_time': time.time(),
+                            'file_type': 'csv' if filename.endswith('.csv') else 'excel'
+                        }
+                        df_manager.store_dataframe(filename, df, metadata)
+                    
+                    # Also store merged data if exists
+                    if 'merged_df' in st.session_state:
+                        df_manager.store_dataframe('merged_data', st.session_state['merged_df'], {
+                            'file_type': 'merged',
+                            'merge_info': st.session_state.get('merge_info', '')
+                        })
+                    
+                    df_manager.set_current_dataframe(st.session_state['uploaded_data'])
+        
+        return state
+    
+    workflow.add_node("data_sync", data_sync_node)
+    
+    # Add tracking initialization node
+    workflow.add_node("init_tracking", lambda state: initialize_tracking_state(state))
+    
     # Add nodes for each agent and tools
     workflow.add_node("router", router_agent.invoke)
     workflow.add_node("python", python_ide_agent.invoke)
@@ -90,14 +147,25 @@ def build_agent_graph():
     # New coordinator node for orchestrating the workflow
     workflow.add_node("coordinator", coordinator_agent)
     
-    # Chat response formatting node
-    workflow.add_node("chat_formatter", ChatResponseFormatter.format_chat_response)
+    # Chat response formatting node with tracking finalization
+    def chat_formatter_with_tracking(state):
+        # Finalize tracking before formatting
+        tracked_state = finalize_tracking(state)
+        return ChatResponseFormatter.format_chat_response(tracked_state)
+    
+    workflow.add_node("chat_formatter", chat_formatter_with_tracking)
     
     # New tool execution node
     workflow.add_node("tools", tool_executor)
 
-    # Set router as the entry point
-    workflow.set_entry_point("router")
+    # Set data sync as the entry point
+    workflow.set_entry_point("data_sync")
+    
+    # From data sync, go to tracking init
+    workflow.add_edge("data_sync", "init_tracking")
+    
+    # From tracking init, go to router
+    workflow.add_edge("init_tracking", "router")
 
     # From router, always go to query_context first for query analysis
     workflow.add_edge("router", "query_context")
