@@ -1,0 +1,2321 @@
+
+Collecting usage statistics. To deactivate, set browser.gatherUsageStats to false.
+
+
+  You can now view your Streamlit app in your browser.
+
+  URL: http://0.0.0.0:8508
+
+2025-10-01 12:39:08.497 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:39:08.499 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:39:08.502 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:39:08.504 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:39:08.505 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:39:08.507 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:39:08.508 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:39:08.509 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:39:08.511 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:39:08.512 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:39:08.514 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:39:08.516 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:39:08.518 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:39:08.519 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:39:08.521 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:39:08.830 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:39:08.831 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:39:08.832 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:39:08.834 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:39:08.836 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:39:08.837 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:39:08.838 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:39:08.839 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:39:08.840 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:39:08.841 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:39:08.843 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:39:08.844 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:39:08.846 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:39:08.847 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:39:08.848 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:40:25.556 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:40:25.560 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:40:25.562 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:40:25.565 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:40:25.567 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:40:25.569 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:40:25.571 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:40:25.573 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:40:25.575 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:40:25.577 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:40:25.579 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:40:25.581 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:40:25.583 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:40:25.585 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:40:25.587 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+[LangSmith] Initialized tracking for project: data-analytics-agents
+[LangSmith] Initialized tracking for project: data-analytics-agents
+[DataFrameManager] Stored dataframe 'employees.csv' with shape (20, 8)
+[DataFrameManager] Stored dataframe 'sample.csv' with shape (51, 7)
+[DataFrameManager] Stored dataframe 'weather.csv' with shape (54, 6)
+[MultiFileManager] Creating ONE unified merged file from 3 files
+[MultiFileManager] Total unique columns across all files: 21
+[MultiFileManager] Processing employees.csv with 20 rows, 8 columns
+[MultiFileManager] Standardized employees.csv: 20 rows, 22 columns
+[MultiFileManager] Processing sample.csv with 51 rows, 7 columns
+[MultiFileManager] Standardized sample.csv: 51 rows, 22 columns
+[MultiFileManager] Processing weather.csv with 54 rows, 6 columns
+[MultiFileManager] Standardized weather.csv: 54 rows, 22 columns
+[MultiFileManager] UNIFIED MERGE: Combined ALL 3 files into one dataset (125 rows, 22 columns)
+[DataFrameManager] Stored dataframe 'merged_data' with shape (125, 22)
+[DataFrameManager] Stored dataframe 'employees.csv' with shape (20, 8)
+[DataFrameManager] Stored dataframe 'sample.csv' with shape (51, 7)
+[DataFrameManager] Stored dataframe 'weather.csv' with shape (54, 6)
+[MultiFileManager] Creating ONE unified merged file from 3 files
+[MultiFileManager] Total unique columns across all files: 21
+[MultiFileManager] Processing employees.csv with 20 rows, 8 columns
+[MultiFileManager] Standardized employees.csv: 20 rows, 22 columns
+[MultiFileManager] Processing sample.csv with 51 rows, 7 columns
+[MultiFileManager] Standardized sample.csv: 51 rows, 22 columns
+[MultiFileManager] Processing weather.csv with 54 rows, 6 columns
+[MultiFileManager] Standardized weather.csv: 54 rows, 22 columns
+[MultiFileManager] UNIFIED MERGE: Combined ALL 3 files into one dataset (125 rows, 22 columns)
+[DataFrameManager] Stored dataframe 'merged_data' with shape (125, 22)
+[DataFrameManager] Stored dataframe 'employees.csv' with shape (20, 8)
+[DataFrameManager] Stored dataframe 'sample.csv' with shape (51, 7)
+[DataFrameManager] Stored dataframe 'weather.csv' with shape (54, 6)
+[DataFrameManager] Stored dataframe 'merged_data' with shape (125, 22)
+[LangSmith] Session initialized: analytics-17cd2ac8-d494-4431-911c-897c264c5b95
+[LangSmith] Query started - Run ID: 1b469cea-94ec-4cc9-ae6a-11bc90385ea9
+[RouterAgent] Routing query: generate all charts and graphs
+[RouterAgent] LLM routed to: chart
+[LangSmith] Agent executed: router (Run: 1b469cea-94ec-4cc9-ae6a-11bc90385ea9)
+[AgentTracker] router executed successfully in 1.75s
+[QueryContextAgent] Query: 'generate all charts and graphs', Lower: 'generate all charts and graphs'
+[QueryContextAgent] Is general chart request: True
+[QueryContextAgent] Available files: 4
+[ConversationMemoryAgent] Processed 1 messages for session 17cd2ac8-d494-4431-911c-897c264c5b95
+[ConversationMemoryAgent] Context: New conversation or simple query
+[LangSmith] Agent executed: chart (Run: 1b469cea-94ec-4cc9-ae6a-11bc90385ea9)
+[AgentTracker] chart executed successfully in 23.57s
+[LangSmith] Query completed - Run ID: 1b469cea-94ec-4cc9-ae6a-11bc90385ea9
+[AgentTracker] Query completed in 25.34s with 4 agents
+[DataFrameManager] Stored dataframe 'employees.csv' with shape (20, 8)
+[DataFrameManager] Stored dataframe 'sample.csv' with shape (51, 7)
+[DataFrameManager] Stored dataframe 'weather.csv' with shape (54, 6)
+[MultiFileManager] Creating ONE unified merged file from 3 files
+[MultiFileManager] Total unique columns across all files: 21
+[MultiFileManager] Processing employees.csv with 20 rows, 8 columns
+[MultiFileManager] Standardized employees.csv: 20 rows, 22 columns
+[MultiFileManager] Processing sample.csv with 51 rows, 7 columns
+[MultiFileManager] Standardized sample.csv: 51 rows, 22 columns
+[MultiFileManager] Processing weather.csv with 54 rows, 6 columns
+[MultiFileManager] Standardized weather.csv: 54 rows, 22 columns
+[MultiFileManager] UNIFIED MERGE: Combined ALL 3 files into one dataset (125 rows, 22 columns)
+[DataFrameManager] Stored dataframe 'merged_data' with shape (125, 22)
+[DataFrameManager] Stored dataframe 'employees.csv' with shape (20, 8)
+[DataFrameManager] Stored dataframe 'sample.csv' with shape (51, 7)
+[DataFrameManager] Stored dataframe 'weather.csv' with shape (54, 6)
+[MultiFileManager] Creating ONE unified merged file from 3 files
+[MultiFileManager] Total unique columns across all files: 21
+[MultiFileManager] Processing employees.csv with 20 rows, 8 columns
+[MultiFileManager] Standardized employees.csv: 20 rows, 22 columns
+[MultiFileManager] Processing sample.csv with 51 rows, 7 columns
+[MultiFileManager] Standardized sample.csv: 51 rows, 22 columns
+[MultiFileManager] Processing weather.csv with 54 rows, 6 columns
+[MultiFileManager] Standardized weather.csv: 54 rows, 22 columns
+[MultiFileManager] UNIFIED MERGE: Combined ALL 3 files into one dataset (125 rows, 22 columns)
+[DataFrameManager] Stored dataframe 'merged_data' with shape (125, 22)
+[LangSmith] Session initialized: analytics-17cd2ac8-d494-4431-911c-897c264c5b95
+[LangSmith] Query started - Run ID: 66e5454a-3459-481d-ba7b-f99691f12d12
+[RouterAgent] Routing query: fetch all department from employees
+[RouterAgent] LLM routed to: search
+[LangSmith] Agent executed: router (Run: 66e5454a-3459-481d-ba7b-f99691f12d12)
+[AgentTracker] router executed successfully in 0.97s
+[QueryContextAgent] Query: 'fetch all department from employees', Lower: 'fetch all department from employees'
+[QueryContextAgent] Is general chart request: False
+[QueryContextAgent] Available files: 4
+[DataFrameManager] Selected 'employees.csv' (score: 27) for query: fetch all department from employees...
+[QueryContextAgent] Analyzing query: fetch all department from employees
+[QueryContextAgent] Dataset shape: (20, 8)
+[QueryContextAgent] Columns: ['employee_id', 'name', 'age', 'department', 'salary', 'years_experience', 'performance_score', 'last_promotion']
+[QueryContextAgent] Analysis result: {'original_query': 'fetch all department from employees', 'expanded_query': '"Fetch all department values from the employees dataset."', 'abbreviations_found': [], 'column_mapping': {}, 'relevant_columns': ['department'], 'context_hints': ["The query is asking for the 'department' information from the employees dataset. 'Department' is a categorical column", 'and the user may want either all department entries (including duplicates) or a list of unique departments. Clarify with the user if they want unique department names or all department assignments for each employee.'], 'query_type': 'filtering', 'domain_match': True, 'reasoning': 'LLM-based context analysis'}
+[ConversationMemoryAgent] Processed 3 messages for session 17cd2ac8-d494-4431-911c-897c264c5b95
+[ConversationMemoryAgent] Context: New conversation or simple query
+[DataSearchAgent] Processing query: fetch all department from employees
+[DataSearchAgent] Enhanced search query: fetch all department from employees
+[DataSearchAgent] Result: The dataset contains a "department" column for employees, but a direct search for all departments did not return results. However, based on the sample data, here are some departments present in the da...
+[LangSmith] Query completed - Run ID: 66e5454a-3459-481d-ba7b-f99691f12d12
+[AgentTracker] Query completed in 16.94s with 4 agents
+[DataFrameManager] Stored dataframe 'employees.csv' with shape (20, 8)
+[DataFrameManager] Stored dataframe 'sample.csv' with shape (51, 7)
+[DataFrameManager] Stored dataframe 'weather.csv' with shape (54, 6)
+[MultiFileManager] Creating ONE unified merged file from 3 files
+[MultiFileManager] Total unique columns across all files: 21
+[MultiFileManager] Processing employees.csv with 20 rows, 8 columns
+[MultiFileManager] Standardized employees.csv: 20 rows, 22 columns
+[MultiFileManager] Processing sample.csv with 51 rows, 7 columns
+[MultiFileManager] Standardized sample.csv: 51 rows, 22 columns
+[MultiFileManager] Processing weather.csv with 54 rows, 6 columns
+[MultiFileManager] Standardized weather.csv: 54 rows, 22 columns
+[MultiFileManager] UNIFIED MERGE: Combined ALL 3 files into one dataset (125 rows, 22 columns)
+2025-10-01 12:40:42.852 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:40:42.854 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:40:42.856 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:40:42.858 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:40:42.860 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:40:42.863 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:40:42.864 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:40:42.866 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:40:42.868 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:40:42.870 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:40:42.872 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:40:42.874 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:40:42.876 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:40:42.878 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:40:42.881 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:41:03.677 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:41:03.680 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:41:03.682 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:41:03.686 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:41:03.689 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:41:03.691 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:41:03.693 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:41:03.696 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:41:03.699 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:41:03.701 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:41:03.703 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:41:03.707 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:41:03.709 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:41:03.712 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:41:03.714 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:41:14.892 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:41:15.205 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:41:15.210 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:41:15.212 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:41:15.215 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:41:15.217 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:41:15.219 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:41:15.221 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:41:15.223 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:41:15.226 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:41:15.229 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:41:15.231 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:41:15.233 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:41:15.235 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:41:15.237 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:41:15.240 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:41:15.250 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:42:35.546 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:42:35.550 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:42:35.552 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:42:35.554 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:42:35.556 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:42:35.557 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:42:35.559 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:42:35.560 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:42:35.562 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:42:35.564 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:42:35.566 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:42:35.567 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:42:35.569 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:42:35.571 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:42:35.573 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:42:35.580 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:42:47.995 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+[DataFrameManager] Stored dataframe 'merged_data' with shape (125, 22)
+[DataFrameManager] Stored dataframe 'employees.csv' with shape (20, 8)
+[DataFrameManager] Stored dataframe 'sample.csv' with shape (51, 7)
+[DataFrameManager] Stored dataframe 'weather.csv' with shape (54, 6)
+[MultiFileManager] Creating ONE unified merged file from 3 files
+[MultiFileManager] Total unique columns across all files: 21
+[MultiFileManager] Processing employees.csv with 20 rows, 8 columns
+[MultiFileManager] Standardized employees.csv: 20 rows, 22 columns
+[MultiFileManager] Processing sample.csv with 51 rows, 7 columns
+[MultiFileManager] Standardized sample.csv: 51 rows, 22 columns
+[MultiFileManager] Processing weather.csv with 54 rows, 6 columns
+[MultiFileManager] Standardized weather.csv: 54 rows, 22 columns
+[MultiFileManager] UNIFIED MERGE: Combined ALL 3 files into one dataset (125 rows, 22 columns)
+[DataFrameManager] Stored dataframe 'merged_data' with shape (125, 22)
+[LangSmith] Session initialized: analytics-17cd2ac8-d494-4431-911c-897c264c5b95
+[LangSmith] Query started - Run ID: 163be3b0-ad79-42d4-8ec0-85f9f5950a9d
+[RouterAgent] Routing query: generate pie chart from employees
+[RouterAgent] LLM routed to: chart
+[LangSmith] Agent executed: router (Run: 163be3b0-ad79-42d4-8ec0-85f9f5950a9d)
+[AgentTracker] router executed successfully in 0.77s
+[QueryContextAgent] Query: 'generate pie chart from employees', Lower: 'generate pie chart from employees'
+[QueryContextAgent] Is general chart request: False
+[QueryContextAgent] Available files: 4
+[DataFrameManager] Selected 'employees.csv' (score: 9) for query: generate pie chart from employees...
+[QueryContextAgent] Analyzing query: generate pie chart from employees
+[QueryContextAgent] Dataset shape: (20, 8)
+[QueryContextAgent] Columns: ['employee_id', 'name', 'age', 'department', 'salary', 'years_experience', 'performance_score', 'last_promotion']
+[QueryContextAgent] Analysis result: {'original_query': 'generate pie chart from employees', 'expanded_query': 'Generate a pie chart showing the distribution of employees by department.', 'abbreviations_found': [], 'column_mapping': {}, 'relevant_columns': ['department'], 'context_hints': ['The query requests a pie chart', "which typically visualizes categorical data distributions. The most relevant categorical column for grouping employees is 'department'. Other possible groupings could be by 'last_promotion' year or 'performance_score' ranges", "but 'department' is the most standard for employee distribution. No abbreviations or unclear terms are present."], 'query_type': 'aggregation', 'domain_match': True, 'reasoning': 'LLM-based context analysis'}
+[ConversationMemoryAgent] Processed 5 messages for session 17cd2ac8-d494-4431-911c-897c264c5b95
+[ConversationMemoryAgent] Context: New conversation or simple query
+[DataFrameManager] Selected 'employees.csv' (score: 9) for query: generate pie chart from employees...
+[ChartingAgent] Data shape: (20, 8)
+[ChartingAgent] Columns: ['employee_id', 'name', 'age', 'department', 'salary']
+[LangSmith] Agent executed: chart (Run: 163be3b0-ad79-42d4-8ec0-85f9f5950a9d)
+[AgentTracker] chart executed successfully in 6.25s
+[LangSmith] Query completed - Run ID: 163be3b0-ad79-42d4-8ec0-85f9f5950a9d
+[AgentTracker] Query completed in 11.15s with 4 agents
+[DataFrameManager] Stored dataframe 'employees.csv' with shape (20, 8)
+[DataFrameManager] Stored dataframe 'sample.csv' with shape (51, 7)
+[DataFrameManager] Stored dataframe 'weather.csv' with shape (54, 6)
+[MultiFileManager] Creating ONE unified merged file from 3 files
+[MultiFileManager] Total unique columns across all files: 21
+[MultiFileManager] Processing employees.csv with 20 rows, 8 columns
+[MultiFileManager] Standardized employees.csv: 20 rows, 22 columns
+[MultiFileManager] Processing sample.csv with 51 rows, 7 columns
+[MultiFileManager] Standardized sample.csv: 51 rows, 22 columns
+[MultiFileManager] Processing weather.csv with 54 rows, 6 columns
+[MultiFileManager] Standardized weather.csv: 54 rows, 22 columns
+[MultiFileManager] UNIFIED MERGE: Combined ALL 3 files into one dataset (125 rows, 22 columns)
+[DataFrameManager] Stored dataframe 'merged_data' with shape (125, 22)
+[DataFrameManager] Stored dataframe 'employees.csv' with shape (20, 8)
+[DataFrameManager] Stored dataframe 'sample.csv' with shape (51, 7)
+[DataFrameManager] Stored dataframe 'weather.csv' with shape (54, 6)
+[MultiFileManager] Creating ONE unified merged file from 3 files
+[MultiFileManager] Total unique columns across all files: 21
+[MultiFileManager] Processing employees.csv with 20 rows, 8 columns
+[MultiFileManager] Standardized employees.csv: 20 rows, 22 columns
+[MultiFileManager] Processing sample.csv with 51 rows, 7 columns
+[MultiFileManager] Standardized sample.csv: 51 rows, 22 columns
+[MultiFileManager] Processing weather.csv with 54 rows, 6 columns
+[MultiFileManager] Standardized weather.csv: 54 rows, 22 columns
+[MultiFileManager] UNIFIED MERGE: Combined ALL 3 files into one dataset (125 rows, 22 columns)
+[DataFrameManager] Stored dataframe 'merged_data' with shape (125, 22)
+[LangSmith] Session initialized: analytics-17cd2ac8-d494-4431-911c-897c264c5b95
+[LangSmith] Query started - Run ID: f04a12f6-f90f-4e32-a019-9d2a01403179
+[RouterAgent] Routing query: all pie charts
+[RouterAgent] LLM routed to: chart
+[LangSmith] Agent executed: router (Run: f04a12f6-f90f-4e32-a019-9d2a01403179)
+[AgentTracker] router executed successfully in 0.84s
+[QueryContextAgent] Query: 'all pie charts', Lower: 'all pie charts'
+[QueryContextAgent] Is general chart request: False
+[QueryContextAgent] Available files: 4
+[DataFrameManager] No matching data found for query 'all pie charts'. Available files: employees.csv: ['employee_id', 'name', 'age']; sample.csv: ['date', 'revenue', 'expenses']; weather.csv: ['timestamp', 'temperature', 'humidity']
+[QueryContextAgent] Analyzing query: all pie charts
+[QueryContextAgent] Dataset shape: (20, 8)
+[QueryContextAgent] Columns: ['employee_id', 'name', 'age', 'department', 'salary', 'years_experience', 'performance_score', 'last_promotion']
+[QueryContextAgent] Analysis result: {'original_query': 'all pie charts', 'expanded_query': '"Show all possible pie charts that can be generated from the dataset, such as the distribution of employees by department or by last promotion year."', 'abbreviations_found': [], 'column_mapping': {}, 'relevant_columns': ['department', 'last_promotion'], 'context_hints': ['The query requests "all pie charts', '" which typically means visualizing the distribution of categorical data. In this dataset', "the most relevant columns for pie charts are 'department' (to show the proportion of employees in each department) and possibly 'last_promotion' (if grouped by year or month). Numeric columns are less suitable for pie charts unless binned into categories. No abbreviations or unclear terms are present. The query domain matches the dataset", 'which is about employee data.'], 'query_type': 'aggregation, visualization', 'domain_match': True, 'reasoning': 'LLM-based context analysis'}
+[ConversationMemoryAgent] Processed 7 messages for session 17cd2ac8-d494-4431-911c-897c264c5b95
+[ConversationMemoryAgent] Context: New conversation or simple query
+[DataFrameManager] No matching data found for query 'all pie charts'. Available files: employees.csv: ['employee_id', 'name', 'age']; sample.csv: ['date', 'revenue', 'expenses']; weather.csv: ['timestamp', 'temperature', 'humidity']
+[DataFrameManager] No matching data found for query 'all pie charts'. Available files: employees.csv: ['employee_id', 'name', 'age']; sample.csv: ['date', 'revenue', 'expenses']; weather.csv: ['timestamp', 'temperature', 'humidity']
+[ChartingAgent] Data shape: (20, 8)
+[ChartingAgent] Columns: ['employee_id', 'name', 'age', 'department', 'salary']
+[LangSmith] Agent executed: chart (Run: f04a12f6-f90f-4e32-a019-9d2a01403179)
+[AgentTracker] chart executed successfully in 7.82s
+[LangSmith] Query completed - Run ID: f04a12f6-f90f-4e32-a019-9d2a01403179
+[AgentTracker] Query completed in 12.39s with 4 agents
+[DataFrameManager] Stored dataframe 'employees.csv' with shape (20, 8)
+2025-10-01 12:42:48.291 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:42:48.293 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:42:48.295 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:42:48.296 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:42:48.298 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:42:48.299 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:42:48.301 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:42:48.304 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:42:48.306 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:42:48.308 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:42:48.309 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:42:48.311 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:42:48.313 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:42:48.315 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:42:48.317 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:42:48.324 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 12:42:48.328 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+<string>:72: FutureWarning: 
+
+Passing `palette` without assigning `hue` is deprecated and will be removed in v0.14.0. Assign the `x` variable to `hue` and set `legend=False` for the same effect.
+
+<string>:105: FutureWarning: 
+
+Passing `palette` without assigning `hue` is deprecated and will be removed in v0.14.0. Assign the `x` variable to `hue` and set `legend=False` for the same effect.
+
+<string>:151: FutureWarning: 
+
+Passing `palette` without assigning `hue` is deprecated and will be removed in v0.14.0. Assign the `x` variable to `hue` and set `legend=False` for the same effect.
+
+<string>:167: FutureWarning: 
+
+Passing `palette` without assigning `hue` is deprecated and will be removed in v0.14.0. Assign the `x` variable to `hue` and set `legend=False` for the same effect.
+
+<string>:263: FutureWarning: 
+
+Passing `palette` without assigning `hue` is deprecated and will be removed in v0.14.0. Assign the `x` variable to `hue` and set `legend=False` for the same effect.
+
+<string>:282: FutureWarning: 
+
+Passing `palette` without assigning `hue` is deprecated and will be removed in v0.14.0. Assign the `x` variable to `hue` and set `legend=False` for the same effect.
+
+<string>:298: FutureWarning: 
+
+Passing `palette` without assigning `hue` is deprecated and will be removed in v0.14.0. Assign the `x` variable to `hue` and set `legend=False` for the same effect.
+
+2025-10-01 13:28:54.620 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 13:28:54.622 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 13:28:54.623 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 13:28:54.625 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 13:28:54.626 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 13:28:54.627 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 13:28:54.629 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 13:28:54.630 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 13:28:54.631 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 13:28:54.632 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 13:28:54.634 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 13:28:54.636 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 13:28:54.637 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 13:28:54.639 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 13:28:54.640 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 13:28:54.642 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 13:28:54.644 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 13:28:54.645 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 13:28:54.985 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 13:28:54.988 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 13:28:54.990 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 13:28:54.992 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 13:28:54.994 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 13:28:54.996 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 13:28:54.998 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 13:28:54.999 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 13:28:55.001 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 13:28:55.002 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 13:28:55.003 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 13:28:55.005 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 13:28:55.007 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 13:28:55.008 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 13:28:55.010 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 13:28:55.011 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 13:28:55.013 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 13:28:55.016 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-01 14:45:08.054 Session with id 1c3a7600-3456-494b-b83e-75494060a78a is already connected! Connecting to a new session.
+2025-10-01 14:45:43.435 Session with id 1c3a7600-3456-494b-b83e-75494060a78a is already connected! Connecting to a new session.
+[DataFrameManager] Stored dataframe 'sample.csv' with shape (51, 7)
+[DataFrameManager] Stored dataframe 'weather.csv' with shape (54, 6)
+[MultiFileManager] Creating ONE unified merged file from 3 files
+[MultiFileManager] Total unique columns across all files: 21
+[MultiFileManager] Processing employees.csv with 20 rows, 8 columns
+[MultiFileManager] Standardized employees.csv: 20 rows, 22 columns
+[MultiFileManager] Processing sample.csv with 51 rows, 7 columns
+[MultiFileManager] Standardized sample.csv: 51 rows, 22 columns
+[MultiFileManager] Processing weather.csv with 54 rows, 6 columns
+[MultiFileManager] Standardized weather.csv: 54 rows, 22 columns
+[MultiFileManager] UNIFIED MERGE: Combined ALL 3 files into one dataset (125 rows, 22 columns)
+[DataFrameManager] Stored dataframe 'merged_data' with shape (125, 22)
+[StreamlitApp] Detected stale data after page refresh - clearing df_manager
+[DataFrameManager] Stored dataframe 'employees.csv' with shape (20, 8)
+[DataFrameManager] Stored dataframe 'sample.csv' with shape (51, 7)
+[DataFrameManager] Stored dataframe 'weather.csv' with shape (54, 6)
+[MultiFileManager] Creating ONE unified merged file from 3 files
+[MultiFileManager] Total unique columns across all files: 21
+[MultiFileManager] Processing employees.csv with 20 rows, 8 columns
+[MultiFileManager] Standardized employees.csv: 20 rows, 22 columns
+[MultiFileManager] Processing sample.csv with 51 rows, 7 columns
+[MultiFileManager] Standardized sample.csv: 51 rows, 22 columns
+[MultiFileManager] Processing weather.csv with 54 rows, 6 columns
+[MultiFileManager] Standardized weather.csv: 54 rows, 22 columns
+[MultiFileManager] UNIFIED MERGE: Combined ALL 3 files into one dataset (125 rows, 22 columns)
+[DataFrameManager] Stored dataframe 'merged_data' with shape (125, 22)
+[DataFrameManager] Stored dataframe 'employees.csv' with shape (20, 8)
+[DataFrameManager] Stored dataframe 'sample.csv' with shape (51, 7)
+[DataFrameManager] Stored dataframe 'weather.csv' with shape (54, 6)
+[MultiFileManager] Creating ONE unified merged file from 3 files
+[MultiFileManager] Total unique columns across all files: 21
+[MultiFileManager] Processing employees.csv with 20 rows, 8 columns
+[MultiFileManager] Standardized employees.csv: 20 rows, 22 columns
+[MultiFileManager] Processing sample.csv with 51 rows, 7 columns
+[MultiFileManager] Standardized sample.csv: 51 rows, 22 columns
+[MultiFileManager] Processing weather.csv with 54 rows, 6 columns
+[MultiFileManager] Standardized weather.csv: 54 rows, 22 columns
+[MultiFileManager] UNIFIED MERGE: Combined ALL 3 files into one dataset (125 rows, 22 columns)
+[DataFrameManager] Stored dataframe 'merged_data' with shape (125, 22)
+[LangSmith] Session initialized: analytics-0413eab3-a593-4f8c-967b-bffb0e3b9af2
+[LangSmith] Query started - Run ID: cfea651a-3cae-4ad7-b1b1-65fa647fa646
+[RouterAgent] Routing query: generate all charts and graphs
+[RouterAgent] LLM routed to: chart
+[LangSmith] Agent executed: router (Run: cfea651a-3cae-4ad7-b1b1-65fa647fa646)
+[AgentTracker] router executed successfully in 1.00s
+[QueryContextAgent] Query: 'generate all charts and graphs', Lower: 'generate all charts and graphs'
+[QueryContextAgent] Is general chart request: True
+[QueryContextAgent] Available files: 4
+[ConversationMemoryAgent] Processed 1 messages for session 0413eab3-a593-4f8c-967b-bffb0e3b9af2
+[ConversationMemoryAgent] Context: New conversation or simple query
+[LangSmith] Agent executed: chart (Run: cfea651a-3cae-4ad7-b1b1-65fa647fa646)
+[AgentTracker] chart executed successfully in 53.66s
+[LangSmith] Query completed - Run ID: cfea651a-3cae-4ad7-b1b1-65fa647fa646
+[AgentTracker] Query completed in 54.68s with 4 agents
+[DataFrameManager] Stored dataframe 'employees.csv' with shape (20, 8)
+[DataFrameManager] Stored dataframe 'sample.csv' with shape (51, 7)
+[DataFrameManager] Stored dataframe 'weather.csv' with shape (54, 6)
+[MultiFileManager] Creating ONE unified merged file from 3 files
+[MultiFileManager] Total unique columns across all files: 21
+[MultiFileManager] Processing employees.csv with 20 rows, 8 columns
+[MultiFileManager] Standardized employees.csv: 20 rows, 22 columns
+[MultiFileManager] Processing sample.csv with 51 rows, 7 columns
+[MultiFileManager] Standardized sample.csv: 51 rows, 22 columns
+[MultiFileManager] Processing weather.csv with 54 rows, 6 columns
+[MultiFileManager] Standardized weather.csv: 54 rows, 22 columns
+[MultiFileManager] UNIFIED MERGE: Combined ALL 3 files into one dataset (125 rows, 22 columns)
+[DataFrameManager] Stored dataframe 'merged_data' with shape (125, 22)
+[StreamlitApp] Detected stale data after page refresh - clearing df_manager
+[DataFrameManager] Stored dataframe 'weather.csv' with shape (54, 6)
+[DataFrameManager] Stored dataframe 'employees.csv' with shape (20, 8)
+[DataFrameManager] Stored dataframe 'sample.csv' with shape (51, 7)
+[MultiFileManager] Creating ONE unified merged file from 3 files
+[MultiFileManager] Total unique columns across all files: 21
+[MultiFileManager] Processing weather.csv with 54 rows, 6 columns
+[MultiFileManager] Standardized weather.csv: 54 rows, 22 columns
+[MultiFileManager] Processing employees.csv with 20 rows, 8 columns
+[MultiFileManager] Standardized employees.csv: 20 rows, 22 columns
+[MultiFileManager] Processing sample.csv with 51 rows, 7 columns
+[MultiFileManager] Standardized sample.csv: 51 rows, 22 columns
+[MultiFileManager] UNIFIED MERGE: Combined ALL 3 files into one dataset (125 rows, 22 columns)
+[DataFrameManager] Stored dataframe 'merged_data' with shape (125, 22)
+[DataFrameManager] Stored dataframe 'weather.csv' with shape (54, 6)
+[DataFrameManager] Stored dataframe 'employees.csv' with shape (20, 8)
+[DataFrameManager] Stored dataframe 'sample.csv' with shape (51, 7)
+[MultiFileManager] Creating ONE unified merged file from 3 files
+[MultiFileManager] Total unique columns across all files: 21
+[MultiFileManager] Processing weather.csv with 54 rows, 6 columns
+[MultiFileManager] Standardized weather.csv: 54 rows, 22 columns
+[MultiFileManager] Processing employees.csv with 20 rows, 8 columns
+[MultiFileManager] Standardized employees.csv: 20 rows, 22 columns
+[MultiFileManager] Processing sample.csv with 51 rows, 7 columns
+[MultiFileManager] Standardized sample.csv: 51 rows, 22 columns
+[MultiFileManager] UNIFIED MERGE: Combined ALL 3 files into one dataset (125 rows, 22 columns)
+[DataFrameManager] Stored dataframe 'merged_data' with shape (125, 22)
+[LangSmith] Session initialized: analytics-135571a8-bf8a-4105-9bbf-f5334cd144dc
+[LangSmith] Query started - Run ID: 6ae3eb9b-330a-4ca6-ae4a-1f06914cf04c
+[RouterAgent] Routing query: tell me about the dataset
+[RouterAgent] LLM routed to: pandas
+[LangSmith] Agent executed: router (Run: 6ae3eb9b-330a-4ca6-ae4a-1f06914cf04c)
+[AgentTracker] router executed successfully in 1.26s
+[QueryContextAgent] Query: 'tell me about the dataset', Lower: 'tell me about the dataset'
+[QueryContextAgent] Is general chart request: False
+[QueryContextAgent] Available files: 4
+[DataFrameManager] Selected 'merged_data' (score: 61) for query: tell me about the dataset...
+[QueryContextAgent] Analyzing query: tell me about the dataset
+[QueryContextAgent] Dataset shape: (125, 22)
+[QueryContextAgent] Columns: ['age', 'category', 'customers', 'date', 'department', 'employee_id', 'expenses', 'humidity', 'last_promotion', 'location']
+<string>:226: FutureWarning: 
+
+Passing `palette` without assigning `hue` is deprecated and will be removed in v0.14.0. Assign the `x` variable to `hue` and set `legend=False` for the same effect.
+
+<string>:240: FutureWarning: 
+
+Passing `palette` without assigning `hue` is deprecated and will be removed in v0.14.0. Assign the `x` variable to `hue` and set `legend=False` for the same effect.
+
+2025-10-02 14:36:36.453 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:36:36.455 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:36:36.459 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:36:36.461 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:36:36.463 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:36:36.464 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:36:36.466 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:36:36.467 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:36:36.469 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:36:36.470 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:36:36.473 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:36:36.476 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:36:36.478 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:36:36.480 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:36:36.484 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+[QueryContextAgent] Analysis result: {'original_query': 'tell me about the dataset', 'expanded_query': 'Please provide an overview or summary of the dataset, including its columns, types of data, and possible use cases.', 'abbreviations_found': [], 'column_mapping': {}, 'relevant_columns': ['age', 'category', 'customers', 'date', 'department', 'employee_id', 'expenses', 'humidity', 'last_promotion', 'location', 'name', 'performance_score', 'pressure', 'profit', 'region', 'revenue', 'salary', 'temperature', 'timestamp', 'wind_speed', 'years_experience', '_source_file'], 'context_hints': ['The query is a general request for information about the dataset. The dataset contains 22 columns', 'all currently treated as categorical (even though some appear numeric)', 'and covers business', 'employee', 'and environmental metrics (e.g.', 'age', 'department', 'expenses', 'revenue', 'weather data). There are no explicit numeric columns', 'so calculations may require type conversion. No abbreviations or unclear terms are present in the query.'], 'query_type': 'dataset overview / general information', 'domain_match': True, 'reasoning': 'LLM-based context analysis'}
+[ConversationMemoryAgent] Processed 1 messages for session 135571a8-bf8a-4105-9bbf-f5334cd144dc
+[ConversationMemoryAgent] Context: New conversation or simple query
+[PandasAgent] Processing query: tell me about the dataset
+[PandasAgent] Using React agent for intelligent analysis
+[DataFrameManager] No matching data found for query 'summary  '. Available files: employees.csv: ['employee_id', 'name', 'age']; sample.csv: ['date', 'revenue', 'expenses']; weather.csv: ['timestamp', 'temperature', 'humidity']
+[DataFrameManager] No matching data found for query 'info  '. Available files: employees.csv: ['employee_id', 'name', 'age']; sample.csv: ['date', 'revenue', 'expenses']; weather.csv: ['timestamp', 'temperature', 'humidity']
+[DataFrameManager] No matching data found for query 'columns  '. Available files: employees.csv: ['employee_id', 'name', 'age']; sample.csv: ['date', 'revenue', 'expenses']; weather.csv: ['timestamp', 'temperature', 'humidity']
+[DataFrameManager] No matching data found for query 'shape  '. Available files: employees.csv: ['employee_id', 'name', 'age']; sample.csv: ['date', 'revenue', 'expenses']; weather.csv: ['timestamp', 'temperature', 'humidity']
+[PandasAgent] React agent completed successfully
+[PandasAgent] Result length: 840 characters
+[LangSmith] Agent executed: pandas (Run: 6ae3eb9b-330a-4ca6-ae4a-1f06914cf04c)
+[AgentTracker] pandas executed successfully in 6.08s
+[LangSmith] Query completed - Run ID: 6ae3eb9b-330a-4ca6-ae4a-1f06914cf04c
+[AgentTracker] Query completed in 14.29s with 4 agents
+[DataFrameManager] Stored dataframe 'weather.csv' with shape (54, 6)
+[DataFrameManager] Stored dataframe 'employees.csv' with shape (20, 8)
+[DataFrameManager] Stored dataframe 'sample.csv' with shape (51, 7)
+[MultiFileManager] Creating ONE unified merged file from 3 files
+[MultiFileManager] Total unique columns across all files: 21
+[MultiFileManager] Processing weather.csv with 54 rows, 6 columns
+[MultiFileManager] Standardized weather.csv: 54 rows, 22 columns
+[MultiFileManager] Processing employees.csv with 20 rows, 8 columns
+[MultiFileManager] Standardized employees.csv: 20 rows, 22 columns
+[MultiFileManager] Processing sample.csv with 51 rows, 7 columns
+[MultiFileManager] Standardized sample.csv: 51 rows, 22 columns
+[MultiFileManager] UNIFIED MERGE: Combined ALL 3 files into one dataset (125 rows, 22 columns)
+[DataFrameManager] Stored dataframe 'merged_data' with shape (125, 22)
+[DataFrameManager] Stored dataframe 'weather.csv' with shape (54, 6)
+[DataFrameManager] Stored dataframe 'employees.csv' with shape (20, 8)
+[DataFrameManager] Stored dataframe 'sample.csv' with shape (51, 7)
+[MultiFileManager] Creating ONE unified merged file from 3 files
+[MultiFileManager] Total unique columns across all files: 21
+[MultiFileManager] Processing weather.csv with 54 rows, 6 columns
+[MultiFileManager] Standardized weather.csv: 54 rows, 22 columns
+[MultiFileManager] Processing employees.csv with 20 rows, 8 columns
+[MultiFileManager] Standardized employees.csv: 20 rows, 22 columns
+[MultiFileManager] Processing sample.csv with 51 rows, 7 columns
+[MultiFileManager] Standardized sample.csv: 51 rows, 22 columns
+[MultiFileManager] UNIFIED MERGE: Combined ALL 3 files into one dataset (125 rows, 22 columns)
+[DataFrameManager] Stored dataframe 'merged_data' with shape (125, 22)
+[LangSmith] Session initialized: analytics-135571a8-bf8a-4105-9bbf-f5334cd144dc
+[LangSmith] Query started - Run ID: c1b87d3c-d952-4567-82e5-f2278cc93635
+[RouterAgent] Routing query: give me some charts
+[RouterAgent] LLM routed to: chart
+[LangSmith] Agent executed: router (Run: c1b87d3c-d952-4567-82e5-f2278cc93635)
+[AgentTracker] router executed successfully in 1.31s
+[QueryContextAgent] Query: 'give me some charts', Lower: 'give me some charts'
+[QueryContextAgent] Is general chart request: False
+[QueryContextAgent] Available files: 4
+[DataFrameManager] Selected 'merged_data' (score: 61) for query: give me some charts...
+[QueryContextAgent] Analyzing query: give me some charts
+[QueryContextAgent] Dataset shape: (125, 22)
+[QueryContextAgent] Columns: ['age', 'category', 'customers', 'date', 'department', 'employee_id', 'expenses', 'humidity', 'last_promotion', 'location']
+[QueryContextAgent] Analysis result: {'original_query': 'give me some charts', 'expanded_query': 'Please provide some example charts or visualizations using the available dataset columns, such as trends over time, category breakdowns, or comparisons between departments.', 'abbreviations_found': [], 'column_mapping': {}, 'relevant_columns': ['age', 'category', 'customers', 'date', 'department', 'employee_id', 'expenses', 'humidity', 'last_promotion', 'location', 'name', 'performance_score', 'pressure', 'profit', 'region', 'revenue', 'salary', 'temperature', 'timestamp', 'wind_speed', 'years_experience'], 'context_hints': ['The query is very general ("give me some charts") and does not specify which aspect of the data to visualize. The dataset appears to cover business metrics (e.g.', 'revenue', 'expenses', 'profit', 'performance_score) and environmental data (e.g.', 'temperature', 'humidity', 'wind_speed', 'pressure) along with employee and department information. Since all columns are currently categorized as categorical (likely due to data type inference)', "numeric analysis may require type conversion. Useful charts could include time series (using 'date' or 'timestamp')", "bar charts by 'department' or 'region'", "or comparisons of 'revenue'", "'expenses'", "and 'profit'."], 'query_type': 'aggregation, comparison, general visualization', 'domain_match': True, 'reasoning': 'LLM-based context analysis'}
+[ConversationMemoryAgent] Processed 3 messages for session 135571a8-bf8a-4105-9bbf-f5334cd144dc
+[ConversationMemoryAgent] Context: New conversation or simple query
+[DataFrameManager] Selected 'merged_data' (score: 61) for query: give me some charts...
+[DataFrameManager] Selected 'merged_data' (score: 61) for query: give me some charts...
+[ChartingAgent] Data shape: (125, 22)
+[ChartingAgent] Columns: ['age', 'category', 'customers', 'date', 'department']
+[LangSmith] Agent executed: chart (Run: c1b87d3c-d952-4567-82e5-f2278cc93635)
+[AgentTracker] chart executed successfully in 45.42s
+[LangSmith] Query completed - Run ID: c1b87d3c-d952-4567-82e5-f2278cc93635
+[AgentTracker] Query completed in 56.51s with 4 agents
+[DataFrameManager] Stored dataframe 'weather.csv' with shape (54, 6)
+[DataFrameManager] Stored dataframe 'employees.csv' with shape (20, 8)
+[DataFrameManager] Stored dataframe 'sample.csv' with shape (51, 7)
+[MultiFileManager] Creating ONE unified merged file from 3 files
+[MultiFileManager] Total unique columns across all files: 21
+[MultiFileManager] Processing weather.csv with 54 rows, 6 columns
+[MultiFileManager] Standardized weather.csv: 54 rows, 22 columns
+[MultiFileManager] Processing employees.csv with 20 rows, 8 columns
+[MultiFileManager] Standardized employees.csv: 20 rows, 22 columns
+2025-10-02 14:36:36.811 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:36:36.813 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:36:36.815 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:36:36.817 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:36:36.821 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:36:36.823 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:36:36.825 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:36:36.827 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:36:36.828 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:36:36.829 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:36:36.832 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:36:36.833 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:36:36.834 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:36:36.836 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:36:36.837 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:37:19.272 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:37:19.275 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:37:19.278 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:37:19.281 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:37:19.284 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:37:19.286 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:37:19.288 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:37:19.290 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:37:19.291 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:37:19.294 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:37:19.295 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:37:19.297 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:37:19.299 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:37:19.301 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:37:19.303 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:37:47.022 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:37:47.025 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:37:47.028 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:37:47.031 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:37:47.034 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:37:47.036 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:37:47.038 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:37:47.040 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:37:47.042 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:37:47.045 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:37:47.048 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:37:47.050 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:37:47.054 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:37:47.056 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:37:47.058 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:38:01.688 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:38:01.690 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:38:01.691 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:38:01.693 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:38:01.694 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:38:01.696 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:38:01.698 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:38:01.699 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:38:01.701 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:38:01.702 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:38:01.706 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:38:01.708 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:38:01.709 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:38:01.711 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:38:01.712 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+[MultiFileManager] Processing sample.csv with 51 rows, 7 columns
+[MultiFileManager] Standardized sample.csv: 51 rows, 22 columns
+[MultiFileManager] UNIFIED MERGE: Combined ALL 3 files into one dataset (125 rows, 22 columns)
+[DataFrameManager] Stored dataframe 'merged_data' with shape (125, 22)
+[DataFrameManager] Stored dataframe 'weather.csv' with shape (54, 6)
+[DataFrameManager] Stored dataframe 'employees.csv' with shape (20, 8)
+[DataFrameManager] Stored dataframe 'sample.csv' with shape (51, 7)
+[MultiFileManager] Creating ONE unified merged file from 3 files
+[MultiFileManager] Total unique columns across all files: 21
+[MultiFileManager] Processing weather.csv with 54 rows, 6 columns
+[MultiFileManager] Standardized weather.csv: 54 rows, 22 columns
+[MultiFileManager] Processing employees.csv with 20 rows, 8 columns
+[MultiFileManager] Standardized employees.csv: 20 rows, 22 columns
+[MultiFileManager] Processing sample.csv with 51 rows, 7 columns
+[MultiFileManager] Standardized sample.csv: 51 rows, 22 columns
+[MultiFileManager] UNIFIED MERGE: Combined ALL 3 files into one dataset (125 rows, 22 columns)
+[DataFrameManager] Stored dataframe 'merged_data' with shape (125, 22)
+[LangSmith] Session initialized: analytics-135571a8-bf8a-4105-9bbf-f5334cd144dc
+[LangSmith] Query started - Run ID: 62d0078b-22d3-4a40-8613-6671c4e4fa72
+[RouterAgent] Routing query: is there any corelation between temp and windspeed?
+[RouterAgent] LLM routed to: pandas
+[LangSmith] Agent executed: router (Run: 62d0078b-22d3-4a40-8613-6671c4e4fa72)
+[AgentTracker] router executed successfully in 1.20s
+[QueryContextAgent] Query: 'is there any corelation between temp and windspeed?', Lower: 'is there any corelation between temp and windspeed?'
+[QueryContextAgent] Is general chart request: False
+[QueryContextAgent] Available files: 4
+[DataFrameManager] Selected 'weather.csv' (score: 13) for query: is there any corelation between temp and windspeed...
+[QueryContextAgent] Analyzing query: is there any corelation between temp and windspeed?
+[QueryContextAgent] Dataset shape: (54, 6)
+[QueryContextAgent] Columns: ['timestamp', 'temperature', 'humidity', 'pressure', 'wind_speed', 'location']
+[QueryContextAgent] Analysis result: {'original_query': 'is there any corelation between temp and windspeed?', 'expanded_query': '"Is there any correlation between temperature and wind speed?"', 'abbreviations_found': ['\'temp\' (unclear/abbreviation for "temperature")', '\'windspeed\' (unclear/abbreviation for "wind speed")'], 'column_mapping': {}, 'relevant_columns': ['temperature', 'wind_speed'], 'context_hints': [], 'query_type': 'comparison (specifically, correlation analysis between two variables)', 'domain_match': True, 'reasoning': 'LLM-based context analysis'}
+[ConversationMemoryAgent] Processed 5 messages for session 135571a8-bf8a-4105-9bbf-f5334cd144dc
+[ConversationMemoryAgent] Context: The user has been exploring multiple datasets (employees, sample, weather) and has requested various charts and analyses. The most recent focus has been on the weather dataset, specifically looking for relationships between temperature and wind speed.
+[PandasAgent] Processing query: is there any corelation between temp and windspeed?
+[PandasAgent] Using React agent for intelligent analysis
+[DataFrameManager] Selected 'weather.csv' (score: 18) for query: correlation temperature ...
+[PandasAgent] React agent completed successfully
+[PandasAgent] Result length: 295 characters
+[LangSmith] Agent executed: pandas (Run: 62d0078b-22d3-4a40-8613-6671c4e4fa72)
+[AgentTracker] pandas executed successfully in 3.32s
+[LangSmith] Query completed - Run ID: 62d0078b-22d3-4a40-8613-6671c4e4fa72
+[AgentTracker] Query completed in 27.38s with 4 agents
+[DataFrameManager] Stored dataframe 'weather.csv' with shape (54, 6)
+[DataFrameManager] Stored dataframe 'employees.csv' with shape (20, 8)
+[DataFrameManager] Stored dataframe 'sample.csv' with shape (51, 7)
+[MultiFileManager] Creating ONE unified merged file from 3 files
+[MultiFileManager] Total unique columns across all files: 21
+[MultiFileManager] Processing weather.csv with 54 rows, 6 columns
+[MultiFileManager] Standardized weather.csv: 54 rows, 22 columns
+[MultiFileManager] Processing employees.csv with 20 rows, 8 columns
+[MultiFileManager] Standardized employees.csv: 20 rows, 22 columns
+[MultiFileManager] Processing sample.csv with 51 rows, 7 columns
+[MultiFileManager] Standardized sample.csv: 51 rows, 22 columns
+[MultiFileManager] UNIFIED MERGE: Combined ALL 3 files into one dataset (125 rows, 22 columns)
+[DataFrameManager] Stored dataframe 'merged_data' with shape (125, 22)
+[DataFrameManager] Stored dataframe 'weather.csv' with shape (54, 6)
+[DataFrameManager] Stored dataframe 'employees.csv' with shape (20, 8)
+[DataFrameManager] Stored dataframe 'sample.csv' with shape (51, 7)
+[MultiFileManager] Creating ONE unified merged file from 3 files
+[MultiFileManager] Total unique columns across all files: 21
+[MultiFileManager] Processing weather.csv with 54 rows, 6 columns
+[MultiFileManager] Standardized weather.csv: 54 rows, 22 columns
+[MultiFileManager] Processing employees.csv with 20 rows, 8 columns
+[MultiFileManager] Standardized employees.csv: 20 rows, 22 columns
+[MultiFileManager] Processing sample.csv with 51 rows, 7 columns
+[MultiFileManager] Standardized sample.csv: 51 rows, 22 columns
+[MultiFileManager] UNIFIED MERGE: Combined ALL 3 files into one dataset (125 rows, 22 columns)
+[DataFrameManager] Stored dataframe 'merged_data' with shape (125, 22)
+[LangSmith] Session initialized: analytics-135571a8-bf8a-4105-9bbf-f5334cd144dc
+[LangSmith] Query started - Run ID: 189ebb35-e827-4aec-a3a2-28e3cb3f19e8
+[RouterAgent] Routing query: yes
+[RouterAgent] LLM routed to: pandas
+[LangSmith] Agent executed: router (Run: 189ebb35-e827-4aec-a3a2-28e3cb3f19e8)
+[AgentTracker] router executed successfully in 0.74s
+[QueryContextAgent] Query: 'yes', Lower: 'yes'
+[QueryContextAgent] Is general chart request: False
+[QueryContextAgent] Available files: 4
+[DataFrameManager] No matching data found for query 'yes'. Available files: employees.csv: ['employee_id', 'name', 'age']; sample.csv: ['date', 'revenue', 'expenses']; weather.csv: ['timestamp', 'temperature', 'humidity']
+[QueryContextAgent] Analyzing query: yes
+[QueryContextAgent] Dataset shape: (20, 8)
+[QueryContextAgent] Columns: ['employee_id', 'name', 'age', 'department', 'salary', 'years_experience', 'performance_score', 'last_promotion']
+[QueryContextAgent] Analysis result: {'original_query': 'yes', 'expanded_query': 'The query "yes" is unclear and does not specify any information or request related to the dataset.', 'abbreviations_found': ['yes'], 'column_mapping': {}, 'relevant_columns': [], 'context_hints': ['The query consists only of the word "yes"', 'which is ambiguous and does not reference any columns', 'data', 'or context from the employee dataset. Additional clarification from the user is needed to determine intent or to map the query to relevant data.'], 'query_type': 'unclear/ambiguous', 'domain_match': True, 'reasoning': 'LLM-based context analysis'}
+[ConversationMemoryAgent] Processed 7 messages for session 135571a8-bf8a-4105-9bbf-f5334cd144dc
+[ConversationMemoryAgent] Context: New conversation or simple query
+[PandasAgent] Processing query: yes
+[PandasAgent] Using React agent for intelligent analysis
+[DataFrameManager] No matching data found for query 'summary  '. Available files: employees.csv: ['employee_id', 'name', 'age']; sample.csv: ['date', 'revenue', 'expenses']; weather.csv: ['timestamp', 'temperature', 'humidity']
+[PandasAgent] React agent completed successfully
+[PandasAgent] Result length: 533 characters
+[LangSmith] Agent executed: pandas (Run: 189ebb35-e827-4aec-a3a2-28e3cb3f19e8)
+[AgentTracker] pandas executed successfully in 4.77s
+[LangSmith] Query completed - Run ID: 189ebb35-e827-4aec-a3a2-28e3cb3f19e8
+[AgentTracker] Query completed in 8.08s with 4 agents
+[DataFrameManager] Stored dataframe 'weather.csv' with shape (54, 6)
+[DataFrameManager] Stored dataframe 'employees.csv' with shape (20, 8)
+[DataFrameManager] Stored dataframe 'sample.csv' with shape (51, 7)
+2025-10-02 14:38:10.134 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:38:10.138 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:38:10.141 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:38:10.144 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:38:10.147 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:38:10.154 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:38:10.157 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:38:10.160 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:38:10.164 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:38:10.168 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:38:10.170 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:38:10.173 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:38:10.176 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:38:10.178 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:38:10.181 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:38:39.819 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:38:39.823 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:38:39.826 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:38:39.828 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:38:39.831 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:38:39.833 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:38:39.835 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:38:39.837 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:38:39.839 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:38:39.842 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:38:39.844 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:38:39.847 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:38:39.850 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:38:39.851 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:38:39.854 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:39:17.549 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:39:17.879 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:39:17.883 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:39:17.886 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:39:17.888 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:39:17.892 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:39:17.894 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:39:17.896 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:39:17.898 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:39:17.900 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:39:17.903 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:39:17.906 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:39:17.908 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:39:17.910 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:39:17.913 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:39:17.915 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:39:17.926 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:39:44.133 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:39:44.135 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:39:44.137 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:39:44.140 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:39:44.142 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:39:44.144 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:39:44.147 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:39:44.150 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:39:44.152 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:39:44.155 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:39:44.158 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:39:44.160 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:39:44.163 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:39:44.165 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:39:44.167 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:39:44.176 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+[MultiFileManager] Creating ONE unified merged file from 3 files
+[MultiFileManager] Total unique columns across all files: 21
+[MultiFileManager] Processing weather.csv with 54 rows, 6 columns
+[MultiFileManager] Standardized weather.csv: 54 rows, 22 columns
+[MultiFileManager] Processing employees.csv with 20 rows, 8 columns
+[MultiFileManager] Standardized employees.csv: 20 rows, 22 columns
+[MultiFileManager] Processing sample.csv with 51 rows, 7 columns
+[MultiFileManager] Standardized sample.csv: 51 rows, 22 columns
+[MultiFileManager] UNIFIED MERGE: Combined ALL 3 files into one dataset (125 rows, 22 columns)
+[DataFrameManager] Stored dataframe 'merged_data' with shape (125, 22)
+[DataFrameManager] Stored dataframe 'weather.csv' with shape (54, 6)
+[DataFrameManager] Stored dataframe 'employees.csv' with shape (20, 8)
+[DataFrameManager] Stored dataframe 'sample.csv' with shape (51, 7)
+[MultiFileManager] Creating ONE unified merged file from 3 files
+[MultiFileManager] Total unique columns across all files: 21
+[MultiFileManager] Processing weather.csv with 54 rows, 6 columns
+[MultiFileManager] Standardized weather.csv: 54 rows, 22 columns
+[MultiFileManager] Processing employees.csv with 20 rows, 8 columns
+[MultiFileManager] Standardized employees.csv: 20 rows, 22 columns
+[MultiFileManager] Processing sample.csv with 51 rows, 7 columns
+[MultiFileManager] Standardized sample.csv: 51 rows, 22 columns
+[MultiFileManager] UNIFIED MERGE: Combined ALL 3 files into one dataset (125 rows, 22 columns)
+[DataFrameManager] Stored dataframe 'merged_data' with shape (125, 22)
+[LangSmith] Session initialized: analytics-135571a8-bf8a-4105-9bbf-f5334cd144dc
+[LangSmith] Query started - Run ID: 63e227a7-48cc-414c-91d9-bf763c87fb4f
+[RouterAgent] Routing query: yes i would like a visual representation of corelation of temp and wind speed
+[RouterAgent] LLM routed to: chart
+[LangSmith] Agent executed: router (Run: 63e227a7-48cc-414c-91d9-bf763c87fb4f)
+[AgentTracker] router executed successfully in 0.97s
+[QueryContextAgent] Query: 'yes i would like a visual representation of corelation of temp and wind speed', Lower: 'yes i would like a visual representation of corelation of temp and wind speed'
+[QueryContextAgent] Is general chart request: False
+[QueryContextAgent] Available files: 4
+[DataFrameManager] Selected 'merged_data' (score: 315) for query: yes i would like a visual representation of corela...
+[QueryContextAgent] Analyzing query: yes i would like a visual representation of corelation of temp and wind speed
+[QueryContextAgent] Dataset shape: (125, 22)
+[QueryContextAgent] Columns: ['age', 'category', 'customers', 'date', 'department', 'employee_id', 'expenses', 'humidity', 'last_promotion', 'location']
+[QueryContextAgent] Analysis result: {'original_query': 'yes i would like a visual representation of corelation of temp and wind speed', 'expanded_query': '"Yes, I would like a visual representation (such as a scatter plot or correlation plot) showing the relationship between temperature and wind speed."', 'abbreviations_found': [], 'column_mapping': {}, 'relevant_columns': ['temperature', 'wind_speed'], 'context_hints': ["The user is requesting a visualization to explore the correlation between the 'temperature' and 'wind_speed' columns. Both columns exist in the dataset", 'but they are currently stored as strings and may require conversion to numeric types before analysis. No abbreviations or unclear terms are present. The request is for a comparison/correlation analysis between two weather-related variables.'], 'query_type': 'comparison, correlation, visualization', 'domain_match': True, 'reasoning': 'LLM-based context analysis'}
+[ConversationMemoryAgent] Processed 9 messages for session 135571a8-bf8a-4105-9bbf-f5334cd144dc
+[ConversationMemoryAgent] Context: The user is exploring multiple datasets (employees, sample, weather) and has shown interest in the relationship between temperature and wind speed in the weather dataset. The assistant previously calculated a strong positive correlation (0.74) between these two variables. The user has now requested a visual representation of this correlation.
+[DataFrameManager] Selected 'merged_data' (score: 315) for query: yes i would like a visual representation of corela...
+[ChartingAgent] Data shape: (125, 22)
+[ChartingAgent] Columns: ['age', 'category', 'customers', 'date', 'department']
+[LangSmith] Agent executed: chart (Run: 63e227a7-48cc-414c-91d9-bf763c87fb4f)
+[AgentTracker] chart executed successfully in 10.96s
+[LangSmith] Query completed - Run ID: 63e227a7-48cc-414c-91d9-bf763c87fb4f
+[AgentTracker] Query completed in 37.67s with 4 agents
+[DataFrameManager] Stored dataframe 'weather.csv' with shape (54, 6)
+[DataFrameManager] Stored dataframe 'employees.csv' with shape (20, 8)
+[DataFrameManager] Stored dataframe 'sample.csv' with shape (51, 7)
+[MultiFileManager] Creating ONE unified merged file from 3 files
+[MultiFileManager] Total unique columns across all files: 21
+[MultiFileManager] Processing weather.csv with 54 rows, 6 columns
+[MultiFileManager] Standardized weather.csv: 54 rows, 22 columns
+[MultiFileManager] Processing employees.csv with 20 rows, 8 columns
+[MultiFileManager] Standardized employees.csv: 20 rows, 22 columns
+[MultiFileManager] Processing sample.csv with 51 rows, 7 columns
+[MultiFileManager] Standardized sample.csv: 51 rows, 22 columns
+[MultiFileManager] UNIFIED MERGE: Combined ALL 3 files into one dataset (125 rows, 22 columns)
+[DataFrameManager] Stored dataframe 'merged_data' with shape (125, 22)
+[DataFrameManager] Stored dataframe 'weather.csv' with shape (54, 6)
+[DataFrameManager] Stored dataframe 'employees.csv' with shape (20, 8)
+[DataFrameManager] Stored dataframe 'sample.csv' with shape (51, 7)
+[MultiFileManager] Creating ONE unified merged file from 3 files
+[MultiFileManager] Total unique columns across all files: 21
+[MultiFileManager] Processing weather.csv with 54 rows, 6 columns
+[MultiFileManager] Standardized weather.csv: 54 rows, 22 columns
+[MultiFileManager] Processing employees.csv with 20 rows, 8 columns
+[MultiFileManager] Standardized employees.csv: 20 rows, 22 columns
+[MultiFileManager] Processing sample.csv with 51 rows, 7 columns
+[MultiFileManager] Standardized sample.csv: 51 rows, 22 columns
+[MultiFileManager] UNIFIED MERGE: Combined ALL 3 files into one dataset (125 rows, 22 columns)
+[DataFrameManager] Stored dataframe 'merged_data' with shape (125, 22)
+[LangSmith] Session initialized: analytics-135571a8-bf8a-4105-9bbf-f5334cd144dc
+[LangSmith] Query started - Run ID: 58a6b3db-d782-4e63-bd4f-b77c01746ba8
+[RouterAgent] Routing query: can you make this chart slightly small?
+[RouterAgent] LLM routed to: chart
+[LangSmith] Agent executed: router (Run: 58a6b3db-d782-4e63-bd4f-b77c01746ba8)
+[AgentTracker] router executed successfully in 0.87s
+[QueryContextAgent] Query: 'can you make this chart slightly small?', Lower: 'can you make this chart slightly small?'
+[QueryContextAgent] Is general chart request: False
+[QueryContextAgent] Available files: 4
+[DataFrameManager] No matching data found for query 'can you make this chart slightly small?'. Available files: employees.csv: ['employee_id', 'name', 'age']; sample.csv: ['date', 'revenue', 'expenses']; weather.csv: ['timestamp', 'temperature', 'humidity']
+[QueryContextAgent] Analyzing query: can you make this chart slightly small?
+[QueryContextAgent] Dataset shape: (20, 8)
+[QueryContextAgent] Columns: ['employee_id', 'name', 'age', 'department', 'salary', 'years_experience', 'performance_score', 'last_promotion']
+<string>:52: UserWarning: set_ticklabels() should only be used with a fixed number of ticks, i.e. after set_ticks() or using a FixedLocator.
+2025-10-02 14:40:17.170 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:40:17.504 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:40:17.513 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:40:17.516 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:40:17.518 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:40:17.519 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:40:17.521 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:40:17.525 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:40:17.527 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:40:17.530 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:40:17.532 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:40:17.534 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:40:17.537 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:40:17.539 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:40:17.541 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:40:17.543 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:40:17.552 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 14:40:17.559 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+
+Collecting usage statistics. To deactivate, set browser.gatherUsageStats to false.
+
+
+  You can now view your Streamlit app in your browser.
+
+  URL: http://0.0.0.0:8508
+
+2025-10-02 15:01:58.017 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 15:01:58.336 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+[LangSmith] Initialized tracking for project: data-analytics-agents
+[LangSmith] Initialized tracking for project: data-analytics-agents
+[DataFrameManager] Stored dataframe 'weather.csv' with shape (54, 6)
+[DataFrameManager] Stored dataframe 'sample.csv' with shape (51, 7)
+[DataFrameManager] Stored dataframe 'employees.csv' with shape (20, 8)
+[MultiFileManager] Creating ONE unified merged file from 3 files
+[MultiFileManager] Total unique columns across all files: 21
+[MultiFileManager] Processing weather.csv with 54 rows, 6 columns
+[MultiFileManager] Standardized weather.csv: 54 rows, 22 columns
+[MultiFileManager] Processing sample.csv with 51 rows, 7 columns
+[MultiFileManager] Standardized sample.csv: 51 rows, 22 columns
+[MultiFileManager] Processing employees.csv with 20 rows, 8 columns
+[MultiFileManager] Standardized employees.csv: 20 rows, 22 columns
+[MultiFileManager] UNIFIED MERGE: Combined ALL 3 files into one dataset (125 rows, 22 columns)
+[DataFrameManager] Stored dataframe 'merged_data' with shape (125, 22)
+[DataFrameManager] Stored dataframe 'weather.csv' with shape (54, 6)
+[DataFrameManager] Stored dataframe 'sample.csv' with shape (51, 7)
+[DataFrameManager] Stored dataframe 'employees.csv' with shape (20, 8)
+[MultiFileManager] Creating ONE unified merged file from 3 files
+[MultiFileManager] Total unique columns across all files: 21
+[MultiFileManager] Processing weather.csv with 54 rows, 6 columns
+[MultiFileManager] Standardized weather.csv: 54 rows, 22 columns
+[MultiFileManager] Processing sample.csv with 51 rows, 7 columns
+[MultiFileManager] Standardized sample.csv: 51 rows, 22 columns
+[MultiFileManager] Processing employees.csv with 20 rows, 8 columns
+[MultiFileManager] Standardized employees.csv: 20 rows, 22 columns
+[MultiFileManager] UNIFIED MERGE: Combined ALL 3 files into one dataset (125 rows, 22 columns)
+[DataFrameManager] Stored dataframe 'merged_data' with shape (125, 22)
+[DataFrameManager] Stored dataframe 'weather.csv' with shape (54, 6)
+[DataFrameManager] Stored dataframe 'sample.csv' with shape (51, 7)
+[DataFrameManager] Stored dataframe 'employees.csv' with shape (20, 8)
+[DataFrameManager] Stored dataframe 'merged_data' with shape (125, 22)
+[LangSmith] Session initialized: analytics-b89c3142-8954-4b2d-affc-77f5f164a5d1
+[LangSmith] Query started - Run ID: b06a5674-5a94-4b88-a202-653644ae353a
+[RouterAgent] Routing query: pLease prepare the chart 
+[RouterAgent] LLM routed to: chart
+[LangSmith] Agent executed: router (Run: b06a5674-5a94-4b88-a202-653644ae353a)
+[AgentTracker] router executed successfully in 0.92s
+[QueryContextAgent] Query: 'pLease prepare the chart ', Lower: 'please prepare the chart '
+[QueryContextAgent] Is general chart request: False
+[QueryContextAgent] Available files: 4
+[DataFrameManager] Selected 'weather.csv' (score: 9) for query: pLease prepare the chart ...
+[QueryContextAgent] Analyzing query: pLease prepare the chart 
+[QueryContextAgent] Dataset shape: (54, 6)
+[QueryContextAgent] Columns: ['timestamp', 'temperature', 'humidity', 'pressure', 'wind_speed', 'location']
+[QueryContextAgent] Analysis result: {'original_query': 'pLease prepare the chart ', 'expanded_query': 'Please prepare a chart visualizing the available data, such as plotting temperature, humidity, pressure, or wind speed over time or by location.', 'abbreviations_found': [], 'column_mapping': {}, 'relevant_columns': ['timestamp', 'temperature', 'humidity', 'pressure', 'wind_speed', 'location'], 'context_hints': ['The query is general and does not specify which variable(s) to chart. The dataset contains time series weather data (temperature', 'humidity', 'pressure', 'wind speed) across different locations. Clarify with the user which variable(s) and which type of chart (e.g.', 'line', 'bar', 'scatter) they want', 'and whether to group by time or location.'], 'query_type': 'aggregation (visualization)', 'domain_match': True, 'reasoning': 'LLM-based context analysis'}
+[ConversationMemoryAgent] Processed 1 messages for session b89c3142-8954-4b2d-affc-77f5f164a5d1
+[ConversationMemoryAgent] Context: New conversation or simple query
+[DataFrameManager] Selected 'weather.csv' (score: 9) for query: pLease prepare the chart ...
+[DataFrameManager] Selected 'weather.csv' (score: 9) for query: pLease prepare the chart ...
+[ChartingAgent] Data shape: (54, 6)
+[ChartingAgent] Columns: ['timestamp', 'temperature', 'humidity', 'pressure', 'wind_speed']
+[LangSmith] Agent executed: chart (Run: b06a5674-5a94-4b88-a202-653644ae353a)
+[AgentTracker] chart executed successfully in 13.81s
+[LangSmith] Query completed - Run ID: b06a5674-5a94-4b88-a202-653644ae353a
+[AgentTracker] Query completed in 17.44s with 4 agents
+[DataFrameManager] Stored dataframe 'weather.csv' with shape (54, 6)
+[DataFrameManager] Stored dataframe 'sample.csv' with shape (51, 7)
+[DataFrameManager] Stored dataframe 'employees.csv' with shape (20, 8)
+[MultiFileManager] Creating ONE unified merged file from 3 files
+[MultiFileManager] Total unique columns across all files: 21
+[MultiFileManager] Processing weather.csv with 54 rows, 6 columns
+[MultiFileManager] Standardized weather.csv: 54 rows, 22 columns
+[MultiFileManager] Processing sample.csv with 51 rows, 7 columns
+[MultiFileManager] Standardized sample.csv: 51 rows, 22 columns
+[MultiFileManager] Processing employees.csv with 20 rows, 8 columns
+[MultiFileManager] Standardized employees.csv: 20 rows, 22 columns
+[MultiFileManager] UNIFIED MERGE: Combined ALL 3 files into one dataset (125 rows, 22 columns)
+[DataFrameManager] Stored dataframe 'merged_data' with shape (125, 22)
+[StreamlitApp] Detected stale data after page refresh - clearing df_manager
+[DataFrameManager] Stored dataframe 'weather.csv' with shape (54, 6)
+[DataFrameManager] Stored dataframe 'weather.csv' with shape (54, 6)
+[LangSmith] Session initialized: analytics-64ce3508-09ba-41a8-b11b-d64648c9105b
+[LangSmith] Query started - Run ID: 4f15666f-1964-49f3-9a34-611fdfc59708
+[RouterAgent] Routing query: hi
+[RouterAgent] LLM routed to: pandas
+[LangSmith] Agent executed: router (Run: 4f15666f-1964-49f3-9a34-611fdfc59708)
+[AgentTracker] router executed successfully in 0.91s
+[QueryContextAgent] Query: 'hi', Lower: 'hi'
+[QueryContextAgent] Is general chart request: False
+[QueryContextAgent] Available files: 4
+[DataFrameManager] No matching data found for query 'hi'. Available files: weather.csv: ['timestamp', 'temperature', 'humidity']; sample.csv: ['date', 'revenue', 'expenses']; employees.csv: ['employee_id', 'name', 'age']
+[QueryContextAgent] Analyzing query: hi
+[QueryContextAgent] Dataset shape: (54, 6)
+[QueryContextAgent] Columns: ['timestamp', 'temperature', 'humidity', 'pressure', 'wind_speed', 'location']
+[QueryContextAgent] Analysis result: {'original_query': 'hi', 'expanded_query': '"Hello."', 'abbreviations_found': [], 'column_mapping': {}, 'relevant_columns': [], 'context_hints': ['The user has only greeted ("hi") and has not provided any specific query or context related to the dataset. No dataset columns or domain-specific terms are referenced. Await further input or clarification from the user before proceeding with data analysis.'], 'query_type': 'greeting', 'domain_match': True, 'reasoning': 'LLM-based context analysis'}
+[ConversationMemoryAgent] Processed 1 messages for session 64ce3508-09ba-41a8-b11b-d64648c9105b
+[ConversationMemoryAgent] Context: New conversation or simple query
+[PandasAgent] Processing query: hi
+[PandasAgent] Result length: 151 characters
+[LangSmith] Agent executed: pandas (Run: 4f15666f-1964-49f3-9a34-611fdfc59708)
+[AgentTracker] pandas executed successfully in 0.00s
+[LangSmith] Query completed - Run ID: 4f15666f-1964-49f3-9a34-611fdfc59708
+[AgentTracker] Query completed in 3.36s with 4 agents
+[DataFrameManager] Stored dataframe 'weather.csv' with shape (54, 6)
+[DataFrameManager] Stored dataframe 'weather.csv' with shape (54, 6)
+[LangSmith] Session initialized: analytics-64ce3508-09ba-41a8-b11b-d64648c9105b
+[LangSmith] Query started - Run ID: b0ff2db1-3745-4e5c-bd13-4e864ac1e3d6
+[RouterAgent] Routing query: tell me about this dataset
+[RouterAgent] LLM routed to: pandas
+2025-10-02 15:08:13.668 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
+2025-10-02 15:08:13.929 Please replace `use_container_width` with `width`.
+
+`use_container_width` will be removed after 2025-12-31.
+
+For `use_container_width=True`, use `width='stretch'`. For `use_container_width=False`, use `width='content'`.
