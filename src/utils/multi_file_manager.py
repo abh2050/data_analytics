@@ -1,5 +1,5 @@
 """
-Multi-file management utilities for the data analytics system
+Multi-file management utilities for the data analytics systems
 """
 import pandas as pd
 from typing import Dict, List, Optional, Tuple, Set
