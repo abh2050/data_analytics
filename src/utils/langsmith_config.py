@@ -1,5 +1,5 @@
 """
-LangSmith configuration and tracking utilities for the multi-agent data analytics system.
+LangSmith configuration and tracking utilities for the multi-agent data analytics systems.
 """
 
 import os
