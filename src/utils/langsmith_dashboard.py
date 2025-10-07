@@ -1,5 +1,5 @@
 """
-LangSmith dashboard utilities for displaying tracking information in Streamlit.
+LangSmith dashboard utilities for displaying tracking information in Streamlit
 """
 
 import streamlit as st
