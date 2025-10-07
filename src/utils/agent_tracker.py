@@ -1,5 +1,5 @@
 """
-Agent tracking wrapper for LangSmith integration.
+Agent tracking wrapper for LangSmith integration
 """
 
 import time
